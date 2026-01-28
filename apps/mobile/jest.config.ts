@@ -1,6 +1,7 @@
 export default {
   displayName: 'mobile',
   preset: '../../jest.preset.js',
+  setupFilesAfterEnv: ['../../apps/web/src/test-setup.ts'],
   coverageDirectory: '../../coverage/apps/mobile',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
@@ -8,5 +9,5 @@ export default {
       { tsconfig: '<rootDir>/tsconfig.spec.json', stringifyContentPathRegex: '\\.(html|svg)$' },
     ],
   },
-  transformIgnorePatterns: ['node_modules/(?!.*\\.mjs$)'],
+  transformIgnorePatterns: ['node_modules/(?!(@ionic|@stencil|ionicons|.*\\.mjs$))'],
 };

@@ -1,0 +1,30 @@
+name: Deploy API
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/api/**'
+      - 'libs/**'
+      - 'prisma/**'
+
+concurrency:
+  group: deploy-api
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy API
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx nx build api --configuration=production
+      - run: npx prisma generate
+      # TODO: Add deployment step (e.g., Docker build + push, or cloud provider deploy)
+      - name: Placeholder deployment
+        run: echo "API build complete. Configure deployment target."

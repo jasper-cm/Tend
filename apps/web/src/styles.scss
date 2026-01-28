@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-soil: #44403c;
+  --color-leaf: #65a30d;
+  --color-bloom: #e879f9;
+  --color-water: #38bdf8;
+  --color-sun: #fbbf24;
+  --color-bark: #78716c;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+}

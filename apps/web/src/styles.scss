@@ -3,16 +3,29 @@
 @tailwind utilities;
 
 :root {
-  --color-soil: #44403c;
-  --color-leaf: #65a30d;
-  --color-bloom: #e879f9;
-  --color-water: #38bdf8;
-  --color-sun: #fbbf24;
-  --color-bark: #78716c;
+  --color-soil: #3d2e1f;
+  --color-soil-light: #5c4033;
+  --color-leaf: #4a7c59;
+  --color-leaf-light: #6b9e7a;
+  --color-leaf-dark: #2f5738;
+  --color-moss: #7a8b5c;
+  --color-fern: #5a7247;
+  --color-sage: #87a878;
+  --color-bark: #8b7355;
+  --color-bark-light: #a99276;
+  --color-bloom: #c27ba0;
+  --color-water: #6b9daa;
+  --color-sun: #d4a843;
+  --color-sun-light: #e8c86a;
+  --color-terracotta: #c07850;
+  --color-parchment: #f5f0e8;
+  --color-cream: #faf6ee;
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   margin: 0;
   padding: 0;
+  background-color: var(--color-cream);
+  color: var(--color-soil);
 }

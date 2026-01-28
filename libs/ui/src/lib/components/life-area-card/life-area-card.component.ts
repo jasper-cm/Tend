@@ -26,7 +26,7 @@ import { HealthBadgeComponent } from '../health-badge/health-badge.component';
 export class LifeAreaCardComponent {
   @Input() name = '';
   @Input() description = '';
-  @Input() color = '#65a30d';
+  @Input() color = '#4a7c59';
   @Input() healthScore = 50;
   @Input() activePractices = 0;
   @Output() selected = new EventEmitter<void>();

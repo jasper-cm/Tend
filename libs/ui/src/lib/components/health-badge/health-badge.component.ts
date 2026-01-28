@@ -18,9 +18,9 @@ export class HealthBadgeComponent {
   @Input() score = 0;
 
   get badgeClass(): string {
-    if (this.score >= 75) return 'bg-green-100 text-green-800';
-    if (this.score >= 50) return 'bg-yellow-100 text-yellow-800';
-    if (this.score >= 25) return 'bg-orange-100 text-orange-800';
-    return 'bg-red-100 text-red-800';
+    if (this.score >= 75) return 'bg-leaf-light/20 text-leaf-dark';
+    if (this.score >= 50) return 'bg-sun-light/20 text-sun';
+    if (this.score >= 25) return 'bg-terracotta/10 text-terracotta';
+    return 'bg-terracotta/20 text-soil';
   }
 }

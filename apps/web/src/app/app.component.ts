@@ -6,10 +6,10 @@ import { RouterOutlet } from '@angular/router';
   standalone: true,
   imports: [RouterOutlet],
   template: `
-    <div class="min-h-screen bg-stone-50">
-      <header class="bg-soil text-white px-6 py-4">
+    <div class="min-h-screen bg-cream">
+      <header class="bg-leaf-dark text-parchment px-6 py-4">
         <h1 class="text-xl font-semibold tracking-tight">Tend</h1>
-        <p class="text-stone-300 text-sm">Tend your life garden</p>
+        <p class="text-sage text-sm">Tend your life garden</p>
       </header>
       <main class="container mx-auto px-4 py-6">
         <router-outlet />

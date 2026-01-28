@@ -48,7 +48,7 @@ describe('LifeAreaCardComponent', () => {
   });
 
   it('should default color to leaf green', () => {
-    expect(component.color).toBe('#65a30d');
+    expect(component.color).toBe('#4a7c59');
   });
 
   it('should default healthScore to 50', () => {

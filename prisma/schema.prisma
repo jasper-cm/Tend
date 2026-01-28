@@ -30,7 +30,7 @@ model LifeArea {
   slug        String
   description String
   icon        String   @default("leaf")
-  color       String   @default("#65a30d")
+  color       String   @default("#4a7c59")
   healthScore Int      @default(50)
   userId      String
   createdAt   DateTime @default(now())
@@ -41,6 +41,7 @@ model LifeArea {
   reflections ReflectionLifeArea[]
 
   @@unique([userId, slug])
+  @@index([userId])
 }
 
 // ─── Practices ───────────────────────────────────────────────────────────────
@@ -63,6 +64,9 @@ model Practice {
   lifeArea LifeArea      @relation(fields: [lifeAreaId], references: [id], onDelete: Cascade)
   user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   logs     PracticeLog[]
+
+  @@index([userId])
+  @@index([lifeAreaId])
 }
 
 model PracticeLog {
@@ -74,6 +78,8 @@ model PracticeLog {
   quality         Int?
 
   practice Practice @relation(fields: [practiceId], references: [id], onDelete: Cascade)
+
+  @@index([practiceId])
 }
 
 // ─── Reflections ─────────────────────────────────────────────────────────────
@@ -92,6 +98,8 @@ model Reflection {
 
   user      User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   lifeAreas ReflectionLifeArea[]
+
+  @@index([userId])
 }
 
 model ReflectionLifeArea {
@@ -102,4 +110,5 @@ model ReflectionLifeArea {
   lifeArea   LifeArea   @relation(fields: [lifeAreaId], references: [id], onDelete: Cascade)
 
   @@id([reflectionId, lifeAreaId])
+  @@index([lifeAreaId])
 }

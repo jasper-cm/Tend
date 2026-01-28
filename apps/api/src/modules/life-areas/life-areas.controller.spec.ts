@@ -4,7 +4,6 @@ import { LifeAreasService } from './life-areas.service';
 
 describe('LifeAreasController', () => {
   let controller: LifeAreasController;
-  let service: jest.Mocked<LifeAreasService>;
 
   const mockService = {
     findAll: jest.fn(),
@@ -21,7 +20,6 @@ describe('LifeAreasController', () => {
     }).compile();
 
     controller = module.get<LifeAreasController>(LifeAreasController);
-    service = module.get(LifeAreasService);
   });
 
   afterEach(() => jest.clearAllMocks());
@@ -31,45 +29,45 @@ describe('LifeAreasController', () => {
   });
 
   describe('findAll', () => {
-    it('should delegate to service.findAll', () => {
+    it('should delegate to service.findAll', async () => {
       const expected = [{ id: '1', name: 'Health' }];
-      mockService.findAll.mockReturnValue(expected);
-      expect(controller.findAll()).toEqual(expected);
+      mockService.findAll.mockResolvedValue(expected);
+      await expect(controller.findAll()).resolves.toEqual(expected);
       expect(mockService.findAll).toHaveBeenCalled();
     });
   });
 
   describe('findOne', () => {
-    it('should delegate to service.findOne with the id', () => {
+    it('should delegate to service.findOne with the id', async () => {
       const expected = { id: '1', name: 'Health' };
-      mockService.findOne.mockReturnValue(expected);
-      expect(controller.findOne('1')).toEqual(expected);
+      mockService.findOne.mockResolvedValue(expected);
+      await expect(controller.findOne('1')).resolves.toEqual(expected);
       expect(mockService.findOne).toHaveBeenCalledWith('1');
     });
   });
 
   describe('create', () => {
-    it('should delegate to service.create with data', () => {
+    it('should delegate to service.create with data', async () => {
       const data = { name: 'Career', slug: 'career' };
-      mockService.create.mockReturnValue({ id: '2', ...data });
-      expect(controller.create(data)).toEqual({ id: '2', ...data });
+      mockService.create.mockResolvedValue({ id: '2', ...data });
+      await expect(controller.create(data)).resolves.toEqual({ id: '2', ...data });
       expect(mockService.create).toHaveBeenCalledWith(data);
     });
   });
 
   describe('update', () => {
-    it('should delegate to service.update with id and data', () => {
+    it('should delegate to service.update with id and data', async () => {
       const data = { name: 'Updated' };
-      mockService.update.mockReturnValue({ id: '1', ...data });
-      expect(controller.update('1', data)).toEqual({ id: '1', ...data });
+      mockService.update.mockResolvedValue({ id: '1', ...data });
+      await expect(controller.update('1', data)).resolves.toEqual({ id: '1', ...data });
       expect(mockService.update).toHaveBeenCalledWith('1', data);
     });
   });
 
   describe('remove', () => {
-    it('should delegate to service.remove with id', () => {
-      mockService.remove.mockReturnValue({ id: '1' });
-      expect(controller.remove('1')).toEqual({ id: '1' });
+    it('should delegate to service.remove with id', async () => {
+      mockService.remove.mockResolvedValue({ id: '1' });
+      await expect(controller.remove('1')).resolves.toEqual({ id: '1' });
       expect(mockService.remove).toHaveBeenCalledWith('1');
     });
   });

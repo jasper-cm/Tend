@@ -20,7 +20,7 @@ export function calculateHealthScore(params: {
   const completionScore = weeklyCompletionRate * 70;
 
   // Streak bonus (0-20 points)
-  const streakRatio = totalPractices > 0 ? activeStreaks / totalPractices : 0;
+  const streakRatio = activeStreaks / totalPractices;
   const streakBonus = Math.min(streakRatio * 20, 20);
 
   // Reflection recency bonus (0-10 points)

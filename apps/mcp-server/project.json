@@ -6,7 +6,7 @@
   "tags": ["scope:mcp"],
   "targets": {
     "build": {
-      "executor": "@nx/node:webpack",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/mcp-server",

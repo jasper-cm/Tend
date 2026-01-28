@@ -6,7 +6,7 @@
   "tags": ["scope:api"],
   "targets": {
     "build": {
-      "executor": "@nx/node:webpack",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/api",

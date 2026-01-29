@@ -14,6 +14,57 @@ interface Insight {
   priority: 'high' | 'medium' | 'low';
 }
 
+interface LifeAreaSummary {
+  id: string;
+  name: string;
+  healthScore: number;
+  practiceCount: number;
+}
+
+interface PracticeWithLogs {
+  id: string;
+  name: string;
+  isActive: boolean;
+  currentStreak: number;
+  longestStreak: number;
+  lifeAreaName: string;
+  logs: { completedAt: Date }[];
+}
+
+interface UpcomingMilestone {
+  practiceName: string;
+  currentStreak: number;
+  days: number;
+  daysAway: number;
+}
+
+interface PrismaLifeArea {
+  id: string;
+  name: string;
+  healthScore: number;
+  practices: {
+    id: string;
+    name: string;
+    isActive: boolean;
+    currentStreak: number;
+    longestStreak: number;
+    logs: { completedAt: Date }[];
+  }[];
+}
+
+interface UserContext {
+  lifeAreas: LifeAreaSummary[];
+  averageHealthScore: number;
+  thrivingAreas: { id: string; name: string; healthScore: number }[];
+  needsAttentionAreas: { id: string; name: string; healthScore: number }[];
+  totalActiveStreaks: number;
+  longestStreak: number;
+  practicesWithNoLogs: PracticeWithLogs[];
+  recentReflectionCount: number;
+  recentMoods: string[];
+  upcomingMilestones: UpcomingMilestone[];
+}
+
 @Injectable()
 export class GardenGuideService {
   constructor(private readonly prisma: PrismaService) {}
@@ -44,7 +95,7 @@ export class GardenGuideService {
       insights.push({
         type: 'celebration',
         title: 'Flourishing Areas',
-        message: `Your ${context.thrivingAreas.map(a => a.name).join(', ')} ${context.thrivingAreas.length === 1 ? 'area is' : 'areas are'} thriving! Keep up the great work.`,
+        message: `Your ${context.thrivingAreas.map((a: { name: string }) => a.name).join(', ')} ${context.thrivingAreas.length === 1 ? 'area is' : 'areas are'} thriving! Keep up the great work.`,
         priority: 'medium',
       });
     }
@@ -109,12 +160,12 @@ export class GardenGuideService {
       });
     }
 
-    const areasWithGaps = context.lifeAreas.filter(a => a.practiceCount === 0);
+    const areasWithGaps = context.lifeAreas.filter((a: LifeAreaSummary) => a.practiceCount === 0);
     if (areasWithGaps.length > 0 && areasWithGaps.length <= 2) {
       insights.push({
         type: 'suggestion',
         title: 'Untended Areas',
-        message: `Your ${areasWithGaps.map(a => a.name).join(' and ')} ${areasWithGaps.length === 1 ? 'area has' : 'areas have'} no practices yet. Consider adding one small habit to start tending ${areasWithGaps.length === 1 ? 'this area' : 'these areas'}.`,
+        message: `Your ${areasWithGaps.map((a: LifeAreaSummary) => a.name).join(' and ')} ${areasWithGaps.length === 1 ? 'area has' : 'areas have'} no practices yet. Consider adding one small habit to start tending ${areasWithGaps.length === 1 ? 'this area' : 'these areas'}.`,
         priority: 'low',
       });
     }
@@ -130,7 +181,7 @@ export class GardenGuideService {
     };
   }
 
-  private async gatherUserContext(userId: string) {
+  private async gatherUserContext(userId: string): Promise<UserContext> {
     const lifeAreas = await this.prisma.lifeArea.findMany({
       where: { userId },
       include: {
@@ -159,20 +210,25 @@ export class GardenGuideService {
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-    const recentReflections = reflections.filter(r => r.createdAt >= sevenDaysAgo);
+    const recentReflections = reflections.filter((r: { createdAt: Date }) => r.createdAt >= sevenDaysAgo);
 
-    const allPractices = lifeAreas.flatMap(la =>
-      la.practices.map(p => ({
-        ...p,
+    const allPractices: PracticeWithLogs[] = (lifeAreas as PrismaLifeArea[]).flatMap((la: PrismaLifeArea) =>
+      la.practices.map((p) => ({
+        id: p.id,
+        name: p.name,
+        isActive: p.isActive,
+        currentStreak: p.currentStreak,
+        longestStreak: p.longestStreak,
         lifeAreaName: la.name,
+        logs: p.logs,
       }))
     );
 
-    const activePractices = allPractices.filter(p => p.isActive);
-    const totalActiveStreaks = activePractices.filter(p => p.currentStreak > 0).length;
-    const longestStreak = Math.max(...activePractices.map(p => p.currentStreak), 0);
+    const activePractices = allPractices.filter((p: PracticeWithLogs) => p.isActive);
+    const totalActiveStreaks = activePractices.filter((p: PracticeWithLogs) => p.currentStreak > 0).length;
+    const longestStreak = Math.max(...activePractices.map((p: PracticeWithLogs) => p.currentStreak), 0);
 
-    const practicesWithNoLogs = activePractices.filter(p => {
+    const practicesWithNoLogs = activePractices.filter((p: PracticeWithLogs) => {
       if (p.logs.length === 0) return true;
       const lastLog = p.logs[0];
       const daysSinceLastLog = Math.floor(
@@ -181,22 +237,26 @@ export class GardenGuideService {
       return daysSinceLastLog > 3;
     });
 
-    const healthScores = lifeAreas.map(la => la.healthScore);
+    const typedLifeAreas = lifeAreas as PrismaLifeArea[];
+    const healthScores = typedLifeAreas.map((la: PrismaLifeArea) => la.healthScore);
     const averageHealthScore = healthScores.length > 0
-      ? Math.round(healthScores.reduce((a, b) => a + b, 0) / healthScores.length)
+      ? Math.round(healthScores.reduce((a: number, b: number) => a + b, 0) / healthScores.length)
       : 50;
 
-    const thrivingAreas = lifeAreas.filter(la => la.healthScore >= 75);
-    const needsAttentionAreas = lifeAreas
-      .filter(la => la.healthScore < 50)
-      .sort((a, b) => a.healthScore - b.healthScore);
+    const thrivingAreas = typedLifeAreas
+      .filter((la: PrismaLifeArea) => la.healthScore >= 75)
+      .map((la: PrismaLifeArea) => ({ id: la.id, name: la.name, healthScore: la.healthScore }));
+    const needsAttentionAreas = typedLifeAreas
+      .filter((la: PrismaLifeArea) => la.healthScore < 50)
+      .sort((a: PrismaLifeArea, b: PrismaLifeArea) => a.healthScore - b.healthScore)
+      .map((la: PrismaLifeArea) => ({ id: la.id, name: la.name, healthScore: la.healthScore }));
 
-    const upcomingMilestones = activePractices
-      .filter(p => {
+    const upcomingMilestones: UpcomingMilestone[] = activePractices
+      .filter((p: PracticeWithLogs) => {
         const milestones = [7, 14, 21, 30, 60, 90, 100];
         return milestones.some(m => p.currentStreak > 0 && m - p.currentStreak <= 3 && m - p.currentStreak > 0);
       })
-      .map(p => {
+      .map((p: PracticeWithLogs) => {
         const milestones = [7, 14, 21, 30, 60, 90, 100];
         const nextMilestone = milestones.find(m => m > p.currentStreak) || 100;
         return {
@@ -208,7 +268,7 @@ export class GardenGuideService {
       });
 
     return {
-      lifeAreas: lifeAreas.map(la => ({
+      lifeAreas: typedLifeAreas.map((la: PrismaLifeArea) => ({
         id: la.id,
         name: la.name,
         healthScore: la.healthScore,
@@ -221,12 +281,12 @@ export class GardenGuideService {
       longestStreak,
       practicesWithNoLogs,
       recentReflectionCount: recentReflections.length,
-      recentMoods: recentReflections.map(r => r.mood).filter(Boolean) as string[],
+      recentMoods: recentReflections.map((r: { mood: string | null }) => r.mood).filter((m: string | null): m is string => m !== null),
       upcomingMilestones,
     };
   }
 
-  private buildSystemPrompt(context: any): string {
+  private buildSystemPrompt(context: UserContext): string {
     return `You are the Garden Guide, a warm and supportive AI coach helping users tend their "life garden."
 Your role is to provide personalized guidance based on their life areas, practices, and reflections.
 
@@ -234,8 +294,8 @@ Current garden status:
 - Overall health: ${context.averageHealthScore}/100
 - Active streaks: ${context.totalActiveStreaks}
 - Recent reflections: ${context.recentReflectionCount}
-- Thriving areas: ${context.thrivingAreas.map((a: any) => a.name).join(', ') || 'None yet'}
-- Areas needing attention: ${context.needsAttentionAreas.map((a: any) => a.name).join(', ') || 'All doing well'}
+- Thriving areas: ${context.thrivingAreas.map((a) => a.name).join(', ') || 'None yet'}
+- Areas needing attention: ${context.needsAttentionAreas.map((a) => a.name).join(', ') || 'All doing well'}
 
 Be encouraging, use garden metaphors naturally, and focus on progress over perfection.`;
   }
@@ -248,7 +308,7 @@ Be encouraging, use garden metaphors naturally, and focus on progress over perfe
     return `${historyText}\nUser: ${currentMessage}`;
   }
 
-  private generateResponse(message: string, context: any): string {
+  private generateResponse(message: string, context: UserContext): string {
     const messageLower = message.toLowerCase();
 
     if (messageLower.includes('how am i doing') || messageLower.includes('garden status') || messageLower.includes('overview')) {
@@ -270,14 +330,14 @@ Be encouraging, use garden metaphors naturally, and focus on progress over perfe
     return this.generateDefaultResponse(context);
   }
 
-  private generateStatusResponse(context: any): string {
+  private generateStatusResponse(context: UserContext): string {
     const healthDescription = context.averageHealthScore >= 75 ? 'flourishing beautifully' :
       context.averageHealthScore >= 50 ? 'growing steadily' : 'needing some tender care';
 
     let response = `Your life garden is ${healthDescription} with an overall health of ${context.averageHealthScore}/100. `;
 
     if (context.thrivingAreas.length > 0) {
-      response += `Your ${context.thrivingAreas.map((a: any) => a.name).join(', ')} ${context.thrivingAreas.length === 1 ? 'area is' : 'areas are'} particularly vibrant right now. `;
+      response += `Your ${context.thrivingAreas.map((a) => a.name).join(', ')} ${context.thrivingAreas.length === 1 ? 'area is' : 'areas are'} particularly vibrant right now. `;
     }
 
     if (context.needsAttentionAreas.length > 0) {
@@ -287,7 +347,7 @@ Be encouraging, use garden metaphors naturally, and focus on progress over perfe
     return response;
   }
 
-  private generateSuggestionResponse(context: any): string {
+  private generateSuggestionResponse(context: UserContext): string {
     if (context.needsAttentionAreas.length > 0) {
       const area = context.needsAttentionAreas[0];
       return `I'd suggest focusing on your ${area.name} area, which is currently at ${area.healthScore}/100. Try adding one small, daily practice that takes less than 5 minutes. Consistency in small things leads to big growth!`;
@@ -301,7 +361,7 @@ Be encouraging, use garden metaphors naturally, and focus on progress over perfe
     return `Your garden is doing well! To continue growing, consider deepening your existing practices or reflecting on what's working well. Sometimes the best growth comes from consistency rather than adding more.`;
   }
 
-  private generateProgressResponse(context: any): string {
+  private generateProgressResponse(context: UserContext): string {
     if (context.longestStreak > 0) {
       let response = `Great progress! You have ${context.totalActiveStreaks} active ${context.totalActiveStreaks === 1 ? 'streak' : 'streaks'}, with your longest being ${context.longestStreak} days. `;
 
@@ -316,11 +376,11 @@ Be encouraging, use garden metaphors naturally, and focus on progress over perfe
     return `Every garden starts somewhere! Begin with one small practice today, and you'll have started your first streak. Remember: a single seed planted consistently grows into a mighty tree.`;
   }
 
-  private generateEncouragementResponse(context: any): string {
+  private generateEncouragementResponse(context: UserContext): string {
     return `I hear you, and I want you to know that every gardener faces challenging seasons. The fact that you're here, tending to your growth, shows real commitment. Even on difficult days, small actions matter. What's one tiny thing you could do right now to nurture yourself? Sometimes just acknowledging where we are is the first step forward.`;
   }
 
-  private generateDefaultResponse(context: any): string {
+  private generateDefaultResponse(context: UserContext): string {
     const greetings = [
       `Welcome back to your garden! How can I help you tend to your growth today?`,
       `I'm here to help you nurture your life areas. What aspect of your garden would you like to focus on?`,
@@ -354,7 +414,7 @@ Be encouraging, use garden metaphors naturally, and focus on progress over perfe
     return null;
   }
 
-  private generateSummary(context: any, insights: Insight[]): string {
+  private generateSummary(context: UserContext, insights: Insight[]): string {
     const healthStatus = context.averageHealthScore >= 75 ? 'thriving' :
       context.averageHealthScore >= 50 ? 'growing steadily' : 'in a season of renewal';
 

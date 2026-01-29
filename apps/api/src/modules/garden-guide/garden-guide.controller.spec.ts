@@ -26,21 +26,35 @@ describe('GardenGuideController', () => {
   });
 
   describe('chat', () => {
-    it('should delegate to service.chat with message', () => {
-      const message = { text: 'How is my garden doing?' };
-      const expected = { reply: 'Your garden looks healthy!' };
-      mockService.chat.mockReturnValue(expected);
-      expect(controller.chat(message)).toEqual(expected);
-      expect(mockService.chat).toHaveBeenCalledWith(message);
+    it('should delegate to service.chat with userId and message', async () => {
+      const userId = 'user-123';
+      const body = { message: 'How is my garden doing?' };
+      const expected = {
+        reply: 'Your garden looks healthy!',
+        context: { gardenHealth: 75, activeStreaks: 3, recentReflections: 2 },
+      };
+      mockService.chat.mockResolvedValue(expected);
+
+      const result = await controller.chat(userId, body);
+
+      expect(result).toEqual(expected);
+      expect(mockService.chat).toHaveBeenCalledWith(userId, body.message, undefined);
     });
   });
 
   describe('getInsights', () => {
-    it('should delegate to service.generateInsights', () => {
-      const expected = { insights: [], message: 'No insights yet' };
-      mockService.generateInsights.mockReturnValue(expected);
-      expect(controller.getInsights()).toEqual(expected);
-      expect(mockService.generateInsights).toHaveBeenCalled();
+    it('should delegate to service.generateInsights with userId', async () => {
+      const userId = 'user-123';
+      const expected = {
+        insights: [],
+        summary: 'Your garden is growing steadily.',
+      };
+      mockService.generateInsights.mockResolvedValue(expected);
+
+      const result = await controller.getInsights(userId);
+
+      expect(result).toEqual(expected);
+      expect(mockService.generateInsights).toHaveBeenCalledWith(userId);
     });
   });
 });

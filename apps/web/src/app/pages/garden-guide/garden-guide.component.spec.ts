@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { GardenGuideComponent } from './garden-guide.component';
 
 describe('GardenGuideComponent', () => {
@@ -6,7 +7,7 @@ describe('GardenGuideComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GardenGuideComponent],
+      imports: [GardenGuideComponent, HttpClientTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(GardenGuideComponent);

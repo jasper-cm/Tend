@@ -36,7 +36,7 @@ describe('LifeAreaCardComponent', () => {
     component.activePractices = 3;
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
-    expect(el.textContent).toContain('3 active practices');
+    expect(el.textContent).toContain('3 practices');
   });
 
   it('should emit selected event on click', () => {
@@ -47,8 +47,8 @@ describe('LifeAreaCardComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('should default color to leaf green', () => {
-    expect(component.color).toBe('#4a7c59');
+  it('should default color to spirit green', () => {
+    expect(component.color).toBe('#3d9a50');
   });
 
   it('should default healthScore to 50', () => {

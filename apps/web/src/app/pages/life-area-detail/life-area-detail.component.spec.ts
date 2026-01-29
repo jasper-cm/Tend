@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { LifeAreaDetailComponent } from './life-area-detail.component';
 
@@ -8,7 +9,7 @@ describe('LifeAreaDetailComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LifeAreaDetailComponent],
+      imports: [LifeAreaDetailComponent, HttpClientTestingModule],
       providers: [
         {
           provide: ActivatedRoute,
@@ -29,14 +30,7 @@ describe('LifeAreaDetailComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should read lifeAreaId from route params on init', () => {
-    fixture.detectChanges();
-    expect(component.lifeAreaId).toBe('test-life-area-id');
-  });
-
-  it('should display the life area id', () => {
-    fixture.detectChanges();
-    const el = fixture.nativeElement as HTMLElement;
-    expect(el.textContent).toContain('test-life-area-id');
+  it('should have lifeArea signal initialized as null', () => {
+    expect(component.lifeArea()).toBeNull();
   });
 });

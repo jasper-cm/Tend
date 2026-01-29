@@ -1,0 +1,39 @@
+# =============================================================================
+# Tend API - Development Dockerfile
+# =============================================================================
+# Development image with hot reload support
+#
+# =============================================================================
+
+FROM node:20-alpine
+
+# Install development tools
+RUN apk add --no-cache python3 make g++ git
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY nx.json ./
+COPY tsconfig*.json ./
+COPY prisma ./prisma/
+
+# Install all dependencies
+RUN npm ci
+
+# Generate Prisma client
+RUN npx prisma generate
+
+# Copy Nx workspace configuration
+COPY apps/api ./apps/api
+COPY libs ./libs
+
+# Environment
+ENV NODE_ENV=development
+ENV PORT=3000
+
+# Expose ports (app + debugger)
+EXPOSE 3000 9229
+
+# Start with hot reload
+CMD ["npx", "nx", "serve", "api", "--verbose"]

@@ -1,0 +1,47 @@
+title: Tend Documentation
+description: Tend your life as the fruitful garden it is - A holistic personal development application
+baseurl: ""
+url: ""
+
+theme: jekyll-theme-cayman
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+
+navigation:
+  - title: Home
+    url: /
+  - title: Getting Started
+    url: /getting-started
+  - title: Architecture
+    url: /architecture/overview
+  - title: Domain Model
+    url: /domain/model
+  - title: API Reference
+    url: /api/
+  - title: Web App
+    url: /apps/web
+  - title: Mobile App
+    url: /apps/mobile
+  - title: MCP Server
+    url: /mcp/overview
+  - title: Shared Libraries
+    url: /libs/overview
+  - title: Testing
+    url: /testing
+  - title: Deployment
+    url: /deployment

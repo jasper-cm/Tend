@@ -21,8 +21,8 @@ interface PlantData {
     <div class="space-y-6">
       <div class="flex items-center justify-between">
         <div>
-          <h2 class="text-2xl font-bold text-soil">Your Life Garden</h2>
-          <p class="text-bark">
+          <h2 class="text-2xl font-bold text-earth-800">Your Life Garden</h2>
+          <p class="text-earth-600">
             A holistic view of all your life areas. See how each part of your garden is flourishing.
           </p>
         </div>
@@ -31,18 +31,18 @@ interface PlantData {
             <div class="text-3xl font-bold" [style.color]="getHealthColor(averageHealth())">
               {{ averageHealth() }}
             </div>
-            <div class="text-sm text-bark">Garden Health</div>
+            <div class="text-sm text-earth-600">Garden Health</div>
           </div>
         }
       </div>
 
       @if (loading()) {
         <div class="flex items-center justify-center py-12">
-          <div class="animate-pulse text-sage">Growing your garden...</div>
+          <div class="animate-pulse text-sage-500">Growing your garden...</div>
         </div>
       } @else {
         <!-- Side-scrolling Garden Visualization -->
-        <div class="relative bg-gradient-to-b from-sky-100 to-sky-200 rounded-xl overflow-hidden" style="height: 320px;">
+        <div class="relative bg-gradient-spirit rounded-soft-lg overflow-hidden shadow-soft" style="height: 320px;">
           <!-- Sky with clouds -->
           <div class="absolute inset-0 overflow-hidden">
             <div class="absolute top-4 left-[10%] w-16 h-8 bg-white/60 rounded-full blur-sm"></div>
@@ -52,19 +52,18 @@ interface PlantData {
           </div>
 
           <!-- Sun -->
-          <div class="absolute top-4 right-8 w-16 h-16 bg-sun rounded-full shadow-lg" style="box-shadow: 0 0 40px rgba(212, 168, 67, 0.5);"></div>
+          <div class="absolute top-4 right-8 w-16 h-16 bg-golden-400 rounded-full shadow-glow"></div>
 
           <!-- Ground -->
-          <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-soil to-soil-light rounded-b-xl"></div>
-          <div class="absolute bottom-20 left-0 right-0 h-8 bg-gradient-to-t from-soil-light/80 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-earth-700 to-earth-500 rounded-b-soft-lg"></div>
+          <div class="absolute bottom-20 left-0 right-0 h-8 bg-gradient-to-t from-earth-500/80 to-transparent"></div>
 
           <!-- Grass line -->
-          <div class="absolute bottom-20 left-0 right-0 h-4 bg-gradient-to-t from-leaf-dark to-leaf opacity-80"></div>
+          <div class="absolute bottom-20 left-0 right-0 h-4 bg-gradient-to-t from-spirit-700 to-spirit-500 opacity-80"></div>
 
           <!-- Scrollable garden container -->
           <div
             class="absolute bottom-24 left-0 right-0 h-48 overflow-x-auto overflow-y-hidden scrollbar-thin"
-            style="scrollbar-color: #87a878 #f5f0e8;"
           >
             <div
               class="flex items-end h-full px-8 gap-8"
@@ -120,7 +119,7 @@ interface PlantData {
                             [attr.cx]="flower.x"
                             [attr.cy]="flower.y"
                             [attr.r]="flower.r * 0.4"
-                            fill="#d4a843"
+                            fill="#f5cd53"
                           />
                         }
                       }
@@ -128,7 +127,7 @@ interface PlantData {
 
                     <!-- Health indicator -->
                     <div
-                      class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-xs font-bold text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                      class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-pill text-xs font-bold text-white opacity-0 group-hover:opacity-100 transition-opacity"
                       [style.backgroundColor]="getHealthColor(plant.lifeArea.healthScore)"
                     >
                       {{ plant.lifeArea.healthScore }}
@@ -137,10 +136,10 @@ interface PlantData {
 
                   <!-- Label -->
                   <div class="mt-2 text-center">
-                    <div class="text-sm font-medium text-soil group-hover:text-leaf transition-colors">
+                    <div class="text-sm font-medium text-earth-800 group-hover:text-spirit-600 transition-colors">
                       {{ plant.lifeArea.name }}
                     </div>
-                    <div class="text-xs text-bark">
+                    <div class="text-xs text-earth-500">
                       {{ getHealthLabel(plant.lifeArea.healthScore) }}
                     </div>
                   </div>
@@ -149,7 +148,7 @@ interface PlantData {
 
               @if (plants().length === 0) {
                 <div class="flex items-center justify-center w-full h-full">
-                  <div class="text-center text-bark">
+                  <div class="text-center text-earth-600">
                     <p class="text-lg">Your garden is empty</p>
                     <p class="text-sm mt-1">Add life areas to start growing</p>
                   </div>
@@ -160,7 +159,7 @@ interface PlantData {
 
           <!-- Scroll hint -->
           @if (plants().length > 4) {
-            <div class="absolute bottom-2 right-4 text-xs text-bark/60 flex items-center gap-1">
+            <div class="absolute bottom-2 right-4 text-xs text-earth-500/60 flex items-center gap-1">
               <span>Scroll to explore</span>
               <span>&rarr;</span>
             </div>
@@ -169,33 +168,33 @@ interface PlantData {
 
         <!-- Garden Stats -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div class="bg-parchment rounded-lg p-4 text-center border border-sage/20">
-            <div class="text-2xl font-bold text-leaf">{{ plants().length }}</div>
-            <div class="text-sm text-bark">Life Areas</div>
+          <div class="bg-parchment rounded-soft p-4 text-center border border-sage-300/30 shadow-soft">
+            <div class="text-2xl font-bold text-spirit-600">{{ plants().length }}</div>
+            <div class="text-sm text-earth-600">Life Areas</div>
           </div>
-          <div class="bg-parchment rounded-lg p-4 text-center border border-sage/20">
-            <div class="text-2xl font-bold text-leaf">{{ thrivingCount() }}</div>
-            <div class="text-sm text-bark">Thriving</div>
+          <div class="bg-parchment rounded-soft p-4 text-center border border-sage-300/30 shadow-soft">
+            <div class="text-2xl font-bold text-spirit-600">{{ thrivingCount() }}</div>
+            <div class="text-sm text-earth-600">Thriving</div>
           </div>
-          <div class="bg-parchment rounded-lg p-4 text-center border border-sage/20">
-            <div class="text-2xl font-bold text-sun">{{ growingCount() }}</div>
-            <div class="text-sm text-bark">Growing</div>
+          <div class="bg-parchment rounded-soft p-4 text-center border border-sage-300/30 shadow-soft">
+            <div class="text-2xl font-bold text-golden-500">{{ growingCount() }}</div>
+            <div class="text-sm text-earth-600">Growing</div>
           </div>
-          <div class="bg-parchment rounded-lg p-4 text-center border border-sage/20">
-            <div class="text-2xl font-bold text-terracotta">{{ needsAttentionCount() }}</div>
-            <div class="text-sm text-bark">Needs Care</div>
+          <div class="bg-parchment rounded-soft p-4 text-center border border-sage-300/30 shadow-soft">
+            <div class="text-2xl font-bold text-bloom-500">{{ needsAttentionCount() }}</div>
+            <div class="text-sm text-earth-600">Needs Care</div>
           </div>
         </div>
 
         <!-- Quick Actions -->
         <div class="flex flex-wrap gap-3">
-          <a routerLink="/life-areas" class="px-4 py-2 bg-leaf text-white rounded-lg hover:bg-leaf-dark transition-colors text-sm font-medium">
+          <a routerLink="/life-areas" class="px-4 py-2 bg-spirit-500 text-white rounded-soft hover:bg-spirit-600 transition-colors text-sm font-medium shadow-soft">
             Manage Life Areas
           </a>
-          <a routerLink="/practices" class="px-4 py-2 bg-sage text-soil rounded-lg hover:bg-moss transition-colors text-sm font-medium">
+          <a routerLink="/practices" class="px-4 py-2 bg-sage-400 text-earth-800 rounded-soft hover:bg-sage-500 transition-colors text-sm font-medium shadow-soft">
             View Practices
           </a>
-          <a routerLink="/garden-guide" class="px-4 py-2 bg-sun text-soil rounded-lg hover:bg-sun-light transition-colors text-sm font-medium">
+          <a routerLink="/garden-guide" class="px-4 py-2 bg-golden-400 text-earth-800 rounded-soft hover:bg-golden-500 transition-colors text-sm font-medium shadow-soft">
             Ask Garden Guide
           </a>
         </div>
@@ -207,15 +206,15 @@ interface PlantData {
       height: 6px;
     }
     .scrollbar-thin::-webkit-scrollbar-track {
-      background: #f5f0e8;
+      background: #f8f6f1;
       border-radius: 3px;
     }
     .scrollbar-thin::-webkit-scrollbar-thumb {
-      background: #87a878;
+      background: #a3bda7;
       border-radius: 3px;
     }
     .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-      background: #4a7c59;
+      background: #5a7f61;
     }
   `],
 })
@@ -229,9 +228,10 @@ export class GardenComponent implements OnInit {
   growingCount = signal(0);
   needsAttentionCount = signal(0);
 
+  // Updated to use spiritual green palette
   private plantColors = [
-    '#4a7c59', '#6b9e7a', '#5a7247', '#87a878', '#7a8b5c',
-    '#2f5738', '#4a7c59', '#6b9e7a', '#5a7247', '#87a878',
+    '#3d9a50', '#5fb56f', '#46654c', '#7a9d80', '#5a7f61',
+    '#266234', '#3d9a50', '#5fb56f', '#46654c', '#7a9d80',
   ];
 
   ngOnInit(): void {
@@ -335,7 +335,7 @@ export class GardenComponent implements OnInit {
         x: 40,
         y: topY - 5,
         r: 6 + plant.flowers,
-        color: plant.lifeArea.healthScore >= 75 ? '#c27ba0' : '#e8c86a',
+        color: plant.lifeArea.healthScore >= 75 ? '#ed87a8' : '#f5cd53', // bloom-400 or golden-300
         hasCenter: plant.lifeArea.healthScore >= 75,
       });
     }
@@ -347,7 +347,7 @@ export class GardenComponent implements OnInit {
         x: 40 + Math.cos(angle) * radius,
         y: topY + Math.sin(angle) * 8,
         r: 4 + Math.random() * 2,
-        color: '#e8c86a',
+        color: '#f5cd53', // golden-300
         hasCenter: false,
       });
     }
@@ -356,9 +356,9 @@ export class GardenComponent implements OnInit {
   }
 
   getHealthColor(score: number): string {
-    if (score >= 75) return '#4a7c59';
-    if (score >= 50) return '#d4a843';
-    return '#c07850';
+    if (score >= 75) return '#3d9a50'; // spirit-500
+    if (score >= 50) return '#f2b82b'; // golden-400
+    return '#e15f87'; // bloom-500
   }
 
   getHealthLabel(score: number): string {

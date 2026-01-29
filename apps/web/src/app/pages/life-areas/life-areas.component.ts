@@ -11,8 +11,8 @@ import { ApiService, LifeArea } from '../../services/api.service';
     <div class="space-y-6">
       <div class="flex items-center justify-between">
         <div>
-          <h2 class="text-2xl font-bold text-soil">Life Areas</h2>
-          <p class="text-bark">
+          <h2 class="text-2xl font-bold text-earth-800">Life Areas</h2>
+          <p class="text-earth-600">
             The areas of your life you are tending. Each one is a plot in your garden.
           </p>
         </div>
@@ -20,26 +20,26 @@ import { ApiService, LifeArea } from '../../services/api.service';
 
       @if (loading()) {
         <div class="flex items-center justify-center py-12">
-          <div class="animate-pulse text-sage">Loading life areas...</div>
+          <div class="animate-pulse text-sage-500">Loading life areas...</div>
         </div>
       } @else {
         @if (lifeAreas().length === 0) {
-          <div class="bg-parchment rounded-lg p-8 text-center border border-sage/20">
+          <div class="bg-parchment rounded-soft p-8 text-center border border-sage-300/30 shadow-soft">
             <div class="text-4xl mb-4">🌱</div>
-            <h3 class="text-lg font-medium text-soil mb-2">No life areas yet</h3>
-            <p class="text-bark mb-4">Start building your garden by adding life areas to tend.</p>
+            <h3 class="text-lg font-medium text-earth-800 mb-2">No life areas yet</h3>
+            <p class="text-earth-600 mb-4">Start building your garden by adding life areas to tend.</p>
           </div>
         } @else {
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             @for (area of lifeAreas(); track area.id) {
               <a
                 [routerLink]="['/life-areas', area.id]"
-                class="bg-parchment rounded-lg p-5 border border-sage/20 hover:border-sage/40 hover:shadow-md transition-all group"
+                class="bg-parchment rounded-soft p-5 border border-sage-300/30 hover:border-spirit-400/50 hover:shadow-soft-lg transition-all group"
               >
                 <div class="flex items-start justify-between mb-3">
                   <div class="flex items-center gap-3">
                     <span class="text-2xl">{{ getIcon(area.icon) }}</span>
-                    <h3 class="font-semibold text-soil group-hover:text-leaf transition-colors">
+                    <h3 class="font-semibold text-earth-800 group-hover:text-spirit-600 transition-colors">
                       {{ area.name }}
                     </h3>
                   </div>
@@ -51,18 +51,18 @@ import { ApiService, LifeArea } from '../../services/api.service';
                   </div>
                 </div>
 
-                <p class="text-bark text-sm mb-4 line-clamp-2">{{ area.description }}</p>
+                <p class="text-earth-600 text-sm mb-4 line-clamp-2">{{ area.description }}</p>
 
                 <!-- Health Bar -->
-                <div class="bg-cream rounded-full h-2 overflow-hidden">
+                <div class="bg-cream rounded-pill h-2 overflow-hidden">
                   <div
-                    class="h-full rounded-full transition-all duration-500"
+                    class="h-full rounded-pill transition-all duration-500"
                     [style.width.%]="area.healthScore"
                     [style.backgroundColor]="getHealthColor(area.healthScore)"
                   ></div>
                 </div>
 
-                <div class="flex items-center justify-between mt-3 text-xs text-bark">
+                <div class="flex items-center justify-between mt-3 text-xs text-earth-500">
                   <span>{{ getHealthLabel(area.healthScore) }}</span>
                   <span>{{ area.practices?.length || 0 }} practices</span>
                 </div>
@@ -71,27 +71,27 @@ import { ApiService, LifeArea } from '../../services/api.service';
           </div>
 
           <!-- Summary Stats -->
-          <div class="bg-parchment rounded-lg p-4 border border-sage/20">
+          <div class="bg-parchment rounded-soft p-4 border border-sage-300/30 shadow-soft">
             <div class="flex flex-wrap gap-6 justify-center text-center">
               <div>
-                <div class="text-2xl font-bold text-soil">{{ lifeAreas().length }}</div>
-                <div class="text-xs text-bark">Life Areas</div>
+                <div class="text-2xl font-bold text-earth-800">{{ lifeAreas().length }}</div>
+                <div class="text-xs text-earth-600">Life Areas</div>
               </div>
               <div>
-                <div class="text-2xl font-bold text-leaf">{{ thrivingCount() }}</div>
-                <div class="text-xs text-bark">Thriving</div>
+                <div class="text-2xl font-bold text-spirit-600">{{ thrivingCount() }}</div>
+                <div class="text-xs text-earth-600">Thriving</div>
               </div>
               <div>
-                <div class="text-2xl font-bold text-sun">{{ growingCount() }}</div>
-                <div class="text-xs text-bark">Growing</div>
+                <div class="text-2xl font-bold text-golden-500">{{ growingCount() }}</div>
+                <div class="text-xs text-earth-600">Growing</div>
               </div>
               <div>
-                <div class="text-2xl font-bold text-terracotta">{{ needsAttentionCount() }}</div>
-                <div class="text-xs text-bark">Needs Care</div>
+                <div class="text-2xl font-bold text-bloom-500">{{ needsAttentionCount() }}</div>
+                <div class="text-xs text-earth-600">Needs Care</div>
               </div>
               <div>
-                <div class="text-2xl font-bold text-soil">{{ averageHealth() }}</div>
-                <div class="text-xs text-bark">Avg Health</div>
+                <div class="text-2xl font-bold text-earth-800">{{ averageHealth() }}</div>
+                <div class="text-xs text-earth-600">Avg Health</div>
               </div>
             </div>
           </div>
@@ -158,9 +158,9 @@ export class LifeAreasComponent implements OnInit {
   }
 
   getHealthColor(score: number): string {
-    if (score >= 75) return '#4a7c59';
-    if (score >= 50) return '#d4a843';
-    return '#c07850';
+    if (score >= 75) return '#3d9a50'; // spirit-500
+    if (score >= 50) return '#f2b82b'; // golden-400
+    return '#e15f87'; // bloom-500
   }
 
   getHealthLabel(score: number): string {

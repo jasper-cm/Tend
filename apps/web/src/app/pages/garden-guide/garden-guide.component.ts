@@ -17,14 +17,14 @@ interface ChatMessage {
     <div class="space-y-6">
       <div class="flex items-center justify-between">
         <div>
-          <h2 class="text-2xl font-bold text-soil">Garden Guide</h2>
-          <p class="text-bark">
+          <h2 class="text-2xl font-bold text-earth-800">Garden Guide</h2>
+          <p class="text-earth-600">
             Your AI-powered life coach. Ask questions and receive personalized guidance.
           </p>
         </div>
         <button
           (click)="toggleInsights()"
-          class="px-4 py-2 bg-sun text-soil rounded-lg hover:bg-sun-light transition-colors text-sm font-medium"
+          class="px-4 py-2 bg-golden-400 text-earth-800 rounded-soft hover:bg-golden-300 transition-colors text-sm font-medium"
         >
           {{ showInsights() ? 'Show Chat' : 'View Insights' }}
         </button>
@@ -35,35 +35,35 @@ interface ChatMessage {
         <div class="space-y-4">
           @if (loadingInsights()) {
             <div class="flex items-center justify-center py-12">
-              <div class="animate-pulse text-sage">Gathering insights...</div>
+              <div class="animate-pulse text-sage-500">Gathering insights...</div>
             </div>
           } @else {
-            <div class="bg-parchment rounded-lg p-4 border border-sage/20">
-              <p class="text-bark">{{ insightsSummary() }}</p>
+            <div class="bg-parchment rounded-soft p-4 border border-sage-300/30">
+              <p class="text-earth-600">{{ insightsSummary() }}</p>
             </div>
 
             @if (insights().length === 0) {
-              <div class="bg-parchment rounded-lg p-8 text-center border border-sage/20">
+              <div class="bg-parchment rounded-soft p-8 text-center border border-sage-300/30">
                 <div class="text-4xl mb-4">🌱</div>
-                <p class="text-bark">No specific insights right now. Your garden is doing well!</p>
+                <p class="text-earth-600">No specific insights right now. Your garden is doing well!</p>
               </div>
             } @else {
               <div class="space-y-3">
                 @for (insight of insights(); track $index) {
                   <div
-                    class="bg-parchment rounded-lg p-4 border-l-4 transition-colors"
-                    [class.border-l-leaf]="insight.type === 'celebration'"
-                    [class.border-l-sun]="insight.type === 'encouragement'"
-                    [class.border-l-water]="insight.type === 'suggestion'"
-                    [class.border-l-bark]="insight.type === 'observation'"
+                    class="bg-parchment rounded-soft p-4 border-l-4 transition-colors"
+                    [class.border-l-spirit-500]="insight.type === 'celebration'"
+                    [class.border-l-golden-400]="insight.type === 'encouragement'"
+                    [class.border-l-water-500]="insight.type === 'suggestion'"
+                    [class.border-l-earth-500]="insight.type === 'observation'"
                   >
                     <div class="flex items-start gap-3">
                       <span class="text-2xl">{{ getInsightIcon(insight.type) }}</span>
                       <div>
-                        <h4 class="font-medium text-soil">{{ insight.title }}</h4>
-                        <p class="text-bark text-sm mt-1">{{ insight.message }}</p>
+                        <h4 class="font-medium text-earth-800">{{ insight.title }}</h4>
+                        <p class="text-earth-600 text-sm mt-1">{{ insight.message }}</p>
                         @if (insight.lifeArea) {
-                          <span class="inline-block mt-2 px-2 py-0.5 bg-sage/20 text-leaf text-xs rounded">
+                          <span class="inline-block mt-2 px-2 py-0.5 bg-sage-200/30 text-spirit-600 text-xs rounded">
                             {{ insight.lifeArea }}
                           </span>
                         }
@@ -77,14 +77,14 @@ interface ChatMessage {
         </div>
       } @else {
         <!-- Chat Interface -->
-        <div class="bg-parchment rounded-lg border border-sage/20 overflow-hidden flex flex-col" style="height: 500px;">
+        <div class="bg-parchment rounded-soft border border-sage-300/30 overflow-hidden flex flex-col" style="height: 500px;">
           <!-- Chat Messages -->
           <div #chatContainer class="flex-1 overflow-y-auto p-4 space-y-4">
             @if (messages().length === 0) {
               <div class="text-center py-8">
                 <div class="text-5xl mb-4">🌿</div>
-                <h3 class="text-lg font-medium text-soil mb-2">Welcome to the Garden Guide</h3>
-                <p class="text-bark text-sm max-w-md mx-auto">
+                <h3 class="text-lg font-medium text-earth-800 mb-2">Welcome to the Garden Guide</h3>
+                <p class="text-earth-600 text-sm max-w-md mx-auto">
                   I'm here to help you tend your life garden. Ask me about your progress,
                   get suggestions for practices, or just chat about how you're doing.
                 </p>
@@ -92,7 +92,7 @@ interface ChatMessage {
                   @for (prompt of quickPrompts; track prompt) {
                     <button
                       (click)="sendMessage(prompt)"
-                      class="px-3 py-1 bg-cream text-soil rounded-full text-sm hover:bg-sage/20 transition-colors"
+                      class="px-3 py-1 bg-cream text-earth-800 rounded-full text-sm hover:bg-sage-200/30 transition-colors"
                     >
                       {{ prompt }}
                     </button>
@@ -106,11 +106,11 @@ interface ChatMessage {
                   [class.justify-end]="message.role === 'user'"
                 >
                   <div
-                    class="max-w-[80%] rounded-lg px-4 py-2"
-                    [class.bg-leaf]="message.role === 'user'"
+                    class="max-w-[80%] rounded-soft px-4 py-2"
+                    [class.bg-spirit-500]="message.role === 'user'"
                     [class.text-white]="message.role === 'user'"
                     [class.bg-cream]="message.role === 'assistant'"
-                    [class.text-soil]="message.role === 'assistant'"
+                    [class.text-earth-800]="message.role === 'assistant'"
                   >
                     <p class="whitespace-pre-line">{{ message.content }}</p>
                     <div
@@ -125,11 +125,11 @@ interface ChatMessage {
 
               @if (isTyping()) {
                 <div class="flex">
-                  <div class="bg-cream rounded-lg px-4 py-2">
+                  <div class="bg-cream rounded-soft px-4 py-2">
                     <div class="flex gap-1">
-                      <span class="w-2 h-2 bg-sage rounded-full animate-bounce" style="animation-delay: 0ms;"></span>
-                      <span class="w-2 h-2 bg-sage rounded-full animate-bounce" style="animation-delay: 150ms;"></span>
-                      <span class="w-2 h-2 bg-sage rounded-full animate-bounce" style="animation-delay: 300ms;"></span>
+                      <span class="w-2 h-2 bg-sage-400 rounded-full animate-bounce" style="animation-delay: 0ms;"></span>
+                      <span class="w-2 h-2 bg-sage-400 rounded-full animate-bounce" style="animation-delay: 150ms;"></span>
+                      <span class="w-2 h-2 bg-sage-400 rounded-full animate-bounce" style="animation-delay: 300ms;"></span>
                     </div>
                   </div>
                 </div>
@@ -138,20 +138,20 @@ interface ChatMessage {
           </div>
 
           <!-- Input Area -->
-          <div class="border-t border-sage/20 p-4">
+          <div class="border-t border-sage-300/30 p-4">
             <div class="flex gap-2">
               <input
                 type="text"
                 [(ngModel)]="inputMessage"
                 (keyup.enter)="sendMessage()"
                 [disabled]="isTyping()"
-                class="flex-1 px-4 py-2 border border-sage/30 rounded-lg focus:outline-none focus:border-leaf disabled:opacity-50"
+                class="flex-1 px-4 py-2 border border-sage-300/40 rounded-soft focus:outline-none focus:border-spirit-500 disabled:opacity-50"
                 placeholder="Ask the Garden Guide..."
               />
               <button
                 (click)="sendMessage()"
                 [disabled]="!inputMessage.trim() || isTyping()"
-                class="px-4 py-2 bg-leaf text-white rounded-lg hover:bg-leaf-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                class="px-4 py-2 bg-spirit-500 text-white rounded-soft hover:bg-spirit-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Send
               </button>

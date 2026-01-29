@@ -4,6 +4,7 @@ import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
+import * as wafv2 from 'aws-cdk-lib/aws-wafv2';
 import { Construct } from 'constructs';
 
 export interface WebStackProps extends cdk.StackProps {
@@ -155,6 +156,55 @@ export class WebStack extends cdk.Stack {
       },
     });
 
+    // WAF WebACL for CloudFront protection
+    // Note: For CloudFront, WAF must be in us-east-1
+    const webAcl = new wafv2.CfnWebACL(this, 'WebWaf', {
+      name: `${appName}-web-waf`,
+      scope: 'CLOUDFRONT', // Required for CloudFront
+      defaultAction: { allow: {} },
+      visibilityConfig: {
+        cloudWatchMetricsEnabled: true,
+        metricName: `${appName}-web-waf`,
+        sampledRequestsEnabled: true,
+      },
+      rules: [
+        // AWS Managed Rules - Common Rule Set
+        {
+          name: 'AWS-AWSManagedRulesCommonRuleSet',
+          priority: 1,
+          overrideAction: { none: {} },
+          statement: {
+            managedRuleGroupStatement: {
+              vendorName: 'AWS',
+              name: 'AWSManagedRulesCommonRuleSet',
+            },
+          },
+          visibilityConfig: {
+            cloudWatchMetricsEnabled: true,
+            metricName: 'CommonRuleSet',
+            sampledRequestsEnabled: true,
+          },
+        },
+        // Rate limiting for static content
+        {
+          name: 'RateLimitRule',
+          priority: 2,
+          action: { block: {} },
+          statement: {
+            rateBasedStatement: {
+              limit: 5000, // Higher limit for static content
+              aggregateKeyType: 'IP',
+            },
+          },
+          visibilityConfig: {
+            cloudWatchMetricsEnabled: true,
+            metricName: 'RateLimit',
+            sampledRequestsEnabled: true,
+          },
+        },
+      ],
+    });
+
     // Cache policy for static assets
     const cachePolicy = new cloudfront.CachePolicy(this, 'CachePolicy', {
       cachePolicyName: `${appName}-cache-policy`,
@@ -173,6 +223,9 @@ export class WebStack extends cdk.Stack {
     const distribution = new cloudfront.Distribution(this, 'Distribution', {
       comment: `${appName} web application`,
       defaultRootObject: 'index.html',
+
+      // WAF protection
+      webAclId: webAcl.attrArn,
 
       // HTTPS only
       minimumProtocolVersion: cloudfront.SecurityPolicyProtocol.TLS_V1_2_2021,

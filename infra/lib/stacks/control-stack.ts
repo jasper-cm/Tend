@@ -99,7 +99,7 @@ export class ControlStack extends cdk.Stack {
         rdsInstance.instanceIdentifier
       )),
       role: lambdaRole,
-      timeout: cdk.Duration.minutes(5),
+      timeout: cdk.Duration.minutes(2), // Reduced from 5 to limit resource consumption
       memorySize: 256,
       logGroup,
       environment: {

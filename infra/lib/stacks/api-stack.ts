@@ -7,6 +7,9 @@ import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import * as logs from 'aws-cdk-lib/aws-logs';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as wafv2 from 'aws-cdk-lib/aws-wafv2';
+import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
 import { Construct } from 'constructs';
 
 export interface ApiStackProps extends cdk.StackProps {
@@ -236,6 +239,22 @@ export class ApiStack extends cdk.Stack {
       'Allow PostgreSQL to RDS in VPC'
     );
 
+    // S3 bucket for ALB access logs (required for security auditing)
+    const albLogsBucket = new s3.Bucket(this, 'AlbLogsBucket', {
+      bucketName: `${appName}-alb-logs-${this.account}-${this.region}`,
+      removalPolicy: cdk.RemovalPolicy.RETAIN, // Keep logs even if stack deleted
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      enforceSSL: true,
+      encryption: s3.BucketEncryption.S3_MANAGED,
+      lifecycleRules: [
+        {
+          id: 'DeleteOldLogs',
+          expiration: cdk.Duration.days(90),
+          enabled: true,
+        },
+      ],
+    });
+
     // Create Application Load Balancer in public subnets
     const alb = new elbv2.ApplicationLoadBalancer(this, 'Alb', {
       loadBalancerName: `${appName}-api-alb`,
@@ -243,6 +262,98 @@ export class ApiStack extends cdk.Stack {
       internetFacing: true, // Public-facing
       securityGroup: albSecurityGroup,
       vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
+      deletionProtection: true, // Prevent accidental deletion
+    });
+
+    // Enable ALB access logging for security auditing
+    alb.logAccessLogs(albLogsBucket, `${appName}-alb`);
+
+    // Create WAF WebACL with AWS Managed Rules for common attack protection
+    const webAcl = new wafv2.CfnWebACL(this, 'ApiWaf', {
+      name: `${appName}-api-waf`,
+      scope: 'REGIONAL', // For ALB (use CLOUDFRONT for CloudFront)
+      defaultAction: { allow: {} },
+      visibilityConfig: {
+        cloudWatchMetricsEnabled: true,
+        metricName: `${appName}-api-waf`,
+        sampledRequestsEnabled: true,
+      },
+      rules: [
+        // AWS Managed Rules - Common Rule Set (OWASP Top 10)
+        {
+          name: 'AWS-AWSManagedRulesCommonRuleSet',
+          priority: 1,
+          overrideAction: { none: {} },
+          statement: {
+            managedRuleGroupStatement: {
+              vendorName: 'AWS',
+              name: 'AWSManagedRulesCommonRuleSet',
+            },
+          },
+          visibilityConfig: {
+            cloudWatchMetricsEnabled: true,
+            metricName: 'CommonRuleSet',
+            sampledRequestsEnabled: true,
+          },
+        },
+        // AWS Managed Rules - Known Bad Inputs
+        {
+          name: 'AWS-AWSManagedRulesKnownBadInputsRuleSet',
+          priority: 2,
+          overrideAction: { none: {} },
+          statement: {
+            managedRuleGroupStatement: {
+              vendorName: 'AWS',
+              name: 'AWSManagedRulesKnownBadInputsRuleSet',
+            },
+          },
+          visibilityConfig: {
+            cloudWatchMetricsEnabled: true,
+            metricName: 'KnownBadInputs',
+            sampledRequestsEnabled: true,
+          },
+        },
+        // AWS Managed Rules - SQL Injection
+        {
+          name: 'AWS-AWSManagedRulesSQLiRuleSet',
+          priority: 3,
+          overrideAction: { none: {} },
+          statement: {
+            managedRuleGroupStatement: {
+              vendorName: 'AWS',
+              name: 'AWSManagedRulesSQLiRuleSet',
+            },
+          },
+          visibilityConfig: {
+            cloudWatchMetricsEnabled: true,
+            metricName: 'SQLiRuleSet',
+            sampledRequestsEnabled: true,
+          },
+        },
+        // Rate limiting - prevent brute force/DDoS
+        {
+          name: 'RateLimitRule',
+          priority: 4,
+          action: { block: {} },
+          statement: {
+            rateBasedStatement: {
+              limit: 2000, // 2000 requests per 5 minutes per IP
+              aggregateKeyType: 'IP',
+            },
+          },
+          visibilityConfig: {
+            cloudWatchMetricsEnabled: true,
+            metricName: 'RateLimit',
+            sampledRequestsEnabled: true,
+          },
+        },
+      ],
+    });
+
+    // Associate WAF with ALB
+    new wafv2.CfnWebACLAssociation(this, 'WafAlbAssociation', {
+      resourceArn: alb.loadBalancerArn,
+      webAclArn: webAcl.attrArn,
     });
 
     // Create target group
@@ -263,16 +374,6 @@ export class ApiStack extends cdk.Stack {
       deregistrationDelay: cdk.Duration.seconds(30),
     });
 
-    // HTTP listener - redirect to HTTPS
-    alb.addListener('HttpListener', {
-      port: 80,
-      defaultAction: elbv2.ListenerAction.redirect({
-        port: '443',
-        protocol: 'HTTPS',
-        permanent: true,
-      }),
-    });
-
     // HTTPS listener with certificate
     let certificate: acm.ICertificate | undefined;
 
@@ -287,7 +388,7 @@ export class ApiStack extends cdk.Stack {
       });
     }
 
-    // Add HTTPS listener
+    // Add HTTPS listener (only if certificate is available)
     if (certificate) {
       alb.addListener('HttpsListener', {
         port: 443,
@@ -297,15 +398,33 @@ export class ApiStack extends cdk.Stack {
         sslPolicy: elbv2.SslPolicy.TLS13_RES, // Use TLS 1.3 with restricted ciphers
       });
     } else {
-      // Development mode without certificate - log warning
+      // SECURITY: Do NOT create HTTP listener on port 443
+      // This would expose traffic in plaintext on what users expect to be secure
       console.warn(
-        'WARNING: No TLS certificate configured. For production, provide domainName or certificateArn.'
+        'WARNING: No TLS certificate configured. HTTPS listener NOT created. ' +
+        'For production, provide domainName or certificateArn. ' +
+        'Development traffic will use HTTP on port 80 only.'
       );
-      // Still create listener but it won't work without a certificate in AWS
-      // This allows the stack to deploy for development/testing
-      alb.addListener('HttpsListener', {
-        port: 443,
-        protocol: elbv2.ApplicationProtocol.HTTP, // HTTP on 443 for dev only
+      // In development without certificate, modify port 80 to forward instead of redirect
+      // This is done by updating the HTTP listener above to forward directly
+    }
+
+    // HTTP listener configuration depends on whether we have HTTPS
+    if (certificate) {
+      // With certificate: redirect HTTP to HTTPS (secure production setup)
+      alb.addListener('HttpListener', {
+        port: 80,
+        defaultAction: elbv2.ListenerAction.redirect({
+          port: '443',
+          protocol: 'HTTPS',
+          permanent: true,
+        }),
+      });
+    } else {
+      // Without certificate: forward HTTP directly (development only)
+      // SECURITY WARNING: This should NEVER be used in production
+      alb.addListener('HttpListener', {
+        port: 80,
         defaultAction: elbv2.ListenerAction.forward([targetGroup]),
       });
     }
@@ -352,6 +471,63 @@ export class ApiStack extends cdk.Stack {
 
     // Store API URL
     this.apiUrl = domainName ? `https://${domainName}` : `https://${alb.loadBalancerDnsName}`;
+
+    // CloudWatch Alarms for monitoring and security detection
+    // ALB 5xx Error Rate Alarm - detects application errors or attacks
+    new cloudwatch.Alarm(this, 'Alb5xxAlarm', {
+      alarmName: `${appName}-api-5xx-errors`,
+      alarmDescription: 'High rate of 5xx errors - possible attack or application issue',
+      metric: alb.metrics.httpCodeElb(elbv2.HttpCodeElb.ELB_5XX_COUNT, {
+        period: cdk.Duration.minutes(5),
+        statistic: 'Sum',
+      }),
+      threshold: 50,
+      evaluationPeriods: 2,
+      comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+      treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+    });
+
+    // ALB 4xx Error Rate Alarm - detects unauthorized access attempts
+    new cloudwatch.Alarm(this, 'Alb4xxAlarm', {
+      alarmName: `${appName}-api-4xx-errors`,
+      alarmDescription: 'High rate of 4xx errors - possible brute force or scanning',
+      metric: alb.metrics.httpCodeElb(elbv2.HttpCodeElb.ELB_4XX_COUNT, {
+        period: cdk.Duration.minutes(5),
+        statistic: 'Sum',
+      }),
+      threshold: 200,
+      evaluationPeriods: 2,
+      comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+      treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+    });
+
+    // ECS Task CPU Utilization - detects resource exhaustion attacks
+    new cloudwatch.Alarm(this, 'EcsCpuAlarm', {
+      alarmName: `${appName}-api-high-cpu`,
+      alarmDescription: 'High CPU utilization - possible DoS or resource exhaustion',
+      metric: this.service.metricCpuUtilization({
+        period: cdk.Duration.minutes(5),
+        statistic: 'Average',
+      }),
+      threshold: 80,
+      evaluationPeriods: 3,
+      comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+      treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+    });
+
+    // ECS Task Memory Utilization
+    new cloudwatch.Alarm(this, 'EcsMemoryAlarm', {
+      alarmName: `${appName}-api-high-memory`,
+      alarmDescription: 'High memory utilization - possible memory leak or attack',
+      metric: this.service.metricMemoryUtilization({
+        period: cdk.Duration.minutes(5),
+        statistic: 'Average',
+      }),
+      threshold: 80,
+      evaluationPeriods: 3,
+      comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+      treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+    });
 
     // Outputs
     new cdk.CfnOutput(this, 'ApiUrl', {

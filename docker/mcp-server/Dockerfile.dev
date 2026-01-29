@@ -1,0 +1,34 @@
+# =============================================================================
+# Tend MCP Server - Development Dockerfile
+# =============================================================================
+# Development image for MCP server with live reload
+#
+# =============================================================================
+
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY nx.json ./
+COPY tsconfig*.json ./
+COPY prisma ./prisma/
+
+# Install all dependencies
+RUN npm ci
+
+# Generate Prisma client
+RUN npx prisma generate
+
+# Copy source files
+COPY apps/mcp-server ./apps/mcp-server
+COPY libs ./libs
+
+# Environment
+ENV NODE_ENV=development
+ENV MCP_SERVER_NAME=tend-garden-guide-dev
+ENV MCP_SERVER_VERSION=1.0.0-dev
+
+# MCP Server uses stdio - no port needed
+CMD ["npx", "ts-node", "--transpile-only", "apps/mcp-server/src/index.ts"]

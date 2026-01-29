@@ -1,0 +1,14 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "Tend Local",
+      "Group": "Servers",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "tend",
+      "Username": "tend",
+      "SSLMode": "prefer",
+      "PassFile": "/tmp/pgpassfile"
+    }
+  }
+}

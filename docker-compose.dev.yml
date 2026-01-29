@@ -1,0 +1,184 @@
+# =============================================================================
+# Tend - Development Docker Compose Override
+# =============================================================================
+# This file extends docker-compose.yml for local development with:
+# - Hot reload for all applications
+# - Volume mounts for live code updates
+# - Debug ports exposed
+# - Relaxed resource limits
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+#   # Or use the shorthand:
+#   make dev
+#
+# =============================================================================
+
+name: tend-dev
+
+services:
+  # ===========================================================================
+  # PostgreSQL Database (Development)
+  # ===========================================================================
+  postgres:
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: tend
+      POSTGRES_PASSWORD: tendpassword
+      POSTGRES_DB: tend
+    # Less strict resource limits for dev
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+  # ===========================================================================
+  # Redis (Development)
+  # ===========================================================================
+  redis:
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+
+  # ===========================================================================
+  # NestJS API (Development with Hot Reload)
+  # ===========================================================================
+  api:
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile.dev
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DATABASE_URL: postgresql://tend:tendpassword@postgres:5432/tend?schema=public
+      REDIS_URL: redis://redis:6379
+      CORS_ORIGINS: "*"
+      JWT_SECRET: dev-secret-key-not-for-production
+      JWT_EXPIRES_IN: 30d
+      # Enable debug mode
+      DEBUG: "tend:*"
+    volumes:
+      # Mount source code for hot reload
+      - ./apps/api:/app/apps/api:cached
+      - ./libs:/app/libs:cached
+      - ./prisma:/app/prisma:cached
+      # Exclude node_modules (use container's)
+      - /app/node_modules
+      - /app/apps/api/node_modules
+    ports:
+      - "3000:3000"
+      - "9229:9229"  # Node.js debugger port
+    command: npx nx serve api --verbose
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+  # ===========================================================================
+  # Angular Web Application (Development with Hot Reload)
+  # ===========================================================================
+  web:
+    build:
+      context: .
+      dockerfile: docker/web/Dockerfile.dev
+    environment:
+      NODE_ENV: development
+    volumes:
+      # Mount source code for hot reload
+      - ./apps/web:/app/apps/web:cached
+      - ./libs:/app/libs:cached
+      # Exclude node_modules
+      - /app/node_modules
+    ports:
+      - "4200:4200"
+    command: npx nx serve web --host=0.0.0.0 --poll=2000 --disable-host-check
+    depends_on:
+      - api
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+
+  # ===========================================================================
+  # Ionic Mobile Application (Development with Hot Reload)
+  # ===========================================================================
+  mobile:
+    build:
+      context: .
+      dockerfile: docker/mobile/Dockerfile.dev
+    environment:
+      NODE_ENV: development
+    volumes:
+      # Mount source code for hot reload
+      - ./apps/mobile:/app/apps/mobile:cached
+      - ./libs:/app/libs:cached
+      # Exclude node_modules
+      - /app/node_modules
+    ports:
+      - "4201:4200"  # Map to different host port
+    command: npx nx serve mobile --host=0.0.0.0 --port=4200 --poll=2000 --disable-host-check
+    depends_on:
+      - api
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+
+  # ===========================================================================
+  # MCP Server (Development)
+  # ===========================================================================
+  mcp-server:
+    build:
+      context: .
+      dockerfile: docker/mcp-server/Dockerfile.dev
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://tend:tendpassword@postgres:5432/tend?schema=public
+      DEBUG: "mcp:*"
+    volumes:
+      - ./apps/mcp-server:/app/apps/mcp-server:cached
+      - ./libs:/app/libs:cached
+      - /app/node_modules
+
+  # ===========================================================================
+  # Prisma Studio (Development Only)
+  # ===========================================================================
+  prisma-studio:
+    build:
+      context: .
+      dockerfile: docker/prisma-studio/Dockerfile
+    container_name: tend-prisma-studio
+    environment:
+      DATABASE_URL: postgresql://tend:tendpassword@postgres:5432/tend?schema=public
+    ports:
+      - "5555:5555"
+    networks:
+      - tend-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    profiles:
+      - tools
+
+  # ===========================================================================
+  # MailHog - Email Testing (Development Only)
+  # ===========================================================================
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: tend-mailhog
+    ports:
+      - "1025:1025"   # SMTP server
+      - "8025:8025"   # Web UI
+    networks:
+      - tend-network
+    profiles:
+      - tools
+
+# =============================================================================
+# Development Network (same as base, but named for clarity)
+# =============================================================================
+networks:
+  tend-network:
+    name: tend-network
+    driver: bridge

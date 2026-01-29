@@ -1,0 +1,105 @@
+# =============================================================================
+# Docker Ignore File
+# =============================================================================
+# Files and directories to exclude from Docker build context
+# =============================================================================
+
+# Dependencies
+node_modules
+**/node_modules
+
+# Build outputs
+dist
+**/dist
+.angular
+**/.angular
+
+# IDE and Editor
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Git
+.git
+.gitignore
+
+# Environment files (use docker-compose env vars instead)
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs
+
+# Testing
+coverage
+**/coverage
+.nyc_output
+
+# Temporary files
+tmp
+temp
+*.tmp
+*.temp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation (not needed in container)
+docs
+*.md
+!README.md
+LICENSE
+
+# E2E tests (separate container)
+e2e
+
+# Infrastructure code (not needed in app containers)
+infra
+
+# GitHub
+.github
+
+# Native mobile builds (Capacitor)
+apps/mobile/android
+apps/mobile/ios
+
+# Development tools
+.nx
+.husky
+
+# Cache
+.cache
+**/.cache
+
+# Prisma migrations (use deploy, not dev)
+# prisma/migrations  # Keep migrations for deploy
+
+# Local development overrides
+docker-compose.override.yml
+
+# Security - never include
+*.pem
+*.key
+*.crt
+credentials.json
+secrets.*
+
+# IDE specific
+*.sublime-*
+*.code-workspace
+
+# Test files
+**/*.spec.ts
+**/*.test.ts
+**/test/**
+**/tests/**
+jest.config.*
+playwright.config.*

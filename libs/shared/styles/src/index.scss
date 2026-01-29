@@ -1,0 +1,8 @@
+// ============================================
+// Tend Design System — Main Entry Point
+// ============================================
+
+@import 'design-tokens';
+
+// Export CSS variables
+@include export-css-variables;

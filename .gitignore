@@ -46,3 +46,6 @@ test-results/
 # Misc
 *.log
 npm-debug.log*
+
+# CDK output
+cdk.out/

@@ -18,10 +18,14 @@ const env: cdk.Environment = {
 // Application name prefix for all resources
 const appName = 'tend';
 
+// Deployment environment (development, staging, production)
+const deploymentEnv = process.env.ENVIRONMENT || 'development';
+const isProduction = deploymentEnv === 'production';
+
 // Common tags for all resources
 const tags: Record<string, string> = {
   Application: 'Tend',
-  Environment: process.env.ENVIRONMENT || 'production',
+  Environment: deploymentEnv,
   ManagedBy: 'CDK',
 };
 
@@ -38,10 +42,15 @@ const vpcStack = new VpcStack(app, 'TendVpcStack', {
 });
 
 // 2. Database Stack - RDS PostgreSQL in private subnet
+// Uses AWS-managed encryption (AES-256) for RDS and Secrets Manager
+// For additional compliance requirements, a customer-managed KMS key can be added
 const databaseStack = new DatabaseStack(app, 'TendDatabaseStack', {
   env,
   appName,
   vpc: vpcStack.vpc,
+  // Production settings: enable deletion protection, longer backups
+  deletionProtection: isProduction,
+  backupRetentionDays: isProduction ? 30 : 7,
   description: 'Tend RDS PostgreSQL database in private subnet',
 });
 databaseStack.addDependency(vpcStack);
@@ -52,7 +61,11 @@ const apiStack = new ApiStack(app, 'TendApiStack', {
   appName,
   vpc: vpcStack.vpc,
   databaseSecret: databaseStack.databaseSecret,
-  databaseSecurityGroup: databaseStack.databaseSecurityGroup,
+  // Production settings: disable ECS Exec, require TLS certificate
+  enableEcsExec: !isProduction,
+  // Uncomment and set for production:
+  // domainName: 'api.tend.app',
+  // certificateArn: 'arn:aws:acm:us-east-1:123456789:certificate/xxx',
   description: 'Tend API on ECS Fargate with Application Load Balancer',
 });
 apiStack.addDependency(databaseStack);

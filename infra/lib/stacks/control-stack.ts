@@ -14,6 +14,11 @@ export interface ControlStackProps extends cdk.StackProps {
   ecsCluster: ecs.Cluster;
   ecsService: ecs.FargateService;
   rdsInstance: rds.DatabaseInstance;
+  /**
+   * List of IAM principal ARNs allowed to invoke the control Lambda
+   * If empty, only account root can invoke (requires explicit IAM permissions)
+   */
+  allowedInvokerArns?: string[];
 }
 
 /**
@@ -29,7 +34,7 @@ export class ControlStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: ControlStackProps) {
     super(scope, id, props);
 
-    const { appName, ecsCluster, ecsService, rdsInstance } = props;
+    const { appName, ecsCluster, ecsService, rdsInstance, allowedInvokerArns = [] } = props;
 
     // CloudWatch log group for Lambda
     const logGroup = new logs.LogGroup(this, 'ControlLambdaLogs', {
@@ -82,7 +87,7 @@ export class ControlStack extends cdk.Stack {
       ],
     }));
 
-    // Create Lambda function
+    // Create Lambda function with reserved concurrency to prevent abuse
     this.controlFunction = new lambda.Function(this, 'ControlFunction', {
       functionName: `${appName}-infrastructure-control`,
       runtime: lambda.Runtime.NODEJS_20_X,
@@ -104,7 +109,25 @@ export class ControlStack extends cdk.Stack {
         DESIRED_TASK_COUNT: '1', // Default task count when starting
       },
       description: 'Lambda function to start/stop Tend infrastructure',
+      reservedConcurrentExecutions: 1, // Limit concurrent executions
     });
+
+    // Security: Add resource-based policy to restrict who can invoke the Lambda
+    // By default, no external invocation is allowed - requires explicit IAM permissions
+    // If allowedInvokerArns is provided, grant those principals explicit permission
+    if (allowedInvokerArns.length > 0) {
+      allowedInvokerArns.forEach((principalArn, index) => {
+        this.controlFunction.addPermission(`AllowInvoker${index}`, {
+          principal: new iam.ArnPrincipal(principalArn),
+          action: 'lambda:InvokeFunction',
+        });
+      });
+    }
+
+    // Note: Lambda is NOT publicly accessible
+    // Invocation requires either:
+    // 1. IAM permissions to call lambda:InvokeFunction on this function
+    // 2. Being listed in allowedInvokerArns (adds resource-based policy)
 
     // Optional: Schedule automatic shutdown at night (cost savings)
     // Uncomment to enable automatic shutdown at 10 PM UTC

@@ -119,17 +119,27 @@ export class WebStack extends cdk.Stack {
           override: true,
         },
         // Content Security Policy
+        // Note: Angular requires 'unsafe-inline' for styles. For scripts, modern Angular
+        // builds may work without 'unsafe-eval' but some features require it.
+        // For production, consider using nonce-based CSP with server-side injection.
         contentSecurityPolicy: {
           contentSecurityPolicy: [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // Angular needs these
+            // Angular 18+ can work with stricter CSP in production builds
+            // 'wasm-unsafe-eval' allows WebAssembly compilation
+            "script-src 'self' 'wasm-unsafe-eval'",
+            // 'unsafe-inline' for styles is still needed for Angular components
             "style-src 'self' 'unsafe-inline'",
-            `connect-src 'self' ${apiUrl}`,
-            "img-src 'self' data: https:",
+            `connect-src 'self' ${apiUrl} wss://${apiUrl.replace('https://', '')}`,
+            "img-src 'self' data: https: blob:",
             "font-src 'self' data:",
+            "object-src 'none'",
+            "frame-src 'none'",
             "frame-ancestors 'none'",
             "base-uri 'self'",
             "form-action 'self'",
+            "upgrade-insecure-requests",
+            "block-all-mixed-content",
           ].join('; '),
           override: true,
         },

@@ -8,6 +8,14 @@ import { Construct } from 'constructs';
 export interface DatabaseStackProps extends cdk.StackProps {
   appName: string;
   vpc: ec2.Vpc;
+  /**
+   * Enable deletion protection (recommended for production)
+   */
+  deletionProtection?: boolean;
+  /**
+   * Backup retention period in days (default: 7, production: 30+)
+   */
+  backupRetentionDays?: number;
 }
 
 /**
@@ -26,7 +34,12 @@ export class DatabaseStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: DatabaseStackProps) {
     super(scope, id, props);
 
-    const { appName, vpc } = props;
+    const {
+      appName,
+      vpc,
+      deletionProtection = false,
+      backupRetentionDays = 7,
+    } = props;
 
     // Security group for RDS - only allows access from private subnets
     this.databaseSecurityGroup = new ec2.SecurityGroup(this, 'DatabaseSecurityGroup', {
@@ -34,6 +47,19 @@ export class DatabaseStack extends cdk.Stack {
       securityGroupName: `${appName}-database-sg`,
       description: 'Security group for Tend RDS PostgreSQL',
       allowAllOutbound: false, // RDS doesn't need outbound access
+    });
+
+    // Allow PostgreSQL connections from private subnets (where ECS tasks run)
+    // This is secure because:
+    // 1. RDS is in isolated subnets with no internet access
+    // 2. Only resources in the VPC can reach the database
+    // 3. Private subnets contain only ECS tasks with proper IAM roles
+    vpc.privateSubnets.forEach((subnet, index) => {
+      this.databaseSecurityGroup.addIngressRule(
+        ec2.Peer.ipv4(subnet.ipv4CidrBlock),
+        ec2.Port.tcp(5432),
+        `Allow PostgreSQL from private subnet ${index + 1}`
+      );
     });
 
     // Parameter group for PostgreSQL optimizations
@@ -64,6 +90,7 @@ export class DatabaseStack extends cdk.Stack {
     });
 
     // Create the database credentials secret
+    // Uses AWS-managed encryption by default (aws/secretsmanager key)
     this.databaseSecret = new secretsmanager.Secret(this, 'DatabaseSecret', {
       secretName: `${appName}/database/credentials`,
       description: 'RDS PostgreSQL credentials for Tend',
@@ -87,7 +114,7 @@ export class DatabaseStack extends cdk.Stack {
     });
 
     // CloudWatch log group for RDS logs
-    const logGroup = new logs.LogGroup(this, 'DatabaseLogs', {
+    new logs.LogGroup(this, 'DatabaseLogs', {
       logGroupName: `/${appName}/rds/postgresql`,
       retention: logs.RetentionDays.ONE_MONTH,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
@@ -118,14 +145,14 @@ export class DatabaseStack extends cdk.Stack {
       credentials: rds.Credentials.fromSecret(this.databaseSecret),
       parameterGroup,
 
-      // Storage configuration
+      // Storage configuration - encrypted with AWS-managed key (AES-256)
       allocatedStorage: 20, // 20 GB minimum for gp3
       maxAllocatedStorage: 100, // Auto-scale up to 100 GB
       storageType: rds.StorageType.GP3,
-      storageEncrypted: true, // Encrypt at rest
+      storageEncrypted: true, // Encrypt at rest with AWS-managed key
 
-      // Backup configuration
-      backupRetention: cdk.Duration.days(7),
+      // Backup configuration - configurable for environment
+      backupRetention: cdk.Duration.days(backupRetentionDays),
       preferredBackupWindow: '03:00-04:00', // 3-4 AM UTC
       preferredMaintenanceWindow: 'sun:04:00-sun:05:00', // Sunday 4-5 AM UTC
       deleteAutomatedBackups: false,
@@ -139,8 +166,8 @@ export class DatabaseStack extends cdk.Stack {
       performanceInsightRetention: rds.PerformanceInsightRetention.DEFAULT, // 7 days (free tier)
       monitoringInterval: cdk.Duration.seconds(60),
 
-      // Deletion protection - enable for production
-      deletionProtection: false,
+      // Deletion protection - configurable per environment
+      deletionProtection: deletionProtection,
       removalPolicy: cdk.RemovalPolicy.SNAPSHOT, // Create snapshot on delete
 
       // IAM authentication for enhanced security
@@ -150,8 +177,10 @@ export class DatabaseStack extends cdk.Stack {
       autoMinorVersionUpgrade: true,
     });
 
-    // Grant CloudWatch Logs write access
-    logGroup.grantWrite(this.databaseInstance);
+    // Note: RDS automatically creates CloudWatch log groups with the format:
+    // /aws/rds/instance/{instance-id}/{log-type}
+    // The logGroup defined above is for application-level logging if needed.
+    // RDS permissions for CloudWatch Logs are managed internally by AWS.
 
     // Outputs
     new cdk.CfnOutput(this, 'DatabaseEndpoint', {

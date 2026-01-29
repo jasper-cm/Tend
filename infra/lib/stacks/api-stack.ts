@@ -6,13 +6,28 @@ import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import * as logs from 'aws-cdk-lib/aws-logs';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import { Construct } from 'constructs';
 
 export interface ApiStackProps extends cdk.StackProps {
   appName: string;
   vpc: ec2.Vpc;
   databaseSecret: secretsmanager.ISecret;
-  databaseSecurityGroup: ec2.SecurityGroup;
+  /**
+   * Domain name for the API (e.g., api.tend.app)
+   * If provided, an ACM certificate will be created/used
+   */
+  domainName?: string;
+  /**
+   * ARN of existing ACM certificate (optional)
+   * If not provided and domainName is set, DNS validation will be required
+   */
+  certificateArn?: string;
+  /**
+   * Enable ECS Exec for debugging (default: false for security)
+   * Only enable in development environments
+   */
+  enableEcsExec?: boolean;
 }
 
 /**
@@ -20,25 +35,36 @@ export interface ApiStackProps extends cdk.StackProps {
  * - Fargate tasks in private subnets (no direct internet access)
  * - ALB in public subnets (only public-facing component)
  * - IAM roles with least privilege
- * - CloudWatch logging
+ * - Restricted outbound traffic
+ * - CloudWatch logging with KMS encryption
  * - Auto-scaling configured
  */
 export class ApiStack extends cdk.Stack {
   public readonly cluster: ecs.Cluster;
   public readonly service: ecs.FargateService;
   public readonly apiUrl: string;
+  public readonly repository: ecr.Repository;
 
   constructor(scope: Construct, id: string, props: ApiStackProps) {
     super(scope, id, props);
 
-    const { appName, vpc, databaseSecret, databaseSecurityGroup } = props;
+    const {
+      appName,
+      vpc,
+      databaseSecret,
+      domainName,
+      certificateArn,
+      enableEcsExec = false, // Default to false for security
+    } = props;
 
     // Create ECR repository for API container images
-    const repository = new ecr.Repository(this, 'ApiRepository', {
+    // Uses AWS-managed encryption (AES-256) by default
+    this.repository = new ecr.Repository(this, 'ApiRepository', {
       repositoryName: `${appName}-api`,
       removalPolicy: cdk.RemovalPolicy.RETAIN,
       imageScanOnPush: true, // Security: Scan images for vulnerabilities
       imageTagMutability: ecr.TagMutability.IMMUTABLE, // Prevent tag overwriting
+      encryption: ecr.RepositoryEncryption.AES_256, // AWS-managed encryption
       lifecycleRules: [
         {
           description: 'Keep only last 10 images',
@@ -75,7 +101,16 @@ export class ApiStack extends cdk.Stack {
     );
 
     // Grant access to read database secret
-    databaseSecret.grantRead(executionRole);
+    // AWS-managed encryption allows access through Secrets Manager permissions only
+    executionRole.addToPolicy(new iam.PolicyStatement({
+      sid: 'SecretsManagerRead',
+      effect: iam.Effect.ALLOW,
+      actions: [
+        'secretsmanager:GetSecretValue',
+        'secretsmanager:DescribeSecret',
+      ],
+      resources: [databaseSecret.secretArn],
+    }));
 
     // Task role - used by the application inside the container
     const taskRole = new iam.Role(this, 'TaskRole', {
@@ -85,7 +120,15 @@ export class ApiStack extends cdk.Stack {
     });
 
     // Grant task role access to database secret (for runtime access)
-    databaseSecret.grantRead(taskRole);
+    taskRole.addToPolicy(new iam.PolicyStatement({
+      sid: 'SecretsManagerRead',
+      effect: iam.Effect.ALLOW,
+      actions: [
+        'secretsmanager:GetSecretValue',
+        'secretsmanager:DescribeSecret',
+      ],
+      resources: [databaseSecret.secretArn],
+    }));
 
     // Task definition
     const taskDefinition = new ecs.FargateTaskDefinition(this, 'TaskDefinition', {
@@ -100,11 +143,13 @@ export class ApiStack extends cdk.Stack {
       },
     });
 
-    // Container definition
+    // Container definition - uses private ECR repository
+    // Initial deployment will use a placeholder until CI/CD pushes the real image
     const container = taskDefinition.addContainer('ApiContainer', {
       containerName: `${appName}-api`,
-      // Use placeholder image - will be replaced by CI/CD
-      image: ecs.ContainerImage.fromRegistry('public.ecr.aws/docker/library/node:20-alpine'),
+      // Use private ECR repository - CI/CD will push images here
+      // For initial deployment, this will fail gracefully until an image is pushed
+      image: ecs.ContainerImage.fromEcrRepository(this.repository, 'latest'),
       logging: ecs.LogDrivers.awsLogs({
         logGroup,
         streamPrefix: 'api',
@@ -132,13 +177,20 @@ export class ApiStack extends cdk.Stack {
       ],
     });
 
-    // Security group for ECS tasks
+    // Security group for ECS tasks - RESTRICTED outbound
     const serviceSecurityGroup = new ec2.SecurityGroup(this, 'ServiceSecurityGroup', {
       vpc,
       securityGroupName: `${appName}-api-service-sg`,
       description: 'Security group for Tend API ECS tasks',
-      allowAllOutbound: true, // Needs outbound for AWS APIs
+      allowAllOutbound: false, // Restrict outbound traffic
     });
+
+    // Allow outbound HTTPS to VPC endpoints (for AWS APIs)
+    serviceSecurityGroup.addEgressRule(
+      ec2.Peer.ipv4(vpc.vpcCidrBlock),
+      ec2.Port.tcp(443),
+      'Allow HTTPS to VPC endpoints'
+    );
 
     // Security group for ALB
     const albSecurityGroup = new ec2.SecurityGroup(this, 'AlbSecurityGroup', {
@@ -176,11 +228,12 @@ export class ApiStack extends cdk.Stack {
       'Allow traffic to ECS tasks'
     );
 
-    // Allow ECS tasks to connect to RDS
-    databaseSecurityGroup.addIngressRule(
-      serviceSecurityGroup,
+    // Allow ECS tasks outbound to RDS
+    // Use CIDR-based rule to avoid cross-stack reference
+    serviceSecurityGroup.addEgressRule(
+      ec2.Peer.ipv4(vpc.vpcCidrBlock),
       ec2.Port.tcp(5432),
-      'Allow PostgreSQL from ECS tasks'
+      'Allow PostgreSQL to RDS in VPC'
     );
 
     // Create Application Load Balancer in public subnets
@@ -220,16 +273,42 @@ export class ApiStack extends cdk.Stack {
       }),
     });
 
-    // HTTPS listener
-    // Note: In production, add a certificate from ACM
-    const httpsListener = alb.addListener('HttpsListener', {
-      port: 443,
-      protocol: elbv2.ApplicationProtocol.HTTPS,
-      // For production, use a real certificate:
-      // certificates: [certificate],
-      // For development, use default action
-      defaultAction: elbv2.ListenerAction.forward([targetGroup]),
-    });
+    // HTTPS listener with certificate
+    let certificate: acm.ICertificate | undefined;
+
+    if (certificateArn) {
+      // Use existing certificate
+      certificate = acm.Certificate.fromCertificateArn(this, 'Certificate', certificateArn);
+    } else if (domainName) {
+      // Create new certificate (requires DNS validation)
+      certificate = new acm.Certificate(this, 'Certificate', {
+        domainName,
+        validation: acm.CertificateValidation.fromDns(),
+      });
+    }
+
+    // Add HTTPS listener
+    if (certificate) {
+      alb.addListener('HttpsListener', {
+        port: 443,
+        protocol: elbv2.ApplicationProtocol.HTTPS,
+        certificates: [certificate],
+        defaultAction: elbv2.ListenerAction.forward([targetGroup]),
+        sslPolicy: elbv2.SslPolicy.TLS13_RES, // Use TLS 1.3 with restricted ciphers
+      });
+    } else {
+      // Development mode without certificate - log warning
+      console.warn(
+        'WARNING: No TLS certificate configured. For production, provide domainName or certificateArn.'
+      );
+      // Still create listener but it won't work without a certificate in AWS
+      // This allows the stack to deploy for development/testing
+      alb.addListener('HttpsListener', {
+        port: 443,
+        protocol: elbv2.ApplicationProtocol.HTTP, // HTTP on 443 for dev only
+        defaultAction: elbv2.ListenerAction.forward([targetGroup]),
+      });
+    }
 
     // Create Fargate service in private subnets
     this.service = new ecs.FargateService(this, 'Service', {
@@ -240,7 +319,7 @@ export class ApiStack extends cdk.Stack {
       securityGroups: [serviceSecurityGroup],
       vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
       assignPublicIp: false, // No public IP - uses NAT for outbound
-      enableExecuteCommand: true, // Allow ECS Exec for debugging
+      enableExecuteCommand: enableEcsExec, // Disabled by default for security
       circuitBreaker: {
         rollback: true, // Auto-rollback on deployment failure
       },
@@ -272,7 +351,7 @@ export class ApiStack extends cdk.Stack {
     });
 
     // Store API URL
-    this.apiUrl = `https://${alb.loadBalancerDnsName}`;
+    this.apiUrl = domainName ? `https://${domainName}` : `https://${alb.loadBalancerDnsName}`;
 
     // Outputs
     new cdk.CfnOutput(this, 'ApiUrl', {
@@ -281,8 +360,14 @@ export class ApiStack extends cdk.Stack {
       exportName: `${appName}-api-url`,
     });
 
+    new cdk.CfnOutput(this, 'AlbDnsName', {
+      value: alb.loadBalancerDnsName,
+      description: 'ALB DNS name (for CNAME record)',
+      exportName: `${appName}-alb-dns`,
+    });
+
     new cdk.CfnOutput(this, 'EcrRepositoryUri', {
-      value: repository.repositoryUri,
+      value: this.repository.repositoryUri,
       description: 'ECR repository URI for API images',
       exportName: `${appName}-ecr-repository-uri`,
     });
@@ -298,5 +383,13 @@ export class ApiStack extends cdk.Stack {
       description: 'ECS service ARN',
       exportName: `${appName}-service-arn`,
     });
+
+    // Security warning output
+    if (!certificate) {
+      new cdk.CfnOutput(this, 'SecurityWarning', {
+        value: 'WARNING: No TLS certificate configured. Configure domainName or certificateArn for production.',
+        description: 'Security configuration warning',
+      });
+    }
   }
 }

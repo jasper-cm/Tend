@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+.npm
+
+# Build outputs
+dist/
+tmp/
+out-tsc/
+bazel-out/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Nx
+.nx/cache
+.nx/workspace-data
+
+# Prisma
+prisma/*.db
+
+# Angular
+.angular/
+
+# Capacitor
+apps/mobile/android/
+apps/mobile/ios/
+
+# Testing
+coverage/
+playwright-report/
+test-results/
+
+# Misc
+*.log
+npm-debug.log*
+
+# CDK output
+cdk.out/

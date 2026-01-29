@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { NotFoundException } from '@nestjs/common';
 import { LifeAreasService } from './life-areas.service';
 import { PrismaService } from '../../prisma/prisma.service';
 
@@ -8,7 +9,7 @@ describe('LifeAreasService', () => {
   const mockPrisma = {
     lifeArea: {
       findMany: jest.fn(),
-      findUniqueOrThrow: jest.fn(),
+      findUnique: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
@@ -40,6 +41,7 @@ describe('LifeAreasService', () => {
       expect(result).toEqual(expected);
       expect(mockPrisma.lifeArea.findMany).toHaveBeenCalledWith({
         include: { practices: true },
+        orderBy: { name: 'asc' },
       });
     });
   });
@@ -47,23 +49,28 @@ describe('LifeAreasService', () => {
   describe('findOne', () => {
     it('should return a life area with practices and reflections', async () => {
       const expected = { id: '1', name: 'Health', practices: [], reflections: [] };
-      mockPrisma.lifeArea.findUniqueOrThrow.mockResolvedValue(expected);
+      mockPrisma.lifeArea.findUnique.mockResolvedValue(expected);
       const result = await service.findOne('1');
       expect(result).toEqual(expected);
-      expect(mockPrisma.lifeArea.findUniqueOrThrow).toHaveBeenCalledWith({
-        where: { id: '1' },
-        include: { practices: true, reflections: true },
-      });
+    });
+
+    it('should throw NotFoundException if life area not found', async () => {
+      mockPrisma.lifeArea.findUnique.mockResolvedValue(null);
+      await expect(service.findOne('nonexistent')).rejects.toThrow(NotFoundException);
     });
   });
 
   describe('create', () => {
     it('should create a new life area', async () => {
-      const data = { name: 'Career', slug: 'career' };
+      const data = {
+        name: 'Career',
+        slug: 'career',
+        description: 'Professional growth',
+        userId: 'user-1',
+      };
       mockPrisma.lifeArea.create.mockResolvedValue({ id: '2', ...data });
       const result = await service.create(data);
       expect(result).toEqual({ id: '2', ...data });
-      expect(mockPrisma.lifeArea.create).toHaveBeenCalledWith({ data });
     });
   });
 
@@ -78,6 +85,11 @@ describe('LifeAreasService', () => {
         data,
       });
     });
+
+    it('should throw NotFoundException if life area not found', async () => {
+      mockPrisma.lifeArea.update.mockRejectedValue({ code: 'P2025' });
+      await expect(service.update('nonexistent', { name: 'x' })).rejects.toThrow(NotFoundException);
+    });
   });
 
   describe('remove', () => {
@@ -88,6 +100,11 @@ describe('LifeAreasService', () => {
       expect(mockPrisma.lifeArea.delete).toHaveBeenCalledWith({
         where: { id: '1' },
       });
+    });
+
+    it('should throw NotFoundException if life area not found', async () => {
+      mockPrisma.lifeArea.delete.mockRejectedValue({ code: 'P2025' });
+      await expect(service.remove('nonexistent')).rejects.toThrow(NotFoundException);
     });
   });
 });

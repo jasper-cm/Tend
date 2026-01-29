@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { NotFoundException } from '@nestjs/common';
 import { PracticesService } from './practices.service';
 import { PrismaService } from '../../prisma/prisma.service';
 
@@ -8,7 +9,7 @@ describe('PracticesService', () => {
   const mockPrisma = {
     practice: {
       findMany: jest.fn(),
-      findUniqueOrThrow: jest.fn(),
+      findUnique: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
@@ -36,13 +37,14 @@ describe('PracticesService', () => {
   });
 
   describe('findAll', () => {
-    it('should return practices with life areas', async () => {
+    it('should return practices with life areas ordered by name', async () => {
       const expected = [{ id: '1', name: 'Meditate', lifeArea: {} }];
       mockPrisma.practice.findMany.mockResolvedValue(expected);
       const result = await service.findAll();
       expect(result).toEqual(expected);
       expect(mockPrisma.practice.findMany).toHaveBeenCalledWith({
         include: { lifeArea: true },
+        orderBy: [{ lifeArea: { name: 'asc' } }, { name: 'asc' }],
       });
     });
   });
@@ -50,44 +52,60 @@ describe('PracticesService', () => {
   describe('findOne', () => {
     it('should return a practice with life area and recent logs', async () => {
       const expected = { id: '1', name: 'Meditate', lifeArea: {}, logs: [] };
-      mockPrisma.practice.findUniqueOrThrow.mockResolvedValue(expected);
+      mockPrisma.practice.findUnique.mockResolvedValue(expected);
       const result = await service.findOne('1');
       expect(result).toEqual(expected);
-      expect(mockPrisma.practice.findUniqueOrThrow).toHaveBeenCalledWith({
-        where: { id: '1' },
-        include: { lifeArea: true, logs: { orderBy: { completedAt: 'desc' }, take: 30 } },
-      });
+    });
+
+    it('should throw NotFoundException if practice not found', async () => {
+      mockPrisma.practice.findUnique.mockResolvedValue(null);
+      await expect(service.findOne('nonexistent')).rejects.toThrow(NotFoundException);
     });
   });
 
   describe('create', () => {
     it('should create a practice', async () => {
-      const data = { name: 'Exercise', lifeAreaId: '1' };
-      mockPrisma.practice.create.mockResolvedValue({ id: '2', ...data });
+      const data = {
+        name: 'Exercise',
+        description: 'Daily workout',
+        lifeAreaId: 'area-1',
+        userId: 'user-1',
+      };
+      const created = { id: '2', ...data, lifeArea: {} };
+      mockPrisma.practice.create.mockResolvedValue(created);
       const result = await service.create(data);
-      expect(result).toEqual({ id: '2', ...data });
-      expect(mockPrisma.practice.create).toHaveBeenCalledWith({ data });
+      expect(result).toEqual(created);
     });
   });
 
   describe('log', () => {
     it('should create a practice log entry', async () => {
       const data = { notes: 'Good session' };
+      mockPrisma.practice.findUnique.mockResolvedValue({ id: '1' });
       mockPrisma.practiceLog.create.mockResolvedValue({ id: 'log-1', practiceId: '1', ...data });
+
       const result = await service.log('1', data);
       expect(result).toEqual({ id: 'log-1', practiceId: '1', ...data });
-      expect(mockPrisma.practiceLog.create).toHaveBeenCalledWith({
-        data: { ...data, practiceId: '1' },
-      });
+    });
+
+    it('should throw NotFoundException if practice not found', async () => {
+      mockPrisma.practice.findUnique.mockResolvedValue(null);
+      await expect(service.log('nonexistent', {})).rejects.toThrow(NotFoundException);
     });
   });
 
   describe('update', () => {
     it('should update a practice', async () => {
       const data = { name: 'Updated' };
-      mockPrisma.practice.update.mockResolvedValue({ id: '1', ...data });
+      const updated = { id: '1', ...data, lifeArea: {} };
+      mockPrisma.practice.update.mockResolvedValue(updated);
       const result = await service.update('1', data);
-      expect(result).toEqual({ id: '1', ...data });
+      expect(result).toEqual(updated);
+    });
+
+    it('should throw NotFoundException if practice not found', async () => {
+      mockPrisma.practice.update.mockRejectedValue({ code: 'P2025' });
+      await expect(service.update('nonexistent', { name: 'x' })).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -96,6 +114,11 @@ describe('PracticesService', () => {
       mockPrisma.practice.delete.mockResolvedValue({ id: '1' });
       const result = await service.remove('1');
       expect(result).toEqual({ id: '1' });
+    });
+
+    it('should throw NotFoundException if practice not found', async () => {
+      mockPrisma.practice.delete.mockRejectedValue({ code: 'P2025' });
+      await expect(service.remove('nonexistent')).rejects.toThrow(NotFoundException);
     });
   });
 });

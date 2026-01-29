@@ -48,7 +48,12 @@ describe('LifeAreasController', () => {
 
   describe('create', () => {
     it('should delegate to service.create with data', async () => {
-      const data = { name: 'Career', slug: 'career' };
+      const data = {
+        name: 'Career',
+        slug: 'career',
+        description: 'Professional growth',
+        userId: 'user-1',
+      };
       mockService.create.mockResolvedValue({ id: '2', ...data });
       await expect(controller.create(data)).resolves.toEqual({ id: '2', ...data });
       expect(mockService.create).toHaveBeenCalledWith(data);

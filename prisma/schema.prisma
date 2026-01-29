@@ -10,16 +10,22 @@ datasource db {
 // ─── Users ───────────────────────────────────────────────────────────────────
 
 model User {
-  id          String   @id @default(cuid())
-  email       String   @unique
-  displayName String
-  avatarUrl   String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           String   @id @default(cuid())
+  email        String   @unique
+  displayName  String
+  avatarUrl    String?
+  password     String?  // Hashed password (null for OAuth-only users)
+  provider     String   @default("local") // local, google, github
+  providerId   String?  // OAuth provider's user ID
+  refreshToken String?  // For JWT refresh token rotation
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   lifeAreas   LifeArea[]
   practices   Practice[]
   reflections Reflection[]
+
+  @@index([provider, providerId])
 }
 
 // ─── Life Areas ──────────────────────────────────────────────────────────────

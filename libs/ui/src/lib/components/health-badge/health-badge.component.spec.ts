@@ -30,24 +30,24 @@ describe('HealthBadgeComponent', () => {
   });
 
   describe('badgeClass', () => {
-    it('should return leaf class for score >= 75', () => {
+    it('should return spirit class for score >= 75', () => {
       component.score = 75;
-      expect(component.badgeClass).toContain('leaf');
+      expect(component.badgeClass).toContain('spirit');
     });
 
-    it('should return sun class for score >= 50', () => {
+    it('should return golden class for score >= 50', () => {
       component.score = 60;
-      expect(component.badgeClass).toContain('sun');
+      expect(component.badgeClass).toContain('golden');
     });
 
-    it('should return terracotta class for score >= 25', () => {
+    it('should return bloom class for score >= 25', () => {
       component.score = 30;
-      expect(component.badgeClass).toContain('terracotta');
+      expect(component.badgeClass).toContain('bloom');
     });
 
-    it('should return soil class for score < 25', () => {
+    it('should return earth class for score < 25', () => {
       component.score = 10;
-      expect(component.badgeClass).toContain('soil');
+      expect(component.badgeClass).toContain('earth');
     });
   });
 });

@@ -16,7 +16,8 @@
         "polyfills": ["zone.js"],
         "tsConfig": "apps/web/tsconfig.app.json",
         "assets": [
-          "apps/web/src/assets"
+          "apps/web/src/assets",
+          "apps/web/src/favicon.svg"
         ],
         "styles": ["apps/web/src/styles.scss"],
         "scripts": []
@@ -27,7 +28,10 @@
             { "type": "initial", "maximumWarning": "500kb", "maximumError": "1mb" },
             { "type": "anyComponentStyle", "maximumWarning": "4kb", "maximumError": "8kb" }
           ],
-          "outputHashing": "all"
+          "outputHashing": "all",
+          "optimization": {
+            "fonts": false
+          }
         },
         "development": {
           "optimization": false,

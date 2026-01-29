@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Soil/pot base -->
+  <ellipse cx="16" cy="28" rx="8" ry="3" fill="#8b7355"/>
+
+  <!-- Main stem -->
+  <path d="M16 28 Q16 20 16 16" stroke="#4a7c59" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- Left leaf (unfurling) -->
+  <path d="M16 18 Q12 16 10 12 Q12 14 16 16" fill="#6b9e7a" stroke="#4a7c59" stroke-width="0.5"/>
+
+  <!-- Right leaf (unfurling) -->
+  <path d="M16 18 Q20 16 22 12 Q20 14 16 16" fill="#6b9e7a" stroke="#4a7c59" stroke-width="0.5"/>
+
+  <!-- Center sprout tip -->
+  <path d="M16 16 Q14 10 16 6 Q18 10 16 16" fill="#87a878" stroke="#4a7c59" stroke-width="0.5"/>
+
+  <!-- Tiny highlight on sprout -->
+  <ellipse cx="15" cy="10" rx="1" ry="2" fill="#a8c99a" opacity="0.6"/>
+</svg>

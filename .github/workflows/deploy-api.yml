@@ -7,24 +7,194 @@ on:
       - 'apps/api/**'
       - 'libs/**'
       - 'prisma/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
 
 concurrency:
-  group: deploy-api
+  group: deploy-api-${{ github.ref }}
   cancel-in-progress: false
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/api
+
 jobs:
-  deploy:
-    name: Deploy API
+  build:
+    name: Build & Test
     runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.meta.outputs.tags }}
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-      - run: npm ci
-      - run: npx nx build api --configuration=production
-      - run: npx prisma generate
-      # TODO: Add deployment step (e.g., Docker build + push, or cloud provider deploy)
-      - name: Placeholder deployment
-        run: echo "API build complete. Configure deployment target."
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Lint
+        run: npx nx lint api
+
+      - name: Test
+        run: npx nx test api --passWithNoTests
+
+      - name: Build
+        run: npx nx build api --configuration=production
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,prefix=
+            type=ref,event=branch
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./apps/api/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            NODE_ENV=production
+
+  deploy-flyio:
+    name: Deploy to Fly.io
+    needs: build
+    runs-on: ubuntu-latest
+    if: vars.DEPLOY_TARGET == 'flyio'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly.io
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+  deploy-cloudrun:
+    name: Deploy to Cloud Run
+    needs: build
+    runs-on: ubuntu-latest
+    if: vars.DEPLOY_TARGET == 'cloudrun'
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy tend-api \
+            --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            --region ${{ vars.GCP_REGION || 'us-central1' }} \
+            --platform managed \
+            --allow-unauthenticated \
+            --set-env-vars "DATABASE_URL=${{ secrets.DATABASE_URL }}" \
+            --set-env-vars "JWT_SECRET=${{ secrets.JWT_SECRET }}" \
+            --set-env-vars "JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}"
+
+  deploy-aws:
+    name: Deploy to AWS ECS
+    needs: build
+    runs-on: ubuntu-latest
+    if: vars.DEPLOY_TARGET == 'aws'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION || 'us-east-1' }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Push to ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: tend-api
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Update ECS service
+        run: |
+          aws ecs update-service \
+            --cluster ${{ vars.ECS_CLUSTER || 'tend-cluster' }} \
+            --service ${{ vars.ECS_SERVICE || 'tend-api-service' }} \
+            --force-new-deployment
+
+  deploy-railway:
+    name: Deploy to Railway
+    needs: build
+    runs-on: ubuntu-latest
+    if: vars.DEPLOY_TARGET == 'railway'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway
+        run: railway up --service api
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+  notify:
+    name: Notify Deployment Status
+    needs: [build, deploy-flyio, deploy-cloudrun, deploy-aws, deploy-railway]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Deployment Summary
+        run: |
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Build | ${{ needs.build.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Fly.io | ${{ needs.deploy-flyio.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Cloud Run | ${{ needs.deploy-cloudrun.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| AWS ECS | ${{ needs.deploy-aws.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Railway | ${{ needs.deploy-railway.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY

@@ -1,16 +1,171 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { ApiService, LifeArea } from '../../services/api.service';
 
 @Component({
   selector: 'tend-life-areas',
   standalone: true,
+  imports: [CommonModule, RouterLink],
   template: `
     <div class="space-y-6">
-      <h2 class="text-2xl font-bold text-soil">Life Areas</h2>
-      <p class="text-bark">
-        The areas of your life you are tending. Each one is a plot in your garden.
-      </p>
-      <!-- TODO: List/grid of life areas with health indicators -->
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-2xl font-bold text-earth-800">Life Areas</h2>
+          <p class="text-earth-600">
+            The areas of your life you are tending. Each one is a plot in your garden.
+          </p>
+        </div>
+      </div>
+
+      @if (loading()) {
+        <div class="flex items-center justify-center py-12">
+          <div class="animate-pulse text-sage-500">Loading life areas...</div>
+        </div>
+      } @else {
+        @if (lifeAreas().length === 0) {
+          <div class="bg-parchment rounded-soft p-8 text-center border border-sage-300/30 shadow-soft">
+            <div class="text-4xl mb-4">🌱</div>
+            <h3 class="text-lg font-medium text-earth-800 mb-2">No life areas yet</h3>
+            <p class="text-earth-600 mb-4">Start building your garden by adding life areas to tend.</p>
+          </div>
+        } @else {
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            @for (area of lifeAreas(); track area.id) {
+              <a
+                [routerLink]="['/life-areas', area.id]"
+                class="bg-parchment rounded-soft p-5 border border-sage-300/30 hover:border-spirit-400/50 hover:shadow-soft-lg transition-all group"
+              >
+                <div class="flex items-start justify-between mb-3">
+                  <div class="flex items-center gap-3">
+                    <span class="text-2xl">{{ getIcon(area.icon) }}</span>
+                    <h3 class="font-semibold text-earth-800 group-hover:text-spirit-600 transition-colors">
+                      {{ area.name }}
+                    </h3>
+                  </div>
+                  <div
+                    class="text-xl font-bold"
+                    [style.color]="getHealthColor(area.healthScore)"
+                  >
+                    {{ area.healthScore }}
+                  </div>
+                </div>
+
+                <p class="text-earth-600 text-sm mb-4 line-clamp-2">{{ area.description }}</p>
+
+                <!-- Health Bar -->
+                <div class="bg-cream rounded-pill h-2 overflow-hidden">
+                  <div
+                    class="h-full rounded-pill transition-all duration-500"
+                    [style.width.%]="area.healthScore"
+                    [style.backgroundColor]="getHealthColor(area.healthScore)"
+                  ></div>
+                </div>
+
+                <div class="flex items-center justify-between mt-3 text-xs text-earth-500">
+                  <span>{{ getHealthLabel(area.healthScore) }}</span>
+                  <span>{{ area.practices?.length || 0 }} practices</span>
+                </div>
+              </a>
+            }
+          </div>
+
+          <!-- Summary Stats -->
+          <div class="bg-parchment rounded-soft p-4 border border-sage-300/30 shadow-soft">
+            <div class="flex flex-wrap gap-6 justify-center text-center">
+              <div>
+                <div class="text-2xl font-bold text-earth-800">{{ lifeAreas().length }}</div>
+                <div class="text-xs text-earth-600">Life Areas</div>
+              </div>
+              <div>
+                <div class="text-2xl font-bold text-spirit-600">{{ thrivingCount() }}</div>
+                <div class="text-xs text-earth-600">Thriving</div>
+              </div>
+              <div>
+                <div class="text-2xl font-bold text-golden-500">{{ growingCount() }}</div>
+                <div class="text-xs text-earth-600">Growing</div>
+              </div>
+              <div>
+                <div class="text-2xl font-bold text-bloom-500">{{ needsAttentionCount() }}</div>
+                <div class="text-xs text-earth-600">Needs Care</div>
+              </div>
+              <div>
+                <div class="text-2xl font-bold text-earth-800">{{ averageHealth() }}</div>
+                <div class="text-xs text-earth-600">Avg Health</div>
+              </div>
+            </div>
+          </div>
+        }
+      }
     </div>
   `,
 })
-export class LifeAreasComponent {}
+export class LifeAreasComponent implements OnInit {
+  private api = inject(ApiService);
+
+  lifeAreas = signal<LifeArea[]>([]);
+  loading = signal(true);
+  averageHealth = signal(0);
+  thrivingCount = signal(0);
+  growingCount = signal(0);
+  needsAttentionCount = signal(0);
+
+  private iconMap: Record<string, string> = {
+    leaf: '🌿',
+    heart: '❤️',
+    brain: '🧠',
+    briefcase: '💼',
+    dumbbell: '💪',
+    book: '📚',
+    palette: '🎨',
+    users: '👥',
+    dollar: '💰',
+    sun: '☀️',
+    moon: '🌙',
+    star: '⭐',
+  };
+
+  ngOnInit(): void {
+    this.loadLifeAreas();
+  }
+
+  private loadLifeAreas(): void {
+    this.api.getLifeAreas().subscribe({
+      next: (areas) => {
+        this.lifeAreas.set(areas);
+
+        if (areas.length > 0) {
+          const avg = Math.round(
+            areas.reduce((sum, a) => sum + a.healthScore, 0) / areas.length
+          );
+          this.averageHealth.set(avg);
+        }
+
+        this.thrivingCount.set(areas.filter(a => a.healthScore >= 75).length);
+        this.growingCount.set(areas.filter(a => a.healthScore >= 50 && a.healthScore < 75).length);
+        this.needsAttentionCount.set(areas.filter(a => a.healthScore < 50).length);
+
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+      },
+    });
+  }
+
+  getIcon(icon: string): string {
+    return this.iconMap[icon] || '🌱';
+  }
+
+  getHealthColor(score: number): string {
+    if (score >= 75) return '#3d9a50'; // spirit-500
+    if (score >= 50) return '#f2b82b'; // golden-400
+    return '#e15f87'; // bloom-500
+  }
+
+  getHealthLabel(score: number): string {
+    if (score >= 75) return 'Thriving';
+    if (score >= 50) return 'Growing';
+    return 'Needs care';
+  }
+}

@@ -8,6 +8,7 @@ describe('AuthController', () => {
   const mockService = {
     login: jest.fn(),
     register: jest.fn(),
+    refreshTokens: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -26,21 +27,40 @@ describe('AuthController', () => {
   });
 
   describe('login', () => {
-    it('should delegate to service.login', () => {
-      const credentials = { email: 'test@test.com', password: 'pass' };
-      const expected = { message: 'Auth not yet implemented' };
-      mockService.login.mockReturnValue(expected);
-      expect(controller.login(credentials)).toEqual(expected);
-      expect(mockService.login).toHaveBeenCalledWith(credentials);
+    it('should delegate to service.login', async () => {
+      const mockUser = { id: '1', email: 'test@test.com', displayName: 'Test' };
+      const mockRequest = { user: mockUser };
+      const expected = {
+        accessToken: 'token',
+        refreshToken: 'refresh',
+        user: mockUser,
+      };
+      mockService.login.mockResolvedValue(expected);
+
+      const result = await controller.login(mockRequest);
+
+      expect(result).toEqual(expected);
+      expect(mockService.login).toHaveBeenCalledWith(mockUser);
     });
   });
 
   describe('register', () => {
-    it('should delegate to service.register', () => {
-      const data = { email: 'test@test.com', password: 'pass', name: 'Test' };
-      const expected = { message: 'Registration not yet implemented' };
-      mockService.register.mockReturnValue(expected);
-      expect(controller.register(data)).toEqual(expected);
+    it('should delegate to service.register', async () => {
+      const data = {
+        email: 'test@test.com',
+        password: 'password123',
+        displayName: 'Test User',
+      };
+      const expected = {
+        accessToken: 'token',
+        refreshToken: 'refresh',
+        user: { id: '1', email: 'test@test.com', displayName: 'Test User', avatarUrl: null },
+      };
+      mockService.register.mockResolvedValue(expected);
+
+      const result = await controller.register(data);
+
+      expect(result).toEqual(expected);
       expect(mockService.register).toHaveBeenCalledWith(data);
     });
   });

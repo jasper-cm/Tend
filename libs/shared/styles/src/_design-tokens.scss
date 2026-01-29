@@ -1,0 +1,329 @@
+// ============================================
+// Tend Design System — Spiritual Green Theme
+// ============================================
+// A soft, nurturing, ethereal design language
+// inspired by gardens, growth, and inner peace.
+// ============================================
+
+// ----------------------------------------
+// Color Palette
+// ----------------------------------------
+
+// Spirit Green — Primary spiritual color
+$spirit-50: #f0f7f1;
+$spirit-100: #dceedf;
+$spirit-200: #bce0c2;
+$spirit-300: #8fcc9a;
+$spirit-400: #5fb56f;
+$spirit-500: #3d9a50;
+$spirit-600: #2d7b3e;
+$spirit-700: #266234;
+$spirit-800: #224e2c;
+$spirit-900: #1d4026;
+$spirit-950: #0d2314;
+
+// Sage — Calming, meditative tones
+$sage-50: #f4f7f4;
+$sage-100: #e3ebe4;
+$sage-200: #c9d9cb;
+$sage-300: #a3bda7;
+$sage-400: #7a9d80;
+$sage-500: #5a7f61;
+$sage-600: #46654c;
+$sage-700: #3a513f;
+$sage-800: #314335;
+$sage-900: #2a382d;
+$sage-950: #141e17;
+
+// Earth — Grounding, stabilizing tones
+$earth-50: #faf8f5;
+$earth-100: #f3efe8;
+$earth-200: #e5ddd0;
+$earth-300: #d4c6b0;
+$earth-400: #c0aa8d;
+$earth-500: #b09474;
+$earth-600: #a38263;
+$earth-700: #886a53;
+$earth-800: #705847;
+$earth-900: #5c493c;
+$earth-950: #31261f;
+
+// Mist — Ethereal, dreamy atmosphere
+$mist-50: #f5f8f7;
+$mist-100: #dee9e6;
+$mist-200: #bdd3cd;
+$mist-300: #94b6ad;
+$mist-400: #6e968b;
+$mist-500: #547a71;
+$mist-600: #42625a;
+$mist-700: #384f49;
+$mist-800: #30413c;
+$mist-900: #2b3834;
+$mist-950: #151f1c;
+
+// Bloom — Heart-centered warmth
+$bloom-50: #fdf4f7;
+$bloom-100: #fce8ef;
+$bloom-200: #fad5e1;
+$bloom-300: #f5b4c9;
+$bloom-400: #ed87a8;
+$bloom-500: #e15f87;
+$bloom-600: #cc3d64;
+$bloom-700: #ad2d4e;
+$bloom-800: #902841;
+$bloom-900: #79263a;
+$bloom-950: #450f1d;
+
+// Golden — Illumination, wisdom
+$golden-50: #fefaec;
+$golden-100: #fcf1c9;
+$golden-200: #f9e28e;
+$golden-300: #f5cd53;
+$golden-400: #f2b82b;
+$golden-500: #e99a13;
+$golden-600: #ce750d;
+$golden-700: #ab530f;
+$golden-800: #8b4113;
+$golden-900: #733613;
+$golden-950: #421b06;
+
+// Water — Flow, intuition
+$water-50: #f0f9fa;
+$water-100: #d9f0f3;
+$water-200: #b8e2e7;
+$water-300: #87cdd6;
+$water-400: #4faebe;
+$water-500: #3492a3;
+$water-600: #2e778a;
+$water-700: #2b6171;
+$water-800: #2a505d;
+$water-900: #27444f;
+$water-950: #152c35;
+
+// Background tones
+$cream: #fdfcf9;
+$parchment: #f8f6f1;
+$sand: #efe9de;
+
+// ----------------------------------------
+// Typography
+// ----------------------------------------
+$font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+$font-display: 'Georgia', 'Cambria', 'Times New Roman', serif;
+
+$font-size-xs: 0.75rem;    // 12px
+$font-size-sm: 0.875rem;   // 14px
+$font-size-base: 1rem;     // 16px
+$font-size-lg: 1.125rem;   // 18px
+$font-size-xl: 1.25rem;    // 20px
+$font-size-2xl: 1.5rem;    // 24px
+$font-size-3xl: 1.875rem;  // 30px
+$font-size-4xl: 2.25rem;   // 36px
+
+$font-weight-light: 300;
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+$line-height-tight: 1.25;
+$line-height-snug: 1.375;
+$line-height-normal: 1.5;
+$line-height-relaxed: 1.625;
+$line-height-loose: 2;
+
+$letter-spacing-tight: -0.025em;
+$letter-spacing-normal: 0;
+$letter-spacing-wide: 0.025em;
+$letter-spacing-wider: 0.05em;
+
+// ----------------------------------------
+// Spacing
+// ----------------------------------------
+$spacing-0: 0;
+$spacing-1: 0.25rem;   // 4px
+$spacing-2: 0.5rem;    // 8px
+$spacing-3: 0.75rem;   // 12px
+$spacing-4: 1rem;      // 16px
+$spacing-5: 1.25rem;   // 20px
+$spacing-6: 1.5rem;    // 24px
+$spacing-8: 2rem;      // 32px
+$spacing-10: 2.5rem;   // 40px
+$spacing-12: 3rem;     // 48px
+$spacing-16: 4rem;     // 64px
+$spacing-20: 5rem;     // 80px
+$spacing-24: 6rem;     // 96px
+
+// ----------------------------------------
+// Border Radius — Soft, organic shapes
+// ----------------------------------------
+$radius-none: 0;
+$radius-sm: 0.375rem;    // 6px
+$radius-soft: 0.625rem;  // 10px
+$radius-md: 0.75rem;     // 12px
+$radius-softer: 1rem;    // 16px
+$radius-lg: 1.25rem;     // 20px
+$radius-xl: 1.5rem;      // 24px
+$radius-2xl: 2rem;       // 32px
+$radius-pill: 9999px;
+$radius-full: 50%;
+
+// ----------------------------------------
+// Shadows — Soft, diffused light
+// ----------------------------------------
+$shadow-soft: 0 2px 8px -2px rgba(45, 62, 48, 0.08),
+              0 4px 16px -4px rgba(45, 62, 48, 0.12);
+$shadow-soft-lg: 0 4px 16px -4px rgba(45, 62, 48, 0.1),
+                 0 8px 32px -8px rgba(45, 62, 48, 0.15);
+$shadow-glow: 0 0 20px -5px rgba(61, 154, 80, 0.25);
+$shadow-glow-lg: 0 0 40px -10px rgba(61, 154, 80, 0.35);
+$shadow-inner-soft: inset 0 2px 4px 0 rgba(45, 62, 48, 0.05);
+
+// Colored shadows for emphasis
+$shadow-spirit: 0 4px 14px -3px rgba(61, 154, 80, 0.25);
+$shadow-bloom: 0 4px 14px -3px rgba(225, 95, 135, 0.2);
+$shadow-golden: 0 4px 14px -3px rgba(233, 154, 19, 0.2);
+$shadow-water: 0 4px 14px -3px rgba(52, 146, 163, 0.2);
+
+// ----------------------------------------
+// Transitions — Gentle, mindful motion
+// ----------------------------------------
+$duration-instant: 50ms;
+$duration-fast: 150ms;
+$duration-normal: 250ms;
+$duration-slow: 400ms;
+$duration-slower: 600ms;
+$duration-slowest: 1000ms;
+
+$ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+$ease-gentle: cubic-bezier(0.22, 1, 0.36, 1);
+$ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+$ease-breathe: cubic-bezier(0.37, 0, 0.63, 1);
+
+// Common transition presets
+$transition-colors: color $duration-normal $ease-soft,
+                    background-color $duration-normal $ease-soft,
+                    border-color $duration-normal $ease-soft;
+$transition-shadow: box-shadow $duration-normal $ease-soft;
+$transition-transform: transform $duration-normal $ease-gentle;
+$transition-all: all $duration-normal $ease-soft;
+
+// ----------------------------------------
+// Gradients — Ethereal backgrounds
+// ----------------------------------------
+$gradient-spirit: linear-gradient(135deg, $spirit-50 0%, $sage-100 50%, $spirit-50 100%);
+$gradient-earth: linear-gradient(180deg, $cream 0%, $parchment 100%);
+$gradient-glow: radial-gradient(ellipse at center, rgba($spirit-500, 0.08) 0%, transparent 70%);
+$gradient-mist: linear-gradient(180deg, rgba($mist-100, 0.5) 0%, transparent 100%);
+$gradient-sunset: linear-gradient(135deg, $bloom-100 0%, $golden-100 100%);
+
+// ----------------------------------------
+// Z-Index Scale
+// ----------------------------------------
+$z-below: -1;
+$z-base: 0;
+$z-raised: 10;
+$z-dropdown: 100;
+$z-sticky: 200;
+$z-overlay: 300;
+$z-modal: 400;
+$z-popover: 500;
+$z-toast: 600;
+$z-tooltip: 700;
+
+// ----------------------------------------
+// Breakpoints
+// ----------------------------------------
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+$breakpoint-2xl: 1536px;
+
+// ----------------------------------------
+// CSS Custom Properties Export
+// ----------------------------------------
+@mixin export-css-variables {
+  :root {
+    // Spirit Green
+    --color-spirit-50: #{$spirit-50};
+    --color-spirit-100: #{$spirit-100};
+    --color-spirit-200: #{$spirit-200};
+    --color-spirit-300: #{$spirit-300};
+    --color-spirit-400: #{$spirit-400};
+    --color-spirit-500: #{$spirit-500};
+    --color-spirit-600: #{$spirit-600};
+    --color-spirit-700: #{$spirit-700};
+    --color-spirit-800: #{$spirit-800};
+    --color-spirit-900: #{$spirit-900};
+
+    // Sage
+    --color-sage-50: #{$sage-50};
+    --color-sage-100: #{$sage-100};
+    --color-sage-200: #{$sage-200};
+    --color-sage-300: #{$sage-300};
+    --color-sage-400: #{$sage-400};
+    --color-sage-500: #{$sage-500};
+    --color-sage-600: #{$sage-600};
+    --color-sage-700: #{$sage-700};
+
+    // Earth
+    --color-earth-50: #{$earth-50};
+    --color-earth-100: #{$earth-100};
+    --color-earth-200: #{$earth-200};
+    --color-earth-300: #{$earth-300};
+    --color-earth-500: #{$earth-500};
+    --color-earth-700: #{$earth-700};
+    --color-earth-900: #{$earth-900};
+
+    // Mist
+    --color-mist-50: #{$mist-50};
+    --color-mist-100: #{$mist-100};
+    --color-mist-200: #{$mist-200};
+    --color-mist-300: #{$mist-300};
+    --color-mist-500: #{$mist-500};
+
+    // Bloom
+    --color-bloom-50: #{$bloom-50};
+    --color-bloom-100: #{$bloom-100};
+    --color-bloom-300: #{$bloom-300};
+    --color-bloom-500: #{$bloom-500};
+
+    // Golden
+    --color-golden-50: #{$golden-50};
+    --color-golden-100: #{$golden-100};
+    --color-golden-300: #{$golden-300};
+    --color-golden-500: #{$golden-500};
+
+    // Water
+    --color-water-50: #{$water-50};
+    --color-water-100: #{$water-100};
+    --color-water-300: #{$water-300};
+    --color-water-500: #{$water-500};
+
+    // Backgrounds
+    --color-cream: #{$cream};
+    --color-parchment: #{$parchment};
+    --color-sand: #{$sand};
+
+    // Typography
+    --font-sans: #{$font-sans};
+    --font-display: #{$font-display};
+
+    // Shadows
+    --shadow-soft: #{$shadow-soft};
+    --shadow-soft-lg: #{$shadow-soft-lg};
+    --shadow-glow: #{$shadow-glow};
+
+    // Transitions
+    --duration-fast: #{$duration-fast};
+    --duration-normal: #{$duration-normal};
+    --ease-soft: #{$ease-soft};
+    --ease-gentle: #{$ease-gentle};
+
+    // Border radius
+    --radius-soft: #{$radius-soft};
+    --radius-softer: #{$radius-softer};
+    --radius-pill: #{$radius-pill};
+  }
+}

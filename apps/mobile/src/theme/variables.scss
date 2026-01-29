@@ -1,64 +1,608 @@
+// ============================================
+// Tend Mobile — Spiritual Green Theme for Ionic
+// ============================================
+// A soft, nurturing, ethereal design language
+// ============================================
+
+// Import shared design tokens
+@import '../../../../libs/shared/styles/src/design-tokens';
+
 :root {
-  // Primary — warm garden green (leaf)
-  --ion-color-primary: #4a7c59;
-  --ion-color-primary-rgb: 74, 124, 89;
+  // ----------------------------------------
+  // Primary — Spiritual Green
+  // ----------------------------------------
+  --ion-color-primary: #{$spirit-500};
+  --ion-color-primary-rgb: 61, 154, 80;
   --ion-color-primary-contrast: #ffffff;
-  --ion-color-primary-shade: #2f5738;
-  --ion-color-primary-tint: #6b9e7a;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #{$spirit-600};
+  --ion-color-primary-tint: #{$spirit-400};
 
-  // Secondary — muted teal-water
-  --ion-color-secondary: #6b9daa;
-  --ion-color-secondary-rgb: 107, 157, 170;
+  // ----------------------------------------
+  // Secondary — Sage (Meditative)
+  // ----------------------------------------
+  --ion-color-secondary: #{$sage-500};
+  --ion-color-secondary-rgb: 90, 127, 97;
   --ion-color-secondary-contrast: #ffffff;
-  --ion-color-secondary-shade: #578590;
-  --ion-color-secondary-tint: #82adb8;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #{$sage-600};
+  --ion-color-secondary-tint: #{$sage-400};
 
-  // Tertiary — warm bloom
-  --ion-color-tertiary: #c27ba0;
-  --ion-color-tertiary-rgb: 194, 123, 160;
+  // ----------------------------------------
+  // Tertiary — Bloom (Heart-centered)
+  // ----------------------------------------
+  --ion-color-tertiary: #{$bloom-500};
+  --ion-color-tertiary-rgb: 225, 95, 135;
   --ion-color-tertiary-contrast: #ffffff;
-  --ion-color-tertiary-shade: #a96a8b;
-  --ion-color-tertiary-tint: #cd90af;
+  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+  --ion-color-tertiary-shade: #{$bloom-600};
+  --ion-color-tertiary-tint: #{$bloom-400};
 
-  // Success — sage green
-  --ion-color-success: #87a878;
-  --ion-color-success-rgb: 135, 168, 120;
-  --ion-color-success-contrast: #000000;
-  --ion-color-success-shade: #6e8e62;
-  --ion-color-success-tint: #97b68a;
+  // ----------------------------------------
+  // Success — Spirit Green Light
+  // ----------------------------------------
+  --ion-color-success: #{$spirit-400};
+  --ion-color-success-rgb: 95, 181, 111;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #{$spirit-500};
+  --ion-color-success-tint: #{$spirit-300};
 
-  // Warning — warm sun gold
-  --ion-color-warning: #d4a843;
-  --ion-color-warning-rgb: 212, 168, 67;
-  --ion-color-warning-contrast: #000000;
-  --ion-color-warning-shade: #b8923a;
-  --ion-color-warning-tint: #dbb65c;
+  // ----------------------------------------
+  // Warning — Golden (Illumination)
+  // ----------------------------------------
+  --ion-color-warning: #{$golden-500};
+  --ion-color-warning-rgb: 233, 154, 19;
+  --ion-color-warning-contrast: #ffffff;
+  --ion-color-warning-contrast-rgb: 255, 255, 255;
+  --ion-color-warning-shade: #{$golden-600};
+  --ion-color-warning-tint: #{$golden-400};
 
-  // Danger — terracotta
-  --ion-color-danger: #c07850;
-  --ion-color-danger-rgb: 192, 120, 80;
+  // ----------------------------------------
+  // Danger — Bloom Dark
+  // ----------------------------------------
+  --ion-color-danger: #{$bloom-600};
+  --ion-color-danger-rgb: 204, 61, 100;
   --ion-color-danger-contrast: #ffffff;
-  --ion-color-danger-shade: #a66845;
-  --ion-color-danger-tint: #ca8b67;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #{$bloom-700};
+  --ion-color-danger-tint: #{$bloom-500};
 
-  // Background and text — warm cream and dark soil
-  --ion-background-color: #faf6ee;
-  --ion-background-color-rgb: 250, 246, 238;
-  --ion-text-color: #3d2e1f;
-  --ion-text-color-rgb: 61, 46, 31;
+  // ----------------------------------------
+  // Light — Parchment
+  // ----------------------------------------
+  --ion-color-light: #{$parchment};
+  --ion-color-light-rgb: 248, 246, 241;
+  --ion-color-light-contrast: #{$earth-900};
+  --ion-color-light-contrast-rgb: 49, 38, 31;
+  --ion-color-light-shade: #{$sand};
+  --ion-color-light-tint: #{$cream};
 
-  // Toolbar
-  --ion-toolbar-background: #2f5738;
-  --ion-toolbar-color: #f5f0e8;
+  // ----------------------------------------
+  // Medium — Sage Light
+  // ----------------------------------------
+  --ion-color-medium: #{$sage-400};
+  --ion-color-medium-rgb: 122, 157, 128;
+  --ion-color-medium-contrast: #ffffff;
+  --ion-color-medium-contrast-rgb: 255, 255, 255;
+  --ion-color-medium-shade: #{$sage-500};
+  --ion-color-medium-tint: #{$sage-300};
 
-  // Card
-  --ion-card-background: #f5f0e8;
+  // ----------------------------------------
+  // Dark — Earth
+  // ----------------------------------------
+  --ion-color-dark: #{$earth-900};
+  --ion-color-dark-rgb: 49, 38, 31;
+  --ion-color-dark-contrast: #ffffff;
+  --ion-color-dark-contrast-rgb: 255, 255, 255;
+  --ion-color-dark-shade: #{$earth-950};
+  --ion-color-dark-tint: #{$earth-700};
 
-  // Item
-  --ion-item-background: #faf6ee;
+  // ----------------------------------------
+  // Global Backgrounds & Text
+  // ----------------------------------------
+  --ion-background-color: #{$cream};
+  --ion-background-color-rgb: 253, 252, 249;
+  --ion-text-color: #{$earth-900};
+  --ion-text-color-rgb: 49, 38, 31;
 
-  // Tab bar
-  --ion-tab-bar-background: #f5f0e8;
-  --ion-tab-bar-color: #8b7355;
-  --ion-tab-bar-color-selected: #4a7c59;
+  // ----------------------------------------
+  // Component Overrides — Spiritual Theme
+  // ----------------------------------------
+
+  // Toolbar — Soft spirit green
+  --ion-toolbar-background: #{$spirit-600};
+  --ion-toolbar-color: #ffffff;
+  --ion-toolbar-border-color: transparent;
+
+  // Cards — Glassmorphism effect
+  --ion-card-background: rgba(255, 255, 255, 0.75);
+
+  // Items — Clean, soft
+  --ion-item-background: transparent;
+  --ion-item-border-color: #{$sage-200};
+
+  // Tab bar — Soft parchment
+  --ion-tab-bar-background: #{$parchment};
+  --ion-tab-bar-border-color: #{$sage-200};
+  --ion-tab-bar-color: #{$earth-500};
+  --ion-tab-bar-color-selected: #{$spirit-600};
+
+  // Segment — Rounded, soft
+  --ion-segment-background: #{$sage-100};
+
+  // Toggle — Spirit green
+  --ion-toggle-color-checked: #{$spirit-500};
+
+  // Backdrop
+  --ion-backdrop-color: #{$earth-900};
+  --ion-backdrop-opacity: 0.4;
+
+  // Font
+  --ion-font-family: #{$font-sans};
+
+  // ----------------------------------------
+  // Design Tokens as CSS Variables
+  // ----------------------------------------
+  --tend-shadow-soft: #{$shadow-soft};
+  --tend-shadow-glow: #{$shadow-glow};
+  --tend-radius-soft: #{$radius-soft};
+  --tend-radius-softer: #{$radius-softer};
+  --tend-radius-pill: #{$radius-pill};
+  --tend-ease-soft: #{$ease-soft};
+  --tend-ease-gentle: #{$ease-gentle};
+}
+
+// ============================================
+// Stepped Colors for iOS
+// ============================================
+:root {
+  --ion-color-step-50: #{$cream};
+  --ion-color-step-100: #{mix($cream, $earth-100, 90%)};
+  --ion-color-step-150: #{mix($cream, $earth-200, 85%)};
+  --ion-color-step-200: #{mix($cream, $earth-300, 80%)};
+  --ion-color-step-250: #{mix($cream, $earth-400, 75%)};
+  --ion-color-step-300: #{$earth-300};
+  --ion-color-step-350: #{mix($earth-400, $earth-500, 50%)};
+  --ion-color-step-400: #{$earth-400};
+  --ion-color-step-450: #{mix($earth-500, $earth-600, 50%)};
+  --ion-color-step-500: #{$earth-500};
+  --ion-color-step-550: #{mix($earth-600, $earth-700, 50%)};
+  --ion-color-step-600: #{$earth-600};
+  --ion-color-step-650: #{mix($earth-700, $earth-800, 50%)};
+  --ion-color-step-700: #{$earth-700};
+  --ion-color-step-750: #{mix($earth-800, $earth-900, 50%)};
+  --ion-color-step-800: #{$earth-800};
+  --ion-color-step-850: #{mix($earth-900, $earth-950, 50%)};
+  --ion-color-step-900: #{$earth-900};
+  --ion-color-step-950: #{$earth-950};
+}
+
+// ============================================
+// Custom Ionic Component Styling
+// ============================================
+
+// Buttons — Soft, rounded, spiritual
+ion-button {
+  --border-radius: #{$radius-softer};
+  --padding-start: 1.25rem;
+  --padding-end: 1.25rem;
+  --padding-top: 0.625rem;
+  --padding-bottom: 0.625rem;
+  --box-shadow: #{$shadow-soft};
+  --transition: all 250ms #{$ease-gentle};
+  font-weight: 500;
+  letter-spacing: 0.01em;
+
+  &::part(native) {
+    transition: all 250ms #{$ease-gentle};
+  }
+
+  &:hover::part(native) {
+    box-shadow: #{$shadow-glow};
+  }
+
+  // Primary button glow
+  &[fill="solid"][color="primary"] {
+    --box-shadow: #{$shadow-spirit};
+  }
+
+  // Soft outline style
+  &[fill="outline"] {
+    --border-width: 1.5px;
+    --border-color: #{$spirit-300};
+    --background-hover: #{rgba($spirit-50, 0.5)};
+  }
+
+  // Clear/ghost style
+  &[fill="clear"] {
+    --background-hover: #{rgba($sage-200, 0.4)};
+    --ripple-color: #{$sage-300};
+  }
+
+  // Rounded pill buttons
+  &.button-round {
+    --border-radius: #{$radius-pill};
+  }
+
+  // Small buttons
+  &[size="small"] {
+    --border-radius: #{$radius-soft};
+    --padding-start: 0.875rem;
+    --padding-end: 0.875rem;
+    font-size: 0.8125rem;
+  }
+
+  // Large buttons
+  &[size="large"] {
+    --border-radius: #{$radius-lg};
+    --padding-start: 1.75rem;
+    --padding-end: 1.75rem;
+    --padding-top: 0.875rem;
+    --padding-bottom: 0.875rem;
+    font-size: 1.0625rem;
+  }
+}
+
+// FAB buttons — Soft glow
+ion-fab-button {
+  --box-shadow: #{$shadow-soft-lg};
+  --border-radius: 50%;
+
+  &:hover {
+    --box-shadow: #{$shadow-glow-lg};
+  }
+}
+
+// Cards — Glassmorphism
+ion-card {
+  --background: rgba(255, 255, 255, 0.7);
+  border-radius: $radius-softer;
+  box-shadow: $shadow-soft;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba($spirit-200, 0.25);
+  transition: box-shadow $duration-normal $ease-soft,
+              transform $duration-normal $ease-gentle;
+  overflow: hidden;
+
+  &:hover {
+    box-shadow: $shadow-soft-lg;
+  }
+}
+
+ion-card-header {
+  padding: $spacing-4 $spacing-5;
+}
+
+ion-card-content {
+  padding: $spacing-4 $spacing-5;
+  padding-top: 0;
+}
+
+ion-card-title {
+  color: $earth-900;
+  font-weight: 600;
+  font-size: $font-size-lg;
+}
+
+ion-card-subtitle {
+  color: $earth-500;
+  font-size: $font-size-sm;
+}
+
+// Items — Clean, minimal
+ion-item {
+  --padding-start: #{$spacing-4};
+  --padding-end: #{$spacing-4};
+  --inner-padding-end: 0;
+  --background: transparent;
+  --border-color: #{rgba($sage-300, 0.3)};
+  --border-width: 0 0 1px 0;
+  --transition: background-color 200ms #{$ease-soft};
+
+  &:hover {
+    --background: #{rgba($spirit-50, 0.4)};
+  }
+
+  &.item-interactive {
+    --highlight-color-focused: #{$spirit-400};
+    --highlight-color-valid: #{$spirit-500};
+    --highlight-color-invalid: #{$bloom-500};
+  }
+}
+
+// List — Soft container
+ion-list {
+  background: transparent;
+  padding: $spacing-2 0;
+
+  &.list-inset {
+    border-radius: $radius-softer;
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: $shadow-inner-soft;
+    margin: $spacing-4;
+    overflow: hidden;
+  }
+}
+
+// Input fields — Soft, inviting
+ion-input,
+ion-textarea {
+  --background: rgba(255, 255, 255, 0.6);
+  --padding-start: #{$spacing-4};
+  --padding-end: #{$spacing-4};
+  --padding-top: #{$spacing-3};
+  --padding-bottom: #{$spacing-3};
+  --border-radius: #{$radius-soft};
+  --placeholder-color: #{$earth-400};
+  --highlight-color-focused: #{$spirit-500};
+  border: 1px solid $sage-200;
+  border-radius: $radius-soft;
+  transition: border-color $duration-fast $ease-soft,
+              box-shadow $duration-fast $ease-soft;
+
+  &:focus-within {
+    border-color: $spirit-400;
+    box-shadow: 0 0 0 3px rgba($spirit-400, 0.15);
+  }
+}
+
+ion-textarea {
+  --padding-top: #{$spacing-3};
+  min-height: 100px;
+}
+
+// Searchbar — Soft, rounded
+ion-searchbar {
+  --background: rgba(255, 255, 255, 0.7);
+  --border-radius: #{$radius-pill};
+  --box-shadow: #{$shadow-inner-soft};
+  --placeholder-color: #{$earth-400};
+  --icon-color: #{$sage-500};
+  --clear-button-color: #{$sage-500};
+  padding: $spacing-2;
+
+  &.searchbar-has-focus {
+    --box-shadow: 0 0 0 3px #{rgba($spirit-400, 0.15)};
+  }
+}
+
+// Segments — Pill style
+ion-segment {
+  --background: #{$sage-100};
+  border-radius: $radius-pill;
+  padding: 4px;
+}
+
+ion-segment-button {
+  --background-checked: white;
+  --indicator-color: white;
+  --border-radius: #{$radius-pill};
+  --color: #{$earth-600};
+  --color-checked: #{$spirit-600};
+  font-weight: 500;
+  min-height: 36px;
+  transition: color $duration-fast $ease-soft;
+
+  &::part(indicator-background) {
+    border-radius: $radius-pill;
+    box-shadow: $shadow-soft;
+  }
+}
+
+// Chips — Soft, pill-shaped
+ion-chip {
+  --background: #{$sage-100};
+  --color: #{$sage-700};
+  border-radius: $radius-pill;
+  font-weight: 500;
+  font-size: $font-size-sm;
+  padding: $spacing-1 $spacing-3;
+
+  &[color="primary"] {
+    --background: #{$spirit-100};
+    --color: #{$spirit-700};
+  }
+}
+
+// Badges — Soft indicators
+ion-badge {
+  --background: #{$spirit-100};
+  --color: #{$spirit-700};
+  --padding-start: #{$spacing-2};
+  --padding-end: #{$spacing-2};
+  border-radius: $radius-pill;
+  font-weight: 500;
+  font-size: $font-size-xs;
+}
+
+// Modal — Soft, rounded
+ion-modal {
+  --border-radius: #{$radius-xl};
+  --box-shadow: #{$shadow-soft-lg};
+
+  &.modal-sheet {
+    --border-radius: #{$radius-xl} #{$radius-xl} 0 0;
+  }
+
+  &::part(backdrop) {
+    background: #{$earth-900};
+    opacity: 0.35;
+  }
+
+  &::part(content) {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
+
+// Action sheet — Soft
+ion-action-sheet {
+  --background: rgba(255, 255, 255, 0.9);
+  --backdrop-opacity: 0.35;
+
+  .action-sheet-group {
+    border-radius: $radius-softer;
+    margin: $spacing-2;
+    overflow: hidden;
+  }
+
+  .action-sheet-button {
+    --background-hover: #{rgba($spirit-50, 0.5)};
+    --color: #{$earth-800};
+    font-weight: 500;
+  }
+}
+
+// Toast — Soft notification
+ion-toast {
+  --background: rgba(255, 255, 255, 0.95);
+  --color: #{$earth-800};
+  --border-radius: #{$radius-softer};
+  --box-shadow: #{$shadow-soft-lg};
+
+  &::part(container) {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
+
+// Alert — Soft dialog
+ion-alert {
+  --background: rgba(255, 255, 255, 0.95);
+  --backdrop-opacity: 0.35;
+
+  .alert-wrapper {
+    border-radius: $radius-xl !important;
+    box-shadow: $shadow-soft-lg;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .alert-button {
+    border-radius: $radius-soft;
+    font-weight: 500;
+
+    &.alert-button-role-confirm {
+      color: $spirit-600;
+    }
+  }
+}
+
+// Toggle — Spirit green
+ion-toggle {
+  --track-background: #{$sage-200};
+  --track-background-checked: #{$spirit-400};
+  --handle-background: white;
+  --handle-background-checked: white;
+  --handle-box-shadow: #{$shadow-soft};
+}
+
+// Checkbox — Rounded
+ion-checkbox {
+  --border-radius: #{$radius-sm};
+  --border-color: #{$sage-300};
+  --border-color-checked: #{$spirit-500};
+  --background-checked: #{$spirit-500};
+  --checkmark-color: white;
+  --size: 22px;
+}
+
+// Radio — Soft
+ion-radio {
+  --border-radius: 50%;
+  --color: #{$sage-400};
+  --color-checked: #{$spirit-500};
+}
+
+// Range slider — Spirit themed
+ion-range {
+  --bar-background: #{$sage-200};
+  --bar-background-active: #{$spirit-400};
+  --knob-background: #{$spirit-500};
+  --knob-box-shadow: #{$shadow-soft};
+  --pin-background: #{$spirit-600};
+}
+
+// Progress bar — Soft
+ion-progress-bar {
+  --background: #{$sage-200};
+  --progress-background: #{$spirit-500};
+  border-radius: $radius-pill;
+  height: 6px;
+}
+
+// Skeleton — Soft shimmer
+ion-skeleton-text {
+  --background: #{$sage-100};
+  --background-rgb: 227, 235, 228;
+  border-radius: $radius-sm;
+}
+
+// Refresher — Spirit themed
+ion-refresher {
+  ion-refresher-content {
+    --pulling-icon-color: #{$spirit-500};
+    --refreshing-spinner-color: #{$spirit-500};
+  }
+}
+
+// ============================================
+// Utility Classes
+// ============================================
+
+// Soft card surface
+.surface-soft {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: $radius-softer;
+  border: 1px solid rgba($spirit-200, 0.25);
+}
+
+// Glow effect
+.glow {
+  box-shadow: $shadow-glow;
+}
+
+.glow-lg {
+  box-shadow: $shadow-glow-lg;
+}
+
+// Gradient backgrounds
+.bg-gradient-spirit {
+  background: $gradient-spirit;
+}
+
+.bg-gradient-earth {
+  background: $gradient-earth;
+}
+
+// Text colors
+.text-spirit {
+  color: $spirit-600;
+}
+
+.text-muted {
+  color: $earth-500;
+}
+
+// Animations
+.animate-breathe {
+  animation: breathe 4s $ease-breathe infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
 }

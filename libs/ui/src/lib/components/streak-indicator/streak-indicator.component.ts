@@ -6,10 +6,12 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="flex items-center gap-1 text-sm">
-      <span class="text-sun">&#x1f525;</span>
-      <span class="font-semibold">{{ currentStreak }}</span>
-      <span class="text-bark" *ngIf="longestStreak > 0">/ {{ longestStreak }}</span>
+    <div class="inline-flex items-center gap-1.5 text-sm bg-golden-50 px-3 py-1.5 rounded-pill">
+      <span class="text-golden-500">&#x1f525;</span>
+      <span class="font-semibold text-golden-700">{{ currentStreak }}</span>
+      <span class="text-earth-500" *ngIf="longestStreak > 0">
+        <span class="text-earth-300">/</span> {{ longestStreak }}
+      </span>
     </div>
   `,
 })

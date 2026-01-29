@@ -14,11 +14,70 @@ This guide covers deploying Tend to production environments, including the API, 
 
 | Component | Recommended Platform | Alternatives |
 |-----------|---------------------|--------------|
-| API | Railway, Render, Fly.io | AWS ECS, DigitalOcean |
-| Web | Vercel, Netlify, Cloudflare | AWS S3 + CloudFront |
+| API | AWS ECS Fargate | Railway, Render, Fly.io |
+| Web | AWS S3 + CloudFront | Vercel, Netlify, Cloudflare |
 | Mobile | App Store, Google Play | Enterprise distribution |
-| Database | Railway PostgreSQL | Supabase, AWS RDS |
+| Database | AWS RDS PostgreSQL | Railway PostgreSQL, Supabase |
 | Documentation | GitHub Pages | Netlify, Vercel |
+
+---
+
+## AWS Deployment (Recommended)
+
+Tend includes complete AWS infrastructure defined as code using AWS CDK. See [`infra/README.md`](https://github.com/your-org/tend/tree/main/infra) for detailed documentation.
+
+### Architecture
+
+```
+Users -> CloudFront -> S3 (Web)
+Users -> ALB -> ECS Fargate (API) -> RDS PostgreSQL
+```
+
+### Security Features
+
+- **VPC Isolation**: API and database in private subnets
+- **No Public Database**: RDS only accessible from within VPC
+- **HTTPS Everywhere**: TLS 1.2+ enforced
+- **IAM Least Privilege**: Minimal permissions per component
+- **Secrets Manager**: Secure credential storage
+
+### Quick Deploy
+
+```bash
+# Navigate to infrastructure directory
+cd infra
+
+# Install dependencies
+npm install
+
+# Bootstrap CDK (first time only)
+cdk bootstrap aws://ACCOUNT_ID/REGION
+
+# Deploy all stacks
+npm run deploy
+```
+
+### Cost Control
+
+The infrastructure includes a Lambda function to start/stop resources:
+
+```bash
+# Stop infrastructure (save costs)
+aws lambda invoke --function-name tend-infrastructure-control \
+  --payload '{"action":"stop"}' /dev/stdout
+
+# Start infrastructure
+aws lambda invoke --function-name tend-infrastructure-control \
+  --payload '{"action":"start"}' /dev/stdout
+```
+
+### Estimated Costs
+
+| Configuration | Monthly Cost |
+|---------------|-------------|
+| Development (stopped at night) | ~$50-70 |
+| Development (always on) | ~$100-110 |
+| Production (multi-AZ) | ~$300-400 |
 
 ---
 

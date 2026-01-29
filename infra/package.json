@@ -1,0 +1,30 @@
+{
+  "name": "@tend/infra",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "cdk": "cdk",
+    "synth": "cdk synth",
+    "deploy": "cdk deploy --all",
+    "deploy:vpc": "cdk deploy TendVpcStack",
+    "deploy:database": "cdk deploy TendDatabaseStack",
+    "deploy:api": "cdk deploy TendApiStack",
+    "deploy:web": "cdk deploy TendWebStack",
+    "deploy:control": "cdk deploy TendControlStack",
+    "destroy": "cdk destroy --all",
+    "diff": "cdk diff",
+    "start-infra": "aws lambda invoke --function-name tend-infrastructure-control --payload '{\"action\":\"start\"}' /dev/stdout",
+    "stop-infra": "aws lambda invoke --function-name tend-infrastructure-control --payload '{\"action\":\"stop\"}' /dev/stdout"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.170.0",
+    "constructs": "^10.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.0",
+    "aws-cdk": "^2.170.0",
+    "typescript": "~5.6.0"
+  }
+}

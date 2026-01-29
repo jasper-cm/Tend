@@ -1,3 +1,8 @@
+// ============================================
+// Tend Mobile — Global Styles
+// ============================================
+
+// Core Ionic styles
 @import '@ionic/angular/css/core.css';
 @import '@ionic/angular/css/normalize.css';
 @import '@ionic/angular/css/structure.css';
@@ -8,3 +13,282 @@
 @import '@ionic/angular/css/text-alignment.css';
 @import '@ionic/angular/css/text-transformation.css';
 @import '@ionic/angular/css/flex-utils.css';
+
+// Import shared design tokens
+@import '../../../libs/shared/styles/src/design-tokens';
+
+// ============================================
+// Global Base Styles
+// ============================================
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: $font-sans;
+}
+
+// ============================================
+// Page backgrounds — Soft gradient
+// ============================================
+ion-content {
+  --background: #{$cream};
+
+  &::part(scroll) {
+    background: linear-gradient(180deg, $cream 0%, $parchment 100%);
+    background-attachment: fixed;
+  }
+}
+
+// ============================================
+// Header — Softer appearance
+// ============================================
+ion-header {
+  &::after {
+    display: none; // Remove default border
+  }
+
+  ion-toolbar {
+    --border-width: 0;
+    --min-height: 56px;
+
+    &:first-of-type {
+      padding-top: var(--ion-safe-area-top, 0);
+    }
+  }
+}
+
+ion-title {
+  font-weight: 600;
+  font-size: $font-size-lg;
+  letter-spacing: -0.01em;
+}
+
+// ============================================
+// Tab bar refinements
+// ============================================
+ion-tab-bar {
+  --border: none;
+  border-top: 1px solid #{$sage-200};
+  height: 56px;
+  padding-bottom: var(--ion-safe-area-bottom, 0);
+
+  &::before {
+    display: none;
+  }
+}
+
+ion-tab-button {
+  --color: #{$earth-500};
+  --color-selected: #{$spirit-600};
+  --padding-top: 6px;
+  --padding-bottom: 6px;
+  --ripple-color: #{$spirit-200};
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  transition: color $duration-fast $ease-soft;
+
+  ion-icon {
+    font-size: 24px;
+    margin-bottom: 2px;
+  }
+
+  &.tab-selected {
+    ion-icon {
+      transform: scale(1.05);
+    }
+  }
+}
+
+// ============================================
+// Footer refinements
+// ============================================
+ion-footer {
+  &::before {
+    display: none;
+  }
+
+  ion-toolbar {
+    --border-width: 0;
+    border-top: 1px solid #{$sage-200};
+  }
+}
+
+// ============================================
+// Scrollbar styling (for web view)
+// ============================================
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $sage-300;
+  border-radius: $radius-pill;
+
+  &:hover {
+    background: $sage-400;
+  }
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: $sage-300 transparent;
+}
+
+// ============================================
+// Selection styling
+// ============================================
+::selection {
+  background: rgba($spirit-400, 0.25);
+  color: $earth-900;
+}
+
+// ============================================
+// Focus styles — Accessible but soft
+// ============================================
+:focus-visible {
+  outline: 2px solid $spirit-400;
+  outline-offset: 2px;
+}
+
+// Remove focus outline on tap (mobile)
+ion-button:focus,
+ion-item:focus,
+ion-fab-button:focus {
+  outline: none;
+}
+
+// ============================================
+// Safe area utilities
+// ============================================
+.safe-area-top {
+  padding-top: var(--ion-safe-area-top, 0);
+}
+
+.safe-area-bottom {
+  padding-bottom: var(--ion-safe-area-bottom, 0);
+}
+
+// ============================================
+// Loading & Empty states
+// ============================================
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-12 $spacing-6;
+  text-align: center;
+
+  &__icon {
+    font-size: 4rem;
+    color: $sage-300;
+    margin-bottom: $spacing-4;
+  }
+
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: 600;
+    color: $earth-700;
+    margin-bottom: $spacing-2;
+  }
+
+  &__description {
+    font-size: $font-size-sm;
+    color: $earth-500;
+    max-width: 280px;
+    line-height: $line-height-relaxed;
+  }
+}
+
+// ============================================
+// Section headers
+// ============================================
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-4 $spacing-4 $spacing-2;
+
+  &__title {
+    font-size: $font-size-sm;
+    font-weight: 600;
+    color: $earth-600;
+    text-transform: uppercase;
+    letter-spacing: $letter-spacing-wider;
+  }
+
+  &__action {
+    font-size: $font-size-sm;
+    font-weight: 500;
+    color: $spirit-600;
+  }
+}
+
+// ============================================
+// Dividers
+// ============================================
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, $sage-200, transparent);
+  margin: $spacing-4 0;
+}
+
+.divider-spirit {
+  background: linear-gradient(90deg, transparent, $spirit-200, transparent);
+}
+
+// ============================================
+// Spiritual decorative elements
+// ============================================
+.lotus-decoration {
+  &::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 40px;
+    background: $gradient-glow;
+    border-radius: 50%;
+    opacity: 0.5;
+  }
+}
+
+// Breathing circle decoration
+.breathing-circle {
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba($spirit-400, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: breathe 4s $ease-breathe infinite;
+}
+
+// ============================================
+// Pull-to-refresh customization
+// ============================================
+ion-refresher {
+  --color: #{$spirit-500};
+}
+
+// ============================================
+// Ripple customization
+// ============================================
+ion-ripple-effect {
+  --color: #{$spirit-300};
+}
+
+// ============================================
+// Backdrop blur support check
+// ============================================
+@supports not (backdrop-filter: blur(8px)) {
+  ion-card,
+  ion-modal::part(content),
+  .surface-soft {
+    background: rgba(255, 255, 255, 0.95) !important;
+  }
+}

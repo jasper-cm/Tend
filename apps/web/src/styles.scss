@@ -2,30 +2,489 @@
 @tailwind components;
 @tailwind utilities;
 
+// Import shared design tokens
+@import '../../../libs/shared/styles/src/design-tokens';
+
+// ============================================
+// CSS Custom Properties
+// ============================================
 :root {
-  --color-soil: #3d2e1f;
-  --color-soil-light: #5c4033;
-  --color-leaf: #4a7c59;
-  --color-leaf-light: #6b9e7a;
-  --color-leaf-dark: #2f5738;
-  --color-moss: #7a8b5c;
-  --color-fern: #5a7247;
-  --color-sage: #87a878;
-  --color-bark: #8b7355;
-  --color-bark-light: #a99276;
-  --color-bloom: #c27ba0;
-  --color-water: #6b9daa;
-  --color-sun: #d4a843;
-  --color-sun-light: #e8c86a;
-  --color-terracotta: #c07850;
-  --color-parchment: #f5f0e8;
-  --color-cream: #faf6ee;
+  // Spirit Green
+  --color-spirit-50: #{$spirit-50};
+  --color-spirit-100: #{$spirit-100};
+  --color-spirit-200: #{$spirit-200};
+  --color-spirit-300: #{$spirit-300};
+  --color-spirit-400: #{$spirit-400};
+  --color-spirit-500: #{$spirit-500};
+  --color-spirit-600: #{$spirit-600};
+  --color-spirit-700: #{$spirit-700};
+  --color-spirit-800: #{$spirit-800};
+  --color-spirit-900: #{$spirit-900};
+
+  // Sage
+  --color-sage-50: #{$sage-50};
+  --color-sage-100: #{$sage-100};
+  --color-sage-200: #{$sage-200};
+  --color-sage-300: #{$sage-300};
+  --color-sage-400: #{$sage-400};
+  --color-sage-500: #{$sage-500};
+  --color-sage-600: #{$sage-600};
+  --color-sage-700: #{$sage-700};
+
+  // Earth
+  --color-earth-50: #{$earth-50};
+  --color-earth-100: #{$earth-100};
+  --color-earth-200: #{$earth-200};
+  --color-earth-300: #{$earth-300};
+  --color-earth-500: #{$earth-500};
+  --color-earth-700: #{$earth-700};
+  --color-earth-900: #{$earth-900};
+
+  // Backgrounds
+  --color-cream: #{$cream};
+  --color-parchment: #{$parchment};
+  --color-sand: #{$sand};
+
+  // Typography
+  --font-sans: #{$font-sans};
+  --font-display: #{$font-display};
+
+  // Design tokens
+  --shadow-soft: #{$shadow-soft};
+  --shadow-soft-lg: #{$shadow-soft-lg};
+  --shadow-glow: #{$shadow-glow};
+  --radius-soft: #{$radius-soft};
+  --radius-softer: #{$radius-softer};
+  --radius-pill: #{$radius-pill};
+  --ease-soft: #{$ease-soft};
+  --ease-gentle: #{$ease-gentle};
+}
+
+// ============================================
+// Base Styles
+// ============================================
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--font-sans);
   margin: 0;
   padding: 0;
-  background-color: var(--color-cream);
-  color: var(--color-soil);
+  background: linear-gradient(180deg, $cream 0%, $parchment 100%);
+  background-attachment: fixed;
+  color: $earth-900;
+  line-height: $line-height-normal;
+  min-height: 100vh;
+}
+
+// ============================================
+// Tailwind Component Layer — Soft Buttons
+// ============================================
+@layer components {
+  // Base button styles
+  .btn {
+    @apply inline-flex items-center justify-center gap-2;
+    @apply font-medium text-sm;
+    @apply rounded-softer px-5 py-2.5;
+    @apply transition-all duration-250;
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+    transition-timing-function: $ease-gentle;
+
+    &:not(:disabled) {
+      @apply cursor-pointer;
+    }
+  }
+
+  // Primary — Spirit Green
+  .btn-primary {
+    @apply btn;
+    @apply bg-spirit-500 text-white;
+    @apply hover:bg-spirit-600 hover:shadow-soft;
+    @apply active:bg-spirit-700 active:scale-[0.98];
+    @apply focus-visible:ring-spirit-400;
+    box-shadow: $shadow-spirit;
+
+    &:hover:not(:disabled) {
+      box-shadow: $shadow-glow;
+    }
+  }
+
+  // Secondary — Soft outlined
+  .btn-secondary {
+    @apply btn;
+    @apply bg-white/60 text-spirit-700 border border-spirit-200;
+    @apply hover:bg-spirit-50 hover:border-spirit-300;
+    @apply active:bg-spirit-100 active:scale-[0.98];
+    @apply focus-visible:ring-spirit-300;
+    backdrop-filter: blur(8px);
+  }
+
+  // Ghost — Minimal
+  .btn-ghost {
+    @apply btn;
+    @apply bg-transparent text-sage-700;
+    @apply hover:bg-sage-100/50 hover:text-sage-800;
+    @apply active:bg-sage-200/50 active:scale-[0.98];
+    @apply focus-visible:ring-sage-300;
+  }
+
+  // Soft — Gentle background
+  .btn-soft {
+    @apply btn;
+    @apply bg-spirit-100/70 text-spirit-700;
+    @apply hover:bg-spirit-200/70 hover:text-spirit-800;
+    @apply active:bg-spirit-200 active:scale-[0.98];
+    @apply focus-visible:ring-spirit-300;
+  }
+
+  // Bloom — Heart-centered action
+  .btn-bloom {
+    @apply btn;
+    @apply bg-bloom-500 text-white;
+    @apply hover:bg-bloom-600;
+    @apply active:bg-bloom-700 active:scale-[0.98];
+    @apply focus-visible:ring-bloom-400;
+    box-shadow: $shadow-bloom;
+  }
+
+  // Golden — Highlight action
+  .btn-golden {
+    @apply btn;
+    @apply bg-golden-500 text-white;
+    @apply hover:bg-golden-600;
+    @apply active:bg-golden-700 active:scale-[0.98];
+    @apply focus-visible:ring-golden-400;
+    box-shadow: $shadow-golden;
+  }
+
+  // Button sizes
+  .btn-sm {
+    @apply px-3.5 py-1.5 text-xs rounded-soft;
+  }
+
+  .btn-lg {
+    @apply px-7 py-3.5 text-base rounded-xl;
+  }
+
+  .btn-xl {
+    @apply px-8 py-4 text-lg rounded-2xl;
+  }
+
+  // Icon button
+  .btn-icon {
+    @apply btn p-2.5 rounded-full;
+
+    &.btn-sm {
+      @apply p-2;
+    }
+
+    &.btn-lg {
+      @apply p-3.5;
+    }
+  }
+
+  // Pill button
+  .btn-pill {
+    @apply rounded-pill;
+  }
+
+  // ============================================
+  // Cards — Soft, elevated surfaces
+  // ============================================
+  .card {
+    @apply bg-white/70 rounded-softer p-5;
+    box-shadow: $shadow-soft;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba($spirit-200, 0.3);
+    transition: box-shadow $duration-normal $ease-soft,
+                transform $duration-normal $ease-gentle;
+
+    &:hover {
+      box-shadow: $shadow-soft-lg;
+    }
+  }
+
+  .card-interactive {
+    @apply card cursor-pointer;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0) scale(0.995);
+    }
+  }
+
+  .card-glow {
+    @apply card;
+
+    &:hover {
+      box-shadow: $shadow-glow-lg;
+    }
+  }
+
+  // ============================================
+  // Input fields — Soft, inviting
+  // ============================================
+  .input {
+    @apply w-full px-4 py-3 rounded-soft;
+    @apply bg-white/80 border border-sage-200;
+    @apply text-earth-900 placeholder:text-earth-400;
+    @apply transition-all duration-200;
+    @apply focus:outline-none focus:border-spirit-400 focus:ring-2 focus:ring-spirit-100;
+    backdrop-filter: blur(4px);
+    box-shadow: $shadow-inner-soft;
+
+    &:hover:not(:focus) {
+      border-color: $sage-300;
+    }
+
+    &::placeholder {
+      color: $earth-400;
+    }
+  }
+
+  .input-lg {
+    @apply input px-5 py-4 text-lg rounded-softer;
+  }
+
+  .textarea {
+    @apply input min-h-[120px] resize-y;
+  }
+
+  // ============================================
+  // Badges — Soft indicators
+  // ============================================
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5;
+    @apply text-xs font-medium rounded-pill;
+    @apply bg-sage-100 text-sage-700;
+  }
+
+  .badge-spirit {
+    @apply badge bg-spirit-100 text-spirit-700;
+  }
+
+  .badge-bloom {
+    @apply badge bg-bloom-100 text-bloom-700;
+  }
+
+  .badge-golden {
+    @apply badge bg-golden-100 text-golden-700;
+  }
+
+  .badge-water {
+    @apply badge bg-water-100 text-water-700;
+  }
+
+  .badge-mist {
+    @apply badge bg-mist-100 text-mist-700;
+  }
+
+  // ============================================
+  // Typography helpers
+  // ============================================
+  .heading-display {
+    font-family: var(--font-display);
+    @apply text-earth-900 tracking-tight;
+  }
+
+  .text-muted {
+    @apply text-earth-500;
+  }
+
+  .text-spirit {
+    @apply text-spirit-600;
+  }
+
+  .link {
+    @apply text-spirit-600 hover:text-spirit-700;
+    @apply underline decoration-spirit-300 underline-offset-2;
+    @apply hover:decoration-spirit-500;
+    @apply transition-colors duration-200;
+  }
+
+  // ============================================
+  // Dividers
+  // ============================================
+  .divider {
+    @apply border-0 h-px;
+    background: linear-gradient(90deg, transparent, $sage-200, transparent);
+  }
+
+  .divider-spirit {
+    background: linear-gradient(90deg, transparent, $spirit-200, transparent);
+  }
+
+  // ============================================
+  // Sections & Containers
+  // ============================================
+  .section {
+    @apply py-12 md:py-16 lg:py-20;
+  }
+
+  .section-mist {
+    @apply section;
+    background: linear-gradient(180deg, rgba($mist-100, 0.3) 0%, transparent 100%);
+  }
+
+  .container-soft {
+    @apply max-w-5xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+// ============================================
+// Tailwind Utilities Layer
+// ============================================
+@layer utilities {
+  // Glassmorphism
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .glass-spirit {
+    background: rgba($spirit-50, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba($spirit-200, 0.3);
+  }
+
+  // Soft shadows
+  .shadow-spirit {
+    box-shadow: $shadow-spirit;
+  }
+
+  .shadow-bloom {
+    box-shadow: $shadow-bloom;
+  }
+
+  .shadow-golden {
+    box-shadow: $shadow-golden;
+  }
+
+  // Gradients
+  .bg-spirit-gradient {
+    background: $gradient-spirit;
+  }
+
+  .bg-earth-gradient {
+    background: $gradient-earth;
+  }
+
+  .bg-glow {
+    background: $gradient-glow;
+  }
+
+  // Animations
+  .animate-breathe {
+    animation: breathe 4s $ease-breathe infinite;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-glow-pulse {
+    animation: glow-pulse 3s ease-in-out infinite;
+  }
+
+  // Transitions
+  .transition-soft {
+    transition: all $duration-normal $ease-soft;
+  }
+
+  .transition-gentle {
+    transition: all $duration-normal $ease-gentle;
+  }
+}
+
+// ============================================
+// Keyframes
+// ============================================
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: $shadow-glow;
+  }
+  50% {
+    box-shadow: $shadow-glow-lg;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ============================================
+// Focus styles — Accessible but soft
+// ============================================
+:focus-visible {
+  outline: 2px solid $spirit-400;
+  outline-offset: 2px;
+}
+
+// ============================================
+// Scrollbar styling — Gentle appearance
+// ============================================
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: $parchment;
+  border-radius: $radius-pill;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $sage-300;
+  border-radius: $radius-pill;
+
+  &:hover {
+    background: $sage-400;
+  }
+}
+
+// Firefox scrollbar
+* {
+  scrollbar-width: thin;
+  scrollbar-color: $sage-300 $parchment;
+}
+
+// ============================================
+// Selection styling
+// ============================================
+::selection {
+  background: rgba($spirit-400, 0.25);
+  color: $earth-900;
 }

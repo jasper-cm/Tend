@@ -1,7 +1,10 @@
 title: Tend Documentation
 description: Tend your life as the fruitful garden it is - A holistic personal development application
-baseurl: ""
-url: ""
+baseurl: "/Tend"
+url: "https://jasper-cm.github.io"
+
+# Use pretty permalinks for clean URLs (creates /page/index.html)
+permalink: pretty
 
 theme: jekyll-theme-cayman
 

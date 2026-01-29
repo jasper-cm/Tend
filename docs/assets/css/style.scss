@@ -1,0 +1,490 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+// ============================================
+// Tend Documentation Theme
+// A nature-inspired garden aesthetic
+// ============================================
+
+// Color Palette - Garden-inspired
+$color-leaf-green: #2d5a27;
+$color-sage: #87a878;
+$color-moss: #4a7c59;
+$color-earth: #8b7355;
+$color-bark: #5d4e37;
+$color-sky: #87ceeb;
+$color-sunrise: #f4a460;
+$color-blossom: #dda0dd;
+$color-cream: #faf8f5;
+$color-parchment: #f5f1eb;
+
+// Override Cayman theme colors
+.page-header {
+  background-image: linear-gradient(135deg, $color-leaf-green 0%, $color-moss 50%, $color-sage 100%);
+  padding: 3rem 2rem;
+
+  @media screen and (min-width: 64em) {
+    padding: 4rem 6rem;
+  }
+}
+
+.project-name {
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+
+  &::before {
+    content: "🌱 ";
+  }
+}
+
+.project-tagline {
+  font-style: italic;
+  opacity: 0.95;
+  font-weight: 300;
+}
+
+// Main content styling
+.main-content {
+  max-width: 64rem;
+  padding: 2rem 4rem;
+  margin: 0 auto;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #3d3d3d;
+
+  @media screen and (max-width: 42em) {
+    padding: 2rem 1rem;
+  }
+
+  // Headings with garden accents
+  h1, h2, h3, h4, h5, h6 {
+    color: $color-leaf-green;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    font-size: 2.2rem;
+    border-bottom: 3px solid $color-sage;
+    padding-bottom: 0.5rem;
+
+    &::before {
+      content: "🌿 ";
+      opacity: 0.7;
+    }
+  }
+
+  h2 {
+    font-size: 1.75rem;
+    border-bottom: 2px solid lighten($color-sage, 20%);
+    padding-bottom: 0.4rem;
+
+    &::before {
+      content: "🌱 ";
+      opacity: 0.6;
+    }
+  }
+
+  h3 {
+    font-size: 1.4rem;
+    color: $color-moss;
+
+    &::before {
+      content: "🍃 ";
+      opacity: 0.5;
+    }
+  }
+
+  h4 {
+    font-size: 1.2rem;
+    color: $color-bark;
+  }
+
+  // Links
+  a {
+    color: $color-moss;
+    text-decoration: none;
+    border-bottom: 1px dotted $color-sage;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: $color-leaf-green;
+      border-bottom: 2px solid $color-leaf-green;
+    }
+  }
+
+  // Code blocks - earthy terminal look
+  pre {
+    background: linear-gradient(to bottom, #2d2d2d, #1a1a1a);
+    border: 1px solid $color-bark;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    overflow-x: auto;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.1);
+
+    code {
+      color: #e8e8e8;
+      font-family: 'Fira Code', 'SF Mono', Monaco, 'Cascadia Code', monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+  }
+
+  // Inline code
+  code {
+    background-color: rgba($color-sage, 0.15);
+    color: $color-bark;
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-family: 'Fira Code', 'SF Mono', Monaco, monospace;
+  }
+
+  // Blockquotes - like garden signs
+  blockquote {
+    background: linear-gradient(to right, $color-parchment, $color-cream);
+    border-left: 4px solid $color-moss;
+    margin: 1.5rem 0;
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
+    color: $color-bark;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+
+    &::before {
+      content: "💡";
+      margin-right: 0.5rem;
+    }
+  }
+
+  // Tables - clean garden grid
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1.5rem 0;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border-radius: 8px;
+    overflow: hidden;
+
+    th {
+      background: linear-gradient(to bottom, $color-moss, darken($color-moss, 5%));
+      color: white;
+      font-weight: 600;
+      padding: 0.8rem 1rem;
+      text-align: left;
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #e8e8e8;
+    }
+
+    tr:nth-child(even) {
+      background-color: $color-parchment;
+    }
+
+    tr:hover {
+      background-color: rgba($color-sage, 0.1);
+    }
+  }
+
+  // Lists
+  ul, ol {
+    padding-left: 1.5rem;
+
+    li {
+      margin: 0.5rem 0;
+
+      &::marker {
+        color: $color-moss;
+      }
+    }
+  }
+
+  ul li::marker {
+    content: "🌿 ";
+  }
+
+  // Horizontal rules
+  hr {
+    border: none;
+    height: 2px;
+    background: linear-gradient(to right, transparent, $color-sage, transparent);
+    margin: 2rem 0;
+  }
+
+  // Images
+  img {
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    margin: 1rem 0;
+  }
+}
+
+// Custom callout boxes
+.main-content {
+  .tip, .note, .warning, .info {
+    padding: 1rem 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 8px;
+    border-left: 4px solid;
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .tip {
+    background-color: rgba(#4caf50, 0.1);
+    border-color: #4caf50;
+
+    &::before {
+      content: "💚 Tip: ";
+      font-weight: 600;
+      color: #2e7d32;
+    }
+  }
+
+  .note {
+    background-color: rgba($color-sky, 0.15);
+    border-color: $color-sky;
+
+    &::before {
+      content: "📝 Note: ";
+      font-weight: 600;
+      color: #1976d2;
+    }
+  }
+
+  .warning {
+    background-color: rgba($color-sunrise, 0.15);
+    border-color: $color-sunrise;
+
+    &::before {
+      content: "⚠️ Warning: ";
+      font-weight: 600;
+      color: #e65100;
+    }
+  }
+
+  .info {
+    background-color: rgba($color-blossom, 0.15);
+    border-color: $color-blossom;
+
+    &::before {
+      content: "ℹ️ Info: ";
+      font-weight: 600;
+      color: #7b1fa2;
+    }
+  }
+}
+
+// Navigation styling
+.site-nav {
+  background: $color-cream;
+  border-bottom: 2px solid $color-sage;
+  padding: 0.75rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+
+  @media screen and (min-width: 64em) {
+    padding: 0.75rem 6rem;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  li {
+    margin: 0;
+  }
+
+  a {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    color: $color-leaf-green;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: none;
+
+    &:hover {
+      background-color: $color-sage;
+      color: white;
+      border: none;
+    }
+
+    &.active {
+      background-color: $color-leaf-green;
+      color: white;
+    }
+  }
+}
+
+// Footer styling
+.site-footer {
+  border-top: 2px solid $color-sage;
+  margin-top: 3rem;
+  padding: 2rem;
+  background: linear-gradient(to bottom, $color-cream, white);
+  text-align: center;
+
+  .site-footer-credits {
+    color: $color-bark;
+    font-size: 0.9rem;
+
+    &::before {
+      content: "🌻 ";
+    }
+
+    &::after {
+      content: " 🌻";
+    }
+  }
+}
+
+// Feature cards
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.feature-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  border: 1px solid #e8e8e8;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  }
+
+  h3 {
+    margin-top: 0;
+    color: $color-moss;
+
+    &::before {
+      content: none;
+    }
+  }
+
+  p {
+    color: #666;
+    font-size: 0.95rem;
+  }
+}
+
+// Badge styling
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+
+  &.badge-green {
+    background-color: rgba($color-moss, 0.15);
+    color: $color-leaf-green;
+  }
+
+  &.badge-blue {
+    background-color: rgba($color-sky, 0.2);
+    color: darken($color-sky, 30%);
+  }
+
+  &.badge-orange {
+    background-color: rgba($color-sunrise, 0.2);
+    color: darken($color-sunrise, 20%);
+  }
+}
+
+// Syntax highlighting enhancements
+.highlight {
+  .c, .c1, .cm { color: #6a9955; } // Comments - leaf green
+  .k, .kd, .kn { color: #569cd6; } // Keywords - sky blue
+  .s, .s1, .s2 { color: #ce9178; } // Strings - warm earth
+  .n, .na { color: #9cdcfe; }      // Names - light blue
+  .nf { color: #dcdcaa; }          // Function names - golden
+  .o { color: #d4d4d4; }           // Operators
+  .m, .mi, .mf { color: #b5cea8; } // Numbers - sage
+}
+
+// Print styles
+@media print {
+  .page-header {
+    background: $color-leaf-green !important;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .site-nav {
+    display: none;
+  }
+
+  .main-content {
+    max-width: none;
+    padding: 0;
+  }
+}
+
+// Smooth scrolling
+html {
+  scroll-behavior: smooth;
+}
+
+// Focus styles for accessibility
+a:focus, button:focus {
+  outline: 2px solid $color-moss;
+  outline-offset: 2px;
+}
+
+// Back to top button
+.back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: $color-moss;
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  border: none;
+
+  &:hover {
+    transform: translateY(-4px);
+    background: $color-leaf-green;
+    border: none;
+  }
+
+  &.visible {
+    opacity: 1;
+  }
+}

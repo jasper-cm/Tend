@@ -51,24 +51,24 @@ describe('GardenGuidePage', () => {
 
   it('should return correct insight color', () => {
     const component = fixture.componentInstance;
-    expect(component.getInsightColor('celebration')).toBe('#4CAF50');
-    expect(component.getInsightColor('encouragement')).toBe('#FF9800');
-    expect(component.getInsightColor('suggestion')).toBe('#2196F3');
-    expect(component.getInsightColor('observation')).toBe('#9C27B0');
-    expect(component.getInsightColor('unknown')).toBe('#4CAF50');
+    expect(component.getInsightColor('celebration')).toBe('#22c55e');
+    expect(component.getInsightColor('encouragement')).toBe('#f59e0b');
+    expect(component.getInsightColor('suggestion')).toBe('#3b82f6');
+    expect(component.getInsightColor('observation')).toBe('#8b5cf6');
+    expect(component.getInsightColor('unknown')).toBe('#22c55e');
   });
 
   it('should return correct insight background', () => {
     const component = fixture.componentInstance;
-    expect(component.getInsightBackground('celebration')).toContain('E8F5E9');
-    expect(component.getInsightBackground('encouragement')).toContain('FFF3E0');
-    expect(component.getInsightBackground('suggestion')).toContain('E3F2FD');
+    expect(component.getInsightBackground('celebration')).toContain('f0fdf4');
+    expect(component.getInsightBackground('encouragement')).toContain('fefce8');
+    expect(component.getInsightBackground('suggestion')).toContain('eff6ff');
   });
 
   it('should return correct insight gradient', () => {
     const component = fixture.componentInstance;
-    expect(component.getInsightGradient('celebration')).toContain('4CAF50');
-    expect(component.getInsightGradient('encouragement')).toContain('FF9800');
+    expect(component.getInsightGradient('celebration')).toContain('bbf7d0');
+    expect(component.getInsightGradient('encouragement')).toContain('fde68a');
   });
 
   it('should format time correctly', () => {

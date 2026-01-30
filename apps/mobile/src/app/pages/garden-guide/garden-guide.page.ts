@@ -106,14 +106,14 @@ interface ChatMessage {
           }
         </ion-buttons>
       </ion-toolbar>
-      <ion-toolbar>
-        <ion-segment [value]="viewMode()" (ionChange)="switchView($event)">
-          <ion-segment-button value="chat">
-            <ion-icon name="chatbubbles-outline"></ion-icon>
+      <ion-toolbar style="--background: rgba(255, 255, 255, 0.95); --border-color: rgba(134, 239, 172, 0.2);">
+        <ion-segment [value]="viewMode()" (ionChange)="switchView($event)" style="--background: rgba(240, 253, 244, 0.8); padding: 4px; border-radius: 16px; margin: 8px 16px;">
+          <ion-segment-button value="chat" style="--background-checked: white; --indicator-color: white; --color: #6b7280; --color-checked: #22c55e; --border-radius: 12px; font-weight: 500; min-height: 36px;">
+            <ion-icon name="chatbubbles-outline" style="font-size: 16px; margin-right: 4px;"></ion-icon>
             <ion-label>Chat</ion-label>
           </ion-segment-button>
-          <ion-segment-button value="insights">
-            <ion-icon name="sparkles-outline"></ion-icon>
+          <ion-segment-button value="insights" style="--background-checked: white; --indicator-color: white; --color: #6b7280; --color-checked: #22c55e; --border-radius: 12px; font-weight: 500; min-height: 36px;">
+            <ion-icon name="sparkles-outline" style="font-size: 16px; margin-right: 4px;"></ion-icon>
             <ion-label>Insights</ion-label>
           </ion-segment-button>
         </ion-segment>
@@ -122,27 +122,27 @@ interface ChatMessage {
 
     <ion-content #chatContent>
       @if (viewMode() === 'insights') {
-        <!-- Insights View -->
+        <!-- Insights View - Zen Style -->
         <div style="padding: 16px;">
           @if (loadingInsights()) {
             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px;">
-              <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #4CAF50, #8BC34A); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; animation: pulse 2s infinite;">
-                <ion-icon name="sparkles" style="font-size: 40px; color: white;"></ion-icon>
+              <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #dcfce7, #bbf7d0); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; box-shadow: 0 8px 32px rgba(34, 197, 94, 0.2); animation: pulse 2s infinite;">
+                <span style="font-size: 40px;">✨</span>
               </div>
-              <p style="color: var(--ion-color-medium); font-size: 16px;">Gathering insights from your garden...</p>
+              <p style="color: #22c55e; font-size: 16px; font-weight: 500;">Gathering insights from your garden...</p>
             </div>
           } @else {
-            <!-- Summary Card -->
+            <!-- Summary Card - Zen Style -->
             @if (insightsSummary()) {
-              <ion-card style="background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%); border-radius: 20px; margin: 0 0 16px 0;">
+              <ion-card style="--background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #bbf7d0 100%); border-radius: 24px; margin: 0 0 20px 0; border: 1px solid rgba(134, 239, 172, 0.3); box-shadow: 0 8px 32px rgba(34, 197, 94, 0.15);">
                 <ion-card-content style="padding: 20px;">
                   <div style="display: flex; align-items: flex-start; gap: 16px;">
-                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #4CAF50, #2E7D32); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                      <ion-icon name="leaf-outline" style="font-size: 24px; color: white;"></ion-icon>
+                    <div style="width: 52px; height: 52px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);">
+                      <span style="font-size: 26px;">🌿</span>
                     </div>
                     <div>
-                      <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600; color: #1B5E20;">Garden Overview</h3>
-                      <p style="margin: 0; color: #2E7D32; line-height: 1.6;">{{ insightsSummary() }}</p>
+                      <h3 style="margin: 0 0 8px 0; font-size: 17px; font-weight: 700; color: #166534;">Garden Overview</h3>
+                      <p style="margin: 0; color: #22c55e; line-height: 1.6; font-size: 14px;">{{ insightsSummary() }}</p>
                     </div>
                   </div>
                 </ion-card-content>
@@ -150,13 +150,13 @@ interface ChatMessage {
             }
 
             @if (insights().length === 0) {
-              <ion-card style="border-radius: 20px;">
+              <ion-card style="--background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid rgba(134, 239, 172, 0.2); box-shadow: 0 4px 24px rgba(34, 197, 94, 0.1);">
                 <ion-card-content style="text-align: center; padding: 48px 24px;">
-                  <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #E8F5E9, #C8E6C9); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
-                    <span style="font-size: 40px;">🌿</span>
+                  <div style="width: 96px; height: 96px; background: linear-gradient(135deg, #dcfce7, #bbf7d0); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 8px 32px rgba(34, 197, 94, 0.2);">
+                    <span style="font-size: 48px;">🌿</span>
                   </div>
-                  <h3 style="margin: 0 0 8px 0; font-size: 20px; font-weight: 600; color: var(--ion-color-dark);">All is Well!</h3>
-                  <p style="margin: 0; color: var(--ion-color-medium); line-height: 1.5;">
+                  <h3 style="margin: 0 0 12px 0; font-size: 22px; font-weight: 700; color: #1f2937;">All is Well!</h3>
+                  <p style="margin: 0; color: #6b7280; line-height: 1.6; font-size: 14px;">
                     No specific insights right now.<br>Your garden is thriving beautifully!
                   </p>
                 </ion-card-content>
@@ -190,31 +190,31 @@ interface ChatMessage {
           }
         </div>
       } @else {
-        <!-- Chat View -->
+        <!-- Chat View - Zen Style -->
         <div style="display: flex; flex-direction: column; min-height: 100%; padding: 16px;">
           @if (messages().length === 0) {
-            <!-- Welcome State -->
+            <!-- Welcome State - Zen Style -->
             <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px;">
-              <div style="width: 120px; height: 120px; background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; position: relative;">
+              <div style="width: 120px; height: 120px; background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; position: relative; box-shadow: 0 8px 32px rgba(34, 197, 94, 0.2);">
                 <span style="font-size: 60px;">🌿</span>
-                <div style="position: absolute; bottom: 0; right: 0; width: 40px; height: 40px; background: linear-gradient(135deg, #4CAF50, #2E7D32); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid white;">
-                  <ion-icon name="sparkles" style="font-size: 18px; color: white;"></ion-icon>
+                <div style="position: absolute; bottom: 0; right: 0; width: 40px; height: 40px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid white; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);">
+                  <span style="font-size: 18px;">✨</span>
                 </div>
               </div>
-              <h2 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: var(--ion-color-dark);">Welcome, Gardener!</h2>
-              <p style="margin: 0 0 32px 0; color: var(--ion-color-medium); line-height: 1.6; max-width: 280px;">
+              <h2 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #1f2937;">Welcome, Gardener!</h2>
+              <p style="margin: 0 0 32px 0; color: #6b7280; line-height: 1.6; max-width: 280px; font-size: 14px;">
                 I'm your personal Garden Guide. Ask me about your progress, get suggestions for practices, or just chat about how you're doing.
               </p>
 
               <div style="width: 100%; max-width: 320px;">
-                <p style="font-size: 12px; font-weight: 600; color: var(--ion-color-medium); text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 12px 0;">Quick Prompts</p>
-                <div style="display: flex; flex-direction: column; gap: 8px;">
+                <p style="font-size: 11px; font-weight: 600; color: #22c55e; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 12px 0;">Quick Prompts</p>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
                   @for (prompt of quickPrompts; track prompt.text) {
                     <ion-button
                       (click)="sendMessage(prompt.text)"
                       fill="outline"
                       expand="block"
-                      style="--border-radius: 12px; --border-width: 1px; text-transform: none; font-weight: 500; --padding-top: 12px; --padding-bottom: 12px;"
+                      style="--border-radius: 16px; --border-width: 1px; --border-color: rgba(134, 239, 172, 0.4); --color: #22c55e; --background-hover: rgba(34, 197, 94, 0.08); text-transform: none; font-weight: 500; --padding-top: 14px; --padding-bottom: 14px;"
                     >
                       <ion-icon [name]="prompt.icon" slot="start" style="margin-right: 8px;"></ion-icon>
                       {{ prompt.text }}
@@ -224,25 +224,26 @@ interface ChatMessage {
               </div>
             </div>
           } @else {
-            <!-- Messages -->
+            <!-- Messages - Zen Style -->
             <div style="flex: 1; display: flex; flex-direction: column; gap: 16px;">
               @for (message of messages(); track $index) {
                 <div [style.justify-content]="message.role === 'user' ? 'flex-end' : 'flex-start'" style="display: flex;">
                   @if (message.role === 'assistant') {
-                    <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #4CAF50, #2E7D32); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-right: 8px; align-self: flex-end;">
+                    <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-right: 8px; align-self: flex-end; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);">
                       <span style="font-size: 18px;">🌿</span>
                     </div>
                   }
                   <div
-                    [style.background]="message.role === 'user' ? 'linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%)' : 'white'"
-                    [style.color]="message.role === 'user' ? 'white' : 'var(--ion-color-dark)'"
-                    [style.border-bottom-right-radius]="message.role === 'user' ? '4px' : '18px'"
-                    [style.border-bottom-left-radius]="message.role === 'user' ? '18px' : '4px'"
-                    [style.box-shadow]="message.role === 'assistant' ? '0 2px 8px rgba(0,0,0,0.08)' : 'none'"
-                    style="max-width: 80%; padding: 14px 18px; border-radius: 18px;"
+                    [style.background]="message.role === 'user' ? 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)' : 'rgba(255, 255, 255, 0.9)'"
+                    [style.color]="message.role === 'user' ? 'white' : '#1f2937'"
+                    [style.border-bottom-right-radius]="message.role === 'user' ? '4px' : '20px'"
+                    [style.border-bottom-left-radius]="message.role === 'user' ? '20px' : '4px'"
+                    [style.box-shadow]="message.role === 'assistant' ? '0 4px 16px rgba(34, 197, 94, 0.1)' : '0 4px 12px rgba(34, 197, 94, 0.2)'"
+                    [style.border]="message.role === 'assistant' ? '1px solid rgba(134, 239, 172, 0.2)' : 'none'"
+                    style="max-width: 80%; padding: 14px 18px; border-radius: 20px; backdrop-filter: blur(8px);"
                   >
                     <p style="margin: 0 0 6px 0; white-space: pre-line; line-height: 1.5; font-size: 15px;">{{ message.content }}</p>
-                    <span [style.opacity]="0.7" style="font-size: 11px; display: block;" [style.text-align]="message.role === 'user' ? 'right' : 'left'">
+                    <span [style.opacity]="0.6" style="font-size: 11px; display: block;" [style.text-align]="message.role === 'user' ? 'right' : 'left'">
                       {{ formatTime(message.timestamp) }}
                     </span>
                   </div>
@@ -251,13 +252,13 @@ interface ChatMessage {
 
               @if (isTyping()) {
                 <div style="display: flex; justify-content: flex-start;">
-                  <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #4CAF50, #2E7D32); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-right: 8px; align-self: flex-end;">
+                  <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-right: 8px; align-self: flex-end; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);">
                     <span style="font-size: 18px;">🌿</span>
                   </div>
-                  <div style="background: white; padding: 18px 22px; border-radius: 18px; border-bottom-left-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; gap: 6px;">
-                    <span style="width: 10px; height: 10px; background: #4CAF50; border-radius: 50%; animation: typingBounce 1.4s ease-in-out infinite; animation-delay: 0s;"></span>
-                    <span style="width: 10px; height: 10px; background: #66BB6A; border-radius: 50%; animation: typingBounce 1.4s ease-in-out infinite; animation-delay: 0.2s;"></span>
-                    <span style="width: 10px; height: 10px; background: #81C784; border-radius: 50%; animation: typingBounce 1.4s ease-in-out infinite; animation-delay: 0.4s;"></span>
+                  <div style="background: rgba(255, 255, 255, 0.9); padding: 18px 22px; border-radius: 20px; border-bottom-left-radius: 4px; box-shadow: 0 4px 16px rgba(34, 197, 94, 0.1); border: 1px solid rgba(134, 239, 172, 0.2); display: flex; gap: 6px; backdrop-filter: blur(8px);">
+                    <span style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%; animation: typingBounce 1.4s ease-in-out infinite; animation-delay: 0s;"></span>
+                    <span style="width: 10px; height: 10px; background: #4ade80; border-radius: 50%; animation: typingBounce 1.4s ease-in-out infinite; animation-delay: 0.2s;"></span>
+                    <span style="width: 10px; height: 10px; background: #86efac; border-radius: 50%; animation: typingBounce 1.4s ease-in-out infinite; animation-delay: 0.4s;"></span>
                   </div>
                 </div>
               }
@@ -269,20 +270,20 @@ interface ChatMessage {
 
     @if (viewMode() === 'chat') {
       <ion-footer style="background: transparent;">
-        <div style="background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(0,0,0,0.08); padding: 12px 16px; padding-bottom: calc(12px + env(safe-area-inset-bottom, 0));">
-          <div style="display: flex; align-items: center; gap: 12px; background: #F5F5F5; border-radius: 28px; padding: 6px 6px 6px 20px;">
+        <div style="background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 253, 244, 0.98) 100%); backdrop-filter: blur(16px); border-top: 1px solid rgba(134, 239, 172, 0.2); padding: 12px 16px; padding-bottom: calc(12px + env(safe-area-inset-bottom, 0));">
+          <div style="display: flex; align-items: center; gap: 12px; background: rgba(240, 253, 244, 0.8); border: 1px solid rgba(134, 239, 172, 0.3); border-radius: 28px; padding: 6px 6px 6px 20px;">
             <ion-input
               [(ngModel)]="inputMessage"
               (keyup.enter)="sendMessage()"
               [disabled]="isTyping()"
               placeholder="Ask the Garden Guide..."
-              style="flex: 1; --padding-start: 0; --padding-end: 0; font-size: 16px;"
+              style="flex: 1; --padding-start: 0; --padding-end: 0; font-size: 16px; --placeholder-color: #9ca3af;"
             ></ion-input>
             <ion-button
               (click)="sendMessage()"
               [disabled]="!inputMessage.trim() || isTyping()"
               shape="round"
-              style="--padding-start: 14px; --padding-end: 14px; height: 44px; width: 44px; margin: 0;"
+              style="--padding-start: 14px; --padding-end: 14px; height: 44px; width: 44px; margin: 0; --background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); --box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);"
             >
               <ion-icon slot="icon-only" name="send" style="font-size: 20px;"></ion-icon>
             </ion-button>
@@ -430,42 +431,42 @@ export class GardenGuidePage implements OnInit {
 
   getInsightColor(type: string): string {
     const colors: Record<string, string> = {
-      celebration: '#4CAF50',
-      encouragement: '#FF9800',
-      suggestion: '#2196F3',
-      observation: '#9C27B0',
+      celebration: '#22c55e', // green-500
+      encouragement: '#f59e0b', // amber-500
+      suggestion: '#3b82f6', // blue-500
+      observation: '#8b5cf6', // violet-500
     };
-    return colors[type] || '#4CAF50';
+    return colors[type] || '#22c55e';
   }
 
   getInsightBackground(type: string): string {
     const backgrounds: Record<string, string> = {
-      celebration: 'linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%)',
-      encouragement: 'linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%)',
-      suggestion: 'linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%)',
-      observation: 'linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%)',
+      celebration: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)',
+      encouragement: 'linear-gradient(135deg, #fefce8 0%, #fef3c7 100%)',
+      suggestion: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
+      observation: 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)',
     };
-    return backgrounds[type] || 'linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%)';
+    return backgrounds[type] || 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)';
   }
 
   getInsightGradient(type: string): string {
     const gradients: Record<string, string> = {
-      celebration: 'linear-gradient(135deg, #4CAF50, #2E7D32)',
-      encouragement: 'linear-gradient(135deg, #FF9800, #F57C00)',
-      suggestion: 'linear-gradient(135deg, #2196F3, #1976D2)',
-      observation: 'linear-gradient(135deg, #9C27B0, #7B1FA2)',
+      celebration: 'linear-gradient(135deg, #bbf7d0, #dcfce7)',
+      encouragement: 'linear-gradient(135deg, #fde68a, #fef3c7)',
+      suggestion: 'linear-gradient(135deg, #bfdbfe, #dbeafe)',
+      observation: 'linear-gradient(135deg, #ddd6fe, #ede9fe)',
     };
-    return gradients[type] || 'linear-gradient(135deg, #4CAF50, #2E7D32)';
+    return gradients[type] || 'linear-gradient(135deg, #bbf7d0, #dcfce7)';
   }
 
   getInsightChipColor(type: string): string {
     const colors: Record<string, string> = {
-      celebration: 'rgba(76, 175, 80, 0.2)',
-      encouragement: 'rgba(255, 152, 0, 0.2)',
-      suggestion: 'rgba(33, 150, 243, 0.2)',
-      observation: 'rgba(156, 39, 176, 0.2)',
+      celebration: 'rgba(34, 197, 94, 0.15)',
+      encouragement: 'rgba(245, 158, 11, 0.15)',
+      suggestion: 'rgba(59, 130, 246, 0.15)',
+      observation: 'rgba(139, 92, 246, 0.15)',
     };
-    return colors[type] || 'rgba(76, 175, 80, 0.2)';
+    return colors[type] || 'rgba(34, 197, 94, 0.15)';
   }
 
   formatTime(date: Date): string {

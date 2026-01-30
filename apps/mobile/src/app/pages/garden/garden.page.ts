@@ -107,29 +107,37 @@ import { ApiService, LifeArea } from '../../services/api.service';
 
       @if (loading()) {
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px;">
-          <ion-spinner name="crescent" color="primary" style="width: 48px; height: 48px;"></ion-spinner>
-          <p style="margin-top: 16px; color: var(--ion-color-medium);">Growing your garden...</p>
+          <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #dcfce7, #bbf7d0); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 32px rgba(34, 197, 94, 0.2); animation: breathe 4s ease-in-out infinite;">
+            <span style="font-size: 40px;">🌱</span>
+          </div>
+          <p style="margin-top: 20px; color: #22c55e; font-weight: 500;">Growing your garden...</p>
+          <div style="display: flex; gap: 6px; margin-top: 12px;">
+            <div style="width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: bounce 1s ease-in-out infinite;"></div>
+            <div style="width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: bounce 1s ease-in-out 0.1s infinite;"></div>
+            <div style="width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: bounce 1s ease-in-out 0.2s infinite;"></div>
+          </div>
         </div>
       } @else {
-        <!-- Welcome Card -->
-        <ion-card color="primary">
-          <ion-card-header>
-            <ion-card-subtitle>{{ getGreeting() }}</ion-card-subtitle>
-            <ion-card-title style="font-size: 24px;">Your Life Garden</ion-card-title>
+        <!-- Welcome Card - Zen Style -->
+        <ion-card style="--background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #bbf7d0 100%); border-radius: 24px; box-shadow: 0 8px 32px rgba(34, 197, 94, 0.15); border: 1px solid rgba(134, 239, 172, 0.3); position: relative; overflow: hidden; margin-bottom: 20px;">
+          <div style="position: absolute; top: -40px; right: -40px; width: 120px; height: 120px; background: radial-gradient(circle, rgba(134, 239, 172, 0.3) 0%, transparent 70%); pointer-events: none;"></div>
+          <ion-card-header style="padding-bottom: 8px;">
+            <ion-card-subtitle style="color: #16a34a; font-weight: 500; letter-spacing: 0.02em;">{{ getGreeting() }}</ion-card-subtitle>
+            <ion-card-title style="font-size: 26px; color: #166534; font-weight: 700;">Your Life Garden</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <p style="margin-bottom: 16px; opacity: 0.9;">
-              Nurture every dimension of your life. Each area is a plot in your personal garden.
+            <p style="margin-bottom: 20px; color: #4ade80; font-size: 14px; line-height: 1.5;">
+              Nurture every dimension of your life. Each area is a sacred plot in your personal garden of growth.
             </p>
             @if (lifeAreas().length > 0) {
-              <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+              <div style="display: flex; gap: 24px; padding-top: 16px; border-top: 1px solid rgba(134, 239, 172, 0.3);">
                 <div style="text-align: center;">
-                  <div style="font-size: 32px; font-weight: bold;">{{ averageHealth() }}</div>
-                  <div style="font-size: 12px; opacity: 0.8;">Overall Health</div>
+                  <div style="font-size: 36px; font-weight: 700; color: #166534;">{{ averageHealth() }}%</div>
+                  <div style="font-size: 12px; color: #22c55e; font-weight: 500;">Garden Health</div>
                 </div>
                 <div style="text-align: center;">
-                  <div style="font-size: 32px; font-weight: bold;">{{ lifeAreas().length }}</div>
-                  <div style="font-size: 12px; opacity: 0.8;">Life Areas</div>
+                  <div style="font-size: 36px; font-weight: 700; color: #166534;">{{ lifeAreas().length }}</div>
+                  <div style="font-size: 12px; color: #22c55e; font-weight: 500;">Life Areas</div>
                 </div>
               </div>
             }
@@ -137,78 +145,87 @@ import { ApiService, LifeArea } from '../../services/api.service';
         </ion-card>
 
         @if (lifeAreas().length > 0) {
-          <!-- Stats Cards -->
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px;">
-            <ion-card style="margin: 0;">
-              <ion-card-content style="text-align: center; padding: 12px;">
-                <ion-icon name="sparkles-outline" color="success" style="font-size: 24px;"></ion-icon>
-                <div style="font-size: 24px; font-weight: bold; color: var(--ion-color-success);">{{ thrivingCount() }}</div>
-                <div style="font-size: 11px; color: var(--ion-color-medium);">Thriving</div>
+          <!-- Stats Cards - Zen Style -->
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px;">
+            <ion-card style="margin: 0; --background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 20px; border: 1px solid rgba(134, 239, 172, 0.2); box-shadow: 0 4px 20px rgba(34, 197, 94, 0.08);">
+              <ion-card-content style="text-align: center; padding: 16px 12px;">
+                <div style="width: 44px; height: 44px; background: linear-gradient(135deg, #dcfce7, #bbf7d0); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px;">
+                  <span style="font-size: 20px;">✨</span>
+                </div>
+                <div style="font-size: 28px; font-weight: 700; color: #22c55e;">{{ thrivingCount() }}</div>
+                <div style="font-size: 11px; color: #6b7280; font-weight: 500;">Thriving</div>
               </ion-card-content>
             </ion-card>
-            <ion-card style="margin: 0;">
-              <ion-card-content style="text-align: center; padding: 12px;">
-                <ion-icon name="trending-up-outline" color="warning" style="font-size: 24px;"></ion-icon>
-                <div style="font-size: 24px; font-weight: bold; color: var(--ion-color-warning);">{{ growingCount() }}</div>
-                <div style="font-size: 11px; color: var(--ion-color-medium);">Growing</div>
+            <ion-card style="margin: 0; --background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 20px; border: 1px solid rgba(134, 239, 172, 0.2); box-shadow: 0 4px 20px rgba(34, 197, 94, 0.08);">
+              <ion-card-content style="text-align: center; padding: 16px 12px;">
+                <div style="width: 44px; height: 44px; background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px;">
+                  <span style="font-size: 20px;">🌻</span>
+                </div>
+                <div style="font-size: 28px; font-weight: 700; color: #f59e0b;">{{ growingCount() }}</div>
+                <div style="font-size: 11px; color: #6b7280; font-weight: 500;">Growing</div>
               </ion-card-content>
             </ion-card>
-            <ion-card style="margin: 0;">
-              <ion-card-content style="text-align: center; padding: 12px;">
-                <ion-icon name="alert-circle-outline" color="danger" style="font-size: 24px;"></ion-icon>
-                <div style="font-size: 24px; font-weight: bold; color: var(--ion-color-danger);">{{ needsCareCount() }}</div>
-                <div style="font-size: 11px; color: var(--ion-color-medium);">Needs Care</div>
+            <ion-card style="margin: 0; --background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 20px; border: 1px solid rgba(134, 239, 172, 0.2); box-shadow: 0 4px 20px rgba(34, 197, 94, 0.08);">
+              <ion-card-content style="text-align: center; padding: 16px 12px;">
+                <div style="width: 44px; height: 44px; background: linear-gradient(135deg, #ffe4e6, #fecdd3); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px;">
+                  <span style="font-size: 20px;">💧</span>
+                </div>
+                <div style="font-size: 28px; font-weight: 700; color: #f43f5e;">{{ needsCareCount() }}</div>
+                <div style="font-size: 11px; color: #6b7280; font-weight: 500;">Needs Care</div>
               </ion-card-content>
             </ion-card>
           </div>
 
-          <!-- Life Areas Section -->
-          <ion-card>
-            <ion-card-header>
-              <ion-card-title>Life Areas</ion-card-title>
-              <ion-card-subtitle>Tap an area to see details</ion-card-subtitle>
+          <!-- Life Areas Section - Zen Style -->
+          <ion-card style="--background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid rgba(134, 239, 172, 0.2); box-shadow: 0 4px 24px rgba(34, 197, 94, 0.1); overflow: hidden;">
+            <ion-card-header style="border-bottom: 1px solid rgba(134, 239, 172, 0.15); padding: 20px;">
+              <ion-card-title style="color: #1f2937; font-weight: 600; font-size: 18px;">Life Areas</ion-card-title>
+              <ion-card-subtitle style="color: #22c55e; font-size: 13px;">Tap an area to see details</ion-card-subtitle>
             </ion-card-header>
-            <ion-list>
+            <ion-list style="--ion-item-background: transparent;">
               @for (area of lifeAreas(); track area.id) {
-                <ion-item [routerLink]="['/life-areas', area.id]" detail="true" button>
-                  <ion-avatar slot="start" [style.background]="getHealthGradient(area.healthScore)">
-                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                <ion-item [routerLink]="['/life-areas', area.id]" detail="true" button style="--padding-start: 16px; --padding-end: 16px; --inner-padding-end: 8px;">
+                  <ion-avatar slot="start" [style.background]="getHealthGradient(area.healthScore)" style="width: 52px; height: 52px; border-radius: 16px;">
+                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 24px;">
                       {{ getEmoji(area.icon) }}
                     </div>
                   </ion-avatar>
                   <ion-label>
-                    <h2 style="font-weight: 600;">{{ area.name }}</h2>
-                    <p>{{ area.description }}</p>
-                    <ion-progress-bar
-                      [value]="area.healthScore / 100"
-                      [color]="getHealthColor(area.healthScore)"
-                      style="margin-top: 8px; height: 6px; border-radius: 3px;"
-                    ></ion-progress-bar>
+                    <h2 style="font-weight: 600; color: #1f2937; font-size: 15px;">{{ area.name }}</h2>
+                    <p style="color: #6b7280; font-size: 13px; margin-top: 2px;">{{ area.description }}</p>
+                    <div style="margin-top: 10px; height: 6px; background: rgba(134, 239, 172, 0.2); border-radius: 3px; overflow: hidden;">
+                      <div
+                        [style.width.%]="area.healthScore"
+                        [style.background]="'linear-gradient(90deg, ' + getHealthColorHex(area.healthScore) + ', ' + getHealthColorLight(area.healthScore) + ')'"
+                        style="height: 100%; border-radius: 3px; transition: width 0.5s ease;"
+                      ></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 6px;">
+                      <span style="font-size: 11px; color: #6b7280;">{{ getHealthLabel(area.healthScore) }}</span>
+                      <span style="font-size: 12px; font-weight: 600;" [style.color]="getHealthColorHex(area.healthScore)">{{ area.healthScore }}%</span>
+                    </div>
                   </ion-label>
-                  <ion-badge slot="end" [color]="getHealthColor(area.healthScore)">
-                    {{ area.healthScore }}%
-                  </ion-badge>
                 </ion-item>
               }
             </ion-list>
           </ion-card>
 
-          <!-- Quick Actions -->
-          <ion-card>
+          <!-- Quick Actions - Zen Style -->
+          <ion-card style="--background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid rgba(134, 239, 172, 0.2); box-shadow: 0 4px 24px rgba(34, 197, 94, 0.1);">
             <ion-card-header>
-              <ion-card-title>Quick Actions</ion-card-title>
+              <ion-card-title style="color: #1f2937; font-weight: 600; font-size: 18px;">Quick Actions</ion-card-title>
             </ion-card-header>
             <ion-card-content>
-              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <ion-button routerLink="/practices" expand="block" fill="outline">
+              <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <ion-button routerLink="/practices" expand="block" fill="outline" style="--border-radius: 16px; --border-color: rgba(134, 239, 172, 0.4); --color: #22c55e; --background-hover: rgba(34, 197, 94, 0.08); flex: 1; min-width: 120px;">
                   <ion-icon name="fitness-outline" slot="start"></ion-icon>
                   Log Practice
                 </ion-button>
-                <ion-button routerLink="/reflections" expand="block" fill="outline">
+                <ion-button routerLink="/reflections" expand="block" fill="outline" style="--border-radius: 16px; --border-color: rgba(134, 239, 172, 0.4); --color: #22c55e; --background-hover: rgba(34, 197, 94, 0.08); flex: 1; min-width: 120px;">
                   <ion-icon name="book-outline" slot="start"></ion-icon>
-                  Write Reflection
+                  Reflect
                 </ion-button>
-                <ion-button routerLink="/guide" expand="block" fill="outline">
+                <ion-button routerLink="/guide" expand="block" fill="outline" style="--border-radius: 16px; --border-color: rgba(134, 239, 172, 0.4); --color: #22c55e; --background-hover: rgba(34, 197, 94, 0.08); flex: 1; min-width: 120px;">
                   <ion-icon name="sparkles-outline" slot="start"></ion-icon>
                   Ask Guide
                 </ion-button>
@@ -216,43 +233,45 @@ import { ApiService, LifeArea } from '../../services/api.service';
             </ion-card-content>
           </ion-card>
         } @else {
-          <!-- Empty State -->
-          <ion-card>
-            <ion-card-content style="text-align: center; padding: 40px 20px;">
-              <div style="font-size: 64px; margin-bottom: 16px;">🌱</div>
-              <h2 style="font-size: 20px; font-weight: 600; margin: 0 0 8px 0; color: var(--ion-color-dark);">
-                No Life Areas Yet
+          <!-- Empty State - Zen Style -->
+          <ion-card style="--background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid rgba(134, 239, 172, 0.2); box-shadow: 0 4px 24px rgba(34, 197, 94, 0.1);">
+            <ion-card-content style="text-align: center; padding: 48px 24px;">
+              <div style="width: 96px; height: 96px; background: linear-gradient(135deg, #dcfce7, #bbf7d0); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 8px 32px rgba(34, 197, 94, 0.2);">
+                <span style="font-size: 48px;">🌱</span>
+              </div>
+              <h2 style="font-size: 22px; font-weight: 700; margin: 0 0 12px 0; color: #1f2937;">
+                Begin Your Journey
               </h2>
-              <p style="color: var(--ion-color-medium); margin: 0 0 24px 0;">
+              <p style="color: #6b7280; margin: 0 0 28px 0; line-height: 1.6; font-size: 14px;">
                 Start building your garden by adding life areas to tend.<br>
-                Each area represents a dimension of your life you want to nurture.
+                Each area represents a sacred dimension of your life.
               </p>
-              <ion-button expand="block" color="primary" size="large">
+              <ion-button expand="block" size="large" style="--background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); --border-radius: 16px; --box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);">
                 <ion-icon name="add-outline" slot="start"></ion-icon>
-                Add Your First Life Area
+                Plant Your First Seed
               </ion-button>
             </ion-card-content>
           </ion-card>
 
-          <!-- Suggested Life Areas -->
-          <ion-card>
-            <ion-card-header>
-              <ion-card-title>Suggested Life Areas</ion-card-title>
-              <ion-card-subtitle>Common areas people tend</ion-card-subtitle>
+          <!-- Suggested Life Areas - Zen Style -->
+          <ion-card style="--background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid rgba(134, 239, 172, 0.2); box-shadow: 0 4px 24px rgba(34, 197, 94, 0.1); overflow: hidden;">
+            <ion-card-header style="border-bottom: 1px solid rgba(134, 239, 172, 0.15); padding: 20px;">
+              <ion-card-title style="color: #1f2937; font-weight: 600; font-size: 18px;">Suggested Life Areas</ion-card-title>
+              <ion-card-subtitle style="color: #22c55e; font-size: 13px;">Common areas people tend</ion-card-subtitle>
             </ion-card-header>
-            <ion-list>
+            <ion-list style="--ion-item-background: transparent;">
               @for (suggestion of suggestedAreas; track suggestion.name) {
-                <ion-item button>
-                  <ion-avatar slot="start" [style.background]="suggestion.gradient">
-                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                <ion-item button style="--padding-start: 16px; --padding-end: 16px;">
+                  <ion-avatar slot="start" [style.background]="suggestion.gradient" style="width: 48px; height: 48px; border-radius: 14px;">
+                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 22px;">
                       {{ suggestion.emoji }}
                     </div>
                   </ion-avatar>
                   <ion-label>
-                    <h2 style="font-weight: 600;">{{ suggestion.name }}</h2>
-                    <p>{{ suggestion.description }}</p>
+                    <h2 style="font-weight: 600; color: #1f2937; font-size: 15px;">{{ suggestion.name }}</h2>
+                    <p style="color: #6b7280; font-size: 13px;">{{ suggestion.description }}</p>
                   </ion-label>
-                  <ion-button slot="end" fill="clear" color="primary">
+                  <ion-button slot="end" fill="clear" style="--color: #22c55e;">
                     <ion-icon name="add-outline" slot="icon-only"></ion-icon>
                   </ion-button>
                 </ion-item>
@@ -260,32 +279,38 @@ import { ApiService, LifeArea } from '../../services/api.service';
             </ion-list>
           </ion-card>
 
-          <!-- Tips Card -->
-          <ion-card color="light">
+          <!-- Tips Card - Zen Style -->
+          <ion-card style="--background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 24px; border: 1px solid rgba(134, 239, 172, 0.3); box-shadow: 0 4px 24px rgba(34, 197, 94, 0.1);">
             <ion-card-header>
-              <ion-card-title>
-                <ion-icon name="sunny-outline" style="margin-right: 8px; vertical-align: middle;"></ion-icon>
+              <ion-card-title style="color: #166534; font-weight: 600; font-size: 18px;">
+                <ion-icon name="sunny-outline" style="margin-right: 8px; vertical-align: middle; color: #22c55e;"></ion-icon>
                 Getting Started Tips
               </ion-card-title>
             </ion-card-header>
             <ion-card-content>
               <ion-list lines="none" style="background: transparent;">
-                <ion-item style="--background: transparent;">
-                  <ion-icon name="leaf-outline" slot="start" color="primary"></ion-icon>
+                <ion-item style="--background: transparent; --padding-start: 0;">
+                  <div slot="start" style="width: 36px; height: 36px; background: rgba(255, 255, 255, 0.7); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                    <ion-icon name="leaf-outline" style="color: #22c55e; font-size: 18px;"></ion-icon>
+                  </div>
                   <ion-label class="ion-text-wrap">
-                    <p><strong>Start Small</strong> - Begin with 2-3 life areas you want to focus on</p>
+                    <p style="color: #374151;"><strong style="color: #166534;">Start Small</strong> — Begin with 2-3 life areas you want to focus on</p>
                   </ion-label>
                 </ion-item>
-                <ion-item style="--background: transparent;">
-                  <ion-icon name="water-outline" slot="start" color="primary"></ion-icon>
+                <ion-item style="--background: transparent; --padding-start: 0;">
+                  <div slot="start" style="width: 36px; height: 36px; background: rgba(255, 255, 255, 0.7); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                    <ion-icon name="water-outline" style="color: #22c55e; font-size: 18px;"></ion-icon>
+                  </div>
                   <ion-label class="ion-text-wrap">
-                    <p><strong>Be Consistent</strong> - Regular small actions grow healthy habits</p>
+                    <p style="color: #374151;"><strong style="color: #166534;">Be Consistent</strong> — Regular small actions grow healthy habits</p>
                   </ion-label>
                 </ion-item>
-                <ion-item style="--background: transparent;">
-                  <ion-icon name="ribbon-outline" slot="start" color="primary"></ion-icon>
+                <ion-item style="--background: transparent; --padding-start: 0;">
+                  <div slot="start" style="width: 36px; height: 36px; background: rgba(255, 255, 255, 0.7); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                    <ion-icon name="ribbon-outline" style="color: #22c55e; font-size: 18px;"></ion-icon>
+                  </div>
                   <ion-label class="ion-text-wrap">
-                    <p><strong>Celebrate Progress</strong> - Every step forward matters</p>
+                    <p style="color: #374151;"><strong style="color: #166534;">Celebrate Progress</strong> — Every step forward matters</p>
                   </ion-label>
                 </ion-item>
               </ion-list>
@@ -294,9 +319,9 @@ import { ApiService, LifeArea } from '../../services/api.service';
         }
       }
 
-      <!-- FAB for adding new life area -->
-      <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-        <ion-fab-button color="primary">
+      <!-- FAB for adding new life area - Zen Style -->
+      <ion-fab slot="fixed" vertical="bottom" horizontal="end" style="margin-bottom: 8px; margin-right: 8px;">
+        <ion-fab-button style="--background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); --box-shadow: 0 8px 24px rgba(34, 197, 94, 0.35);">
           <ion-icon name="add-outline"></ion-icon>
         </ion-fab-button>
       </ion-fab>
@@ -314,12 +339,12 @@ export class GardenPage implements OnInit {
   needsCareCount = signal(0);
 
   suggestedAreas = [
-    { name: 'Health & Fitness', emoji: '💪', description: 'Physical wellbeing and exercise', gradient: 'linear-gradient(135deg, #4CAF50, #8BC34A)' },
-    { name: 'Career & Work', emoji: '💼', description: 'Professional growth and goals', gradient: 'linear-gradient(135deg, #2196F3, #03A9F4)' },
-    { name: 'Relationships', emoji: '❤️', description: 'Family, friends, and connections', gradient: 'linear-gradient(135deg, #E91E63, #F48FB1)' },
-    { name: 'Personal Growth', emoji: '🧠', description: 'Learning and self-improvement', gradient: 'linear-gradient(135deg, #9C27B0, #BA68C8)' },
-    { name: 'Finances', emoji: '💰', description: 'Money management and savings', gradient: 'linear-gradient(135deg, #FF9800, #FFB74D)' },
-    { name: 'Creativity', emoji: '🎨', description: 'Art, hobbies, and expression', gradient: 'linear-gradient(135deg, #00BCD4, #4DD0E1)' },
+    { name: 'Health & Fitness', emoji: '💪', description: 'Physical wellbeing and exercise', gradient: 'linear-gradient(135deg, #bbf7d0, #dcfce7)' },
+    { name: 'Career & Work', emoji: '💼', description: 'Professional growth and goals', gradient: 'linear-gradient(135deg, #bfdbfe, #dbeafe)' },
+    { name: 'Relationships', emoji: '❤️', description: 'Family, friends, and connections', gradient: 'linear-gradient(135deg, #fecdd3, #ffe4e6)' },
+    { name: 'Personal Growth', emoji: '🧠', description: 'Learning and self-improvement', gradient: 'linear-gradient(135deg, #e9d5ff, #f3e8ff)' },
+    { name: 'Finances', emoji: '💰', description: 'Money management and savings', gradient: 'linear-gradient(135deg, #fde68a, #fef3c7)' },
+    { name: 'Creativity', emoji: '🎨', description: 'Art, hobbies, and expression', gradient: 'linear-gradient(135deg, #a5f3fc, #cffafe)' },
   ];
 
   private iconEmojis: Record<string, string> = {
@@ -376,10 +401,28 @@ export class GardenPage implements OnInit {
     return 'danger';
   }
 
+  getHealthColorHex(score: number): string {
+    if (score >= 75) return '#22c55e'; // green-500
+    if (score >= 50) return '#f59e0b'; // amber-500
+    return '#f43f5e'; // rose-500
+  }
+
+  getHealthColorLight(score: number): string {
+    if (score >= 75) return '#86efac'; // green-300
+    if (score >= 50) return '#fcd34d'; // amber-300
+    return '#fda4af'; // rose-300
+  }
+
+  getHealthLabel(score: number): string {
+    if (score >= 75) return 'Thriving';
+    if (score >= 50) return 'Growing';
+    return 'Needs care';
+  }
+
   getHealthGradient(score: number): string {
-    if (score >= 75) return 'linear-gradient(135deg, #4CAF50, #8BC34A)';
-    if (score >= 50) return 'linear-gradient(135deg, #FF9800, #FFB74D)';
-    return 'linear-gradient(135deg, #f44336, #E57373)';
+    if (score >= 75) return 'linear-gradient(135deg, #bbf7d0, #dcfce7)'; // soft green
+    if (score >= 50) return 'linear-gradient(135deg, #fde68a, #fef3c7)'; // soft amber
+    return 'linear-gradient(135deg, #fecdd3, #ffe4e6)'; // soft rose
   }
 
   getEmoji(icon: string): string {

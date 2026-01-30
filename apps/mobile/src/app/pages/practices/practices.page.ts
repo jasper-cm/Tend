@@ -96,16 +96,16 @@ import { ApiService, Practice } from '../../services/api.service';
           Practices
         </ion-title>
       </ion-toolbar>
-      <ion-toolbar>
-        <ion-segment [value]="filter()" (ionChange)="filterBy($event)">
-          <ion-segment-button value="all">
+      <ion-toolbar style="--background: rgba(255, 255, 255, 0.95); --border-color: rgba(134, 239, 172, 0.2);">
+        <ion-segment [value]="filter()" (ionChange)="filterBy($event)" style="--background: rgba(240, 253, 244, 0.8); padding: 4px; border-radius: 16px; margin: 8px 16px;">
+          <ion-segment-button value="all" style="--background-checked: white; --indicator-color: white; --color: #6b7280; --color-checked: #22c55e; --border-radius: 12px; font-weight: 500; min-height: 36px;">
             <ion-label>All</ion-label>
           </ion-segment-button>
-          <ion-segment-button value="active">
+          <ion-segment-button value="active" style="--background-checked: white; --indicator-color: white; --color: #6b7280; --color-checked: #22c55e; --border-radius: 12px; font-weight: 500; min-height: 36px;">
             <ion-label>Active</ion-label>
           </ion-segment-button>
-          <ion-segment-button value="streaks">
-            <ion-icon name="flame-outline"></ion-icon>
+          <ion-segment-button value="streaks" style="--background-checked: white; --indicator-color: white; --color: #6b7280; --color-checked: #22c55e; --border-radius: 12px; font-weight: 500; min-height: 36px;">
+            <ion-icon name="flame-outline" style="font-size: 16px; margin-right: 4px;"></ion-icon>
             <ion-label>Streaks</ion-label>
           </ion-segment-button>
         </ion-segment>
@@ -119,69 +119,79 @@ import { ApiService, Practice } from '../../services/api.service';
 
       @if (loading()) {
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px;">
-          <ion-spinner name="crescent" color="primary" style="width: 48px; height: 48px;"></ion-spinner>
-          <p style="margin-top: 16px; color: var(--ion-color-medium);">Loading practices...</p>
+          <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #dcfce7, #bbf7d0); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 32px rgba(34, 197, 94, 0.2);">
+            <span style="font-size: 40px;">🧘</span>
+          </div>
+          <p style="margin-top: 20px; color: #22c55e; font-weight: 500;">Loading practices...</p>
         </div>
       } @else {
-        <!-- Streak Summary Card -->
+        <!-- Streak Summary Card - Zen Style -->
         @if (practices().length > 0) {
-          <ion-card color="tertiary">
-            <ion-card-header>
-              <ion-card-subtitle>Your Progress</ion-card-subtitle>
-              <ion-card-title style="font-size: 20px;">
-                <ion-icon name="flame" style="margin-right: 8px; vertical-align: middle; color: #FF9800;"></ion-icon>
+          <ion-card style="--background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%); border-radius: 24px; box-shadow: 0 8px 32px rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.2); position: relative; overflow: hidden; margin-bottom: 20px;">
+            <div style="position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%); pointer-events: none;"></div>
+            <ion-card-header style="padding-bottom: 8px;">
+              <ion-card-subtitle style="color: #b45309; font-weight: 500;">Your Progress</ion-card-subtitle>
+              <ion-card-title style="font-size: 22px; color: #78350f; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 24px;">🔥</span>
                 Streak Overview
               </ion-card-title>
             </ion-card-header>
             <ion-card-content>
               <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; text-align: center;">
                 <div>
-                  <div style="font-size: 32px; font-weight: bold;">{{ totalStreakDays() }}</div>
-                  <div style="font-size: 11px; opacity: 0.8;">Total Streak Days</div>
+                  <div style="font-size: 32px; font-weight: 700; color: #78350f;">{{ totalStreakDays() }}</div>
+                  <div style="font-size: 11px; color: #b45309; font-weight: 500;">Total Streak Days</div>
                 </div>
                 <div>
-                  <div style="font-size: 32px; font-weight: bold;">{{ longestStreak() }}</div>
-                  <div style="font-size: 11px; opacity: 0.8;">Longest Streak</div>
+                  <div style="font-size: 32px; font-weight: 700; color: #78350f;">{{ longestStreak() }}</div>
+                  <div style="font-size: 11px; color: #b45309; font-weight: 500;">Longest Streak</div>
                 </div>
                 <div>
-                  <div style="font-size: 32px; font-weight: bold;">{{ onStreakCount() }}</div>
-                  <div style="font-size: 11px; opacity: 0.8;">Active Streaks</div>
+                  <div style="font-size: 32px; font-weight: 700; color: #78350f;">{{ onStreakCount() }}</div>
+                  <div style="font-size: 11px; color: #b45309; font-weight: 500;">Active Streaks</div>
                 </div>
               </div>
             </ion-card-content>
           </ion-card>
 
-          <!-- Quick Stats -->
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px;">
-            <ion-card style="margin: 0;">
-              <ion-card-content style="text-align: center; padding: 16px;">
-                <ion-icon name="checkmark-circle-outline" color="success" style="font-size: 28px;"></ion-icon>
-                <div style="font-size: 24px; font-weight: bold; color: var(--ion-color-success); margin: 4px 0;">{{ activePracticesCount() }}</div>
-                <div style="font-size: 12px; color: var(--ion-color-medium);">Active Practices</div>
+          <!-- Quick Stats - Zen Style -->
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;">
+            <ion-card style="margin: 0; --background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 20px; border: 1px solid rgba(134, 239, 172, 0.2); box-shadow: 0 4px 20px rgba(34, 197, 94, 0.08);">
+              <ion-card-content style="text-align: center; padding: 20px 16px;">
+                <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #dcfce7, #bbf7d0); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">
+                  <span style="font-size: 22px;">✅</span>
+                </div>
+                <div style="font-size: 28px; font-weight: 700; color: #22c55e;">{{ activePracticesCount() }}</div>
+                <div style="font-size: 12px; color: #6b7280; font-weight: 500;">Active Practices</div>
               </ion-card-content>
             </ion-card>
-            <ion-card style="margin: 0;">
-              <ion-card-content style="text-align: center; padding: 16px;">
-                <ion-icon name="pause-circle-outline" color="medium" style="font-size: 28px;"></ion-icon>
-                <div style="font-size: 24px; font-weight: bold; color: var(--ion-color-medium); margin: 4px 0;">{{ pausedPracticesCount() }}</div>
-                <div style="font-size: 12px; color: var(--ion-color-medium);">Paused</div>
+            <ion-card style="margin: 0; --background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 20px; border: 1px solid rgba(134, 239, 172, 0.2); box-shadow: 0 4px 20px rgba(34, 197, 94, 0.08);">
+              <ion-card-content style="text-align: center; padding: 20px 16px;">
+                <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #f3f4f6, #e5e7eb); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">
+                  <span style="font-size: 22px;">⏸️</span>
+                </div>
+                <div style="font-size: 28px; font-weight: 700; color: #6b7280;">{{ pausedPracticesCount() }}</div>
+                <div style="font-size: 12px; color: #6b7280; font-weight: 500;">Paused</div>
               </ion-card-content>
             </ion-card>
           </div>
         }
 
         @if (filteredPractices().length === 0) {
-          <ion-card>
-            <ion-card-content style="text-align: center; padding: 40px 20px;">
-              <div style="font-size: 64px; margin-bottom: 16px;">🌱</div>
-              <h2 style="font-size: 20px; font-weight: 600; margin: 0 0 8px 0; color: var(--ion-color-dark);">
+          <!-- Empty State - Zen Style -->
+          <ion-card style="--background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid rgba(134, 239, 172, 0.2); box-shadow: 0 4px 24px rgba(34, 197, 94, 0.1);">
+            <ion-card-content style="text-align: center; padding: 48px 24px;">
+              <div style="width: 96px; height: 96px; background: linear-gradient(135deg, #dcfce7, #bbf7d0); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 8px 32px rgba(34, 197, 94, 0.2);">
+                <span style="font-size: 48px;">🧘</span>
+              </div>
+              <h2 style="font-size: 22px; font-weight: 700; margin: 0 0 12px 0; color: #1f2937;">
                 {{ filter() === 'all' ? 'No Practices Yet' : 'No Matching Practices' }}
               </h2>
-              <p style="color: var(--ion-color-medium); margin: 0 0 24px 0;">
+              <p style="color: #6b7280; margin: 0 0 28px 0; line-height: 1.6; font-size: 14px;">
                 {{ filter() === 'all' ? 'Add practices to start building healthy habits that nurture your life areas.' : 'Try a different filter to see your practices.' }}
               </p>
               @if (filter() === 'all') {
-                <ion-button expand="block" color="primary" size="large">
+                <ion-button expand="block" size="large" style="--background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); --border-radius: 16px; --box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);">
                   <ion-icon name="add-outline" slot="start"></ion-icon>
                   Add Your First Practice
                 </ion-button>
@@ -189,26 +199,26 @@ import { ApiService, Practice } from '../../services/api.service';
             </ion-card-content>
           </ion-card>
 
-          <!-- Suggested Practices -->
+          <!-- Suggested Practices - Zen Style -->
           @if (filter() === 'all') {
-            <ion-card>
-              <ion-card-header>
-                <ion-card-title>Suggested Practices</ion-card-title>
-                <ion-card-subtitle>Popular habits to get started</ion-card-subtitle>
+            <ion-card style="--background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid rgba(134, 239, 172, 0.2); box-shadow: 0 4px 24px rgba(34, 197, 94, 0.1); overflow: hidden;">
+              <ion-card-header style="border-bottom: 1px solid rgba(134, 239, 172, 0.15); padding: 20px;">
+                <ion-card-title style="color: #1f2937; font-weight: 600; font-size: 18px;">Suggested Practices</ion-card-title>
+                <ion-card-subtitle style="color: #22c55e; font-size: 13px;">Popular habits to get started</ion-card-subtitle>
               </ion-card-header>
-              <ion-list>
+              <ion-list style="--ion-item-background: transparent;">
                 @for (suggestion of suggestedPractices; track suggestion.name) {
-                  <ion-item button>
-                    <ion-avatar slot="start" [style.background]="suggestion.gradient">
-                      <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                  <ion-item button style="--padding-start: 16px; --padding-end: 16px;">
+                    <ion-avatar slot="start" [style.background]="suggestion.gradient" style="width: 48px; height: 48px; border-radius: 14px;">
+                      <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 22px;">
                         {{ suggestion.emoji }}
                       </div>
                     </ion-avatar>
                     <ion-label>
-                      <h2 style="font-weight: 600;">{{ suggestion.name }}</h2>
-                      <p>{{ suggestion.description }}</p>
+                      <h2 style="font-weight: 600; color: #1f2937; font-size: 15px;">{{ suggestion.name }}</h2>
+                      <p style="color: #6b7280; font-size: 13px;">{{ suggestion.description }}</p>
                     </ion-label>
-                    <ion-button slot="end" fill="clear" color="primary">
+                    <ion-button slot="end" fill="clear" style="--color: #22c55e;">
                       <ion-icon name="add-outline" slot="icon-only"></ion-icon>
                     </ion-button>
                   </ion-item>
@@ -217,68 +227,67 @@ import { ApiService, Practice } from '../../services/api.service';
             </ion-card>
           }
         } @else {
-          <!-- Practices List -->
-          <ion-card>
-            <ion-card-header>
-              <ion-card-title>{{ getFilterTitle() }}</ion-card-title>
-              <ion-card-subtitle>Swipe left to log a practice</ion-card-subtitle>
+          <!-- Practices List - Zen Style -->
+          <ion-card style="--background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid rgba(134, 239, 172, 0.2); box-shadow: 0 4px 24px rgba(34, 197, 94, 0.1); overflow: hidden;">
+            <ion-card-header style="border-bottom: 1px solid rgba(134, 239, 172, 0.15); padding: 20px;">
+              <ion-card-title style="color: #1f2937; font-weight: 600; font-size: 18px;">{{ getFilterTitle() }}</ion-card-title>
+              <ion-card-subtitle style="color: #22c55e; font-size: 13px;">Swipe left to log a practice</ion-card-subtitle>
             </ion-card-header>
-            <ion-list>
+            <ion-list style="--ion-item-background: transparent;">
               @for (practice of filteredPractices(); track practice.id) {
                 <ion-item-sliding>
-                  <ion-item>
-                    <ion-avatar slot="start" [style.background]="getPracticeGradient(practice)">
-                      <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                  <ion-item style="--padding-start: 16px; --padding-end: 16px; --inner-padding-end: 0;">
+                    <ion-avatar slot="start" [style.background]="getPracticeGradient(practice)" style="width: 52px; height: 52px; border-radius: 16px;">
+                      <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 24px;">
                         {{ getCategoryEmoji(practice.category) }}
                       </div>
                     </ion-avatar>
                     <ion-label>
                       <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <h2 style="font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                        <h2 style="font-weight: 600; color: #1f2937; font-size: 15px; display: flex; align-items: center; gap: 8px;">
                           {{ practice.name }}
                           @if (!practice.isActive) {
-                            <ion-badge color="medium" style="font-size: 10px;">Paused</ion-badge>
+                            <span style="font-size: 10px; background: #e5e7eb; color: #6b7280; padding: 2px 8px; border-radius: 10px;">Paused</span>
                           }
                         </h2>
                         @if (practice.currentStreak > 0) {
-                          <div style="display: flex; align-items: center; gap: 4px; background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%); color: white; padding: 4px 10px; border-radius: 16px; font-weight: bold;">
-                            <ion-icon name="flame" style="font-size: 16px;"></ion-icon>
-                            <span style="font-size: 16px;">{{ practice.currentStreak }}</span>
+                          <div style="display: flex; align-items: center; gap: 4px; background: linear-gradient(135deg, #fde68a 0%, #fcd34d 100%); color: #78350f; padding: 4px 10px; border-radius: 16px; font-weight: 700; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);">
+                            <span style="font-size: 14px;">🔥</span>
+                            <span style="font-size: 14px;">{{ practice.currentStreak }}</span>
                           </div>
                         }
                       </div>
-                      <p>{{ practice.description }}</p>
-                      <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px;">
+                      <p style="color: #6b7280; font-size: 13px; margin-top: 2px;">{{ practice.description }}</p>
+                      <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;">
                         @if (practice.lifeArea) {
-                          <ion-chip size="small" color="tertiary">
+                          <span style="font-size: 11px; background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #166534; padding: 4px 10px; border-radius: 10px; font-weight: 500;">
                             {{ practice.lifeArea.name }}
-                          </ion-chip>
+                          </span>
                         }
-                        <ion-chip size="small" outline>
-                          <ion-icon name="repeat-outline" style="margin-right: 4px;"></ion-icon>
+                        <span style="font-size: 11px; background: #f3f4f6; color: #6b7280; padding: 4px 10px; border-radius: 10px; display: flex; align-items: center; gap: 4px;">
+                          <ion-icon name="repeat-outline" style="font-size: 12px;"></ion-icon>
                           {{ practice.frequency }}
-                        </ion-chip>
+                        </span>
                         @if (practice.durationMinutes) {
-                          <ion-chip size="small" outline>
-                            <ion-icon name="timer-outline" style="margin-right: 4px;"></ion-icon>
+                          <span style="font-size: 11px; background: #f3f4f6; color: #6b7280; padding: 4px 10px; border-radius: 10px; display: flex; align-items: center; gap: 4px;">
+                            <ion-icon name="timer-outline" style="font-size: 12px;"></ion-icon>
                             {{ practice.durationMinutes }}m
-                          </ion-chip>
+                          </span>
                         }
                       </div>
                       @if (practice.longestStreak > practice.currentStreak && practice.longestStreak > 0) {
-                        <div style="display: flex; align-items: center; gap: 4px; margin-top: 8px; font-size: 12px; color: var(--ion-color-medium);">
-                          <ion-icon name="trophy-outline" style="font-size: 14px; color: var(--ion-color-warning);"></ion-icon>
-                          Personal best: {{ practice.longestStreak }} days
+                        <div style="display: flex; align-items: center; gap: 4px; margin-top: 10px; font-size: 12px; color: #9ca3af;">
+                          <span>🏆</span>
+                          <span>Personal best: {{ practice.longestStreak }} days</span>
                         </div>
                       }
                     </ion-label>
                   </ion-item>
                   <ion-item-options side="end">
                     <ion-item-option
-                      color="success"
                       (click)="logPractice(practice)"
                       [disabled]="!practice.isActive"
-                      style="width: 80px;"
+                      style="width: 80px; --background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);"
                     >
                       <div style="display: flex; flex-direction: column; align-items: center;">
                         <ion-icon name="checkmark-circle-outline" style="font-size: 24px;"></ion-icon>
@@ -293,9 +302,9 @@ import { ApiService, Practice } from '../../services/api.service';
         }
       }
 
-      <!-- FAB for adding new practice -->
-      <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-        <ion-fab-button color="primary">
+      <!-- FAB for adding new practice - Zen Style -->
+      <ion-fab slot="fixed" vertical="bottom" horizontal="end" style="margin-bottom: 8px; margin-right: 8px;">
+        <ion-fab-button style="--background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); --box-shadow: 0 8px 24px rgba(34, 197, 94, 0.35);">
           <ion-icon name="add-outline"></ion-icon>
         </ion-fab-button>
       </ion-fab>
@@ -316,11 +325,11 @@ export class PracticesPage implements OnInit {
   pausedPracticesCount = signal(0);
 
   suggestedPractices = [
-    { name: 'Morning Meditation', emoji: '🧘', description: '10 minutes of mindful breathing', gradient: 'linear-gradient(135deg, #9C27B0, #BA68C8)' },
-    { name: 'Daily Exercise', emoji: '💪', description: '30 minutes of physical activity', gradient: 'linear-gradient(135deg, #4CAF50, #8BC34A)' },
-    { name: 'Journaling', emoji: '📝', description: 'Write your thoughts and reflections', gradient: 'linear-gradient(135deg, #2196F3, #03A9F4)' },
-    { name: 'Reading', emoji: '📚', description: 'Read for 20 minutes', gradient: 'linear-gradient(135deg, #FF9800, #FFB74D)' },
-    { name: 'Gratitude Practice', emoji: '🙏', description: 'List 3 things you\'re grateful for', gradient: 'linear-gradient(135deg, #E91E63, #F48FB1)' },
+    { name: 'Morning Meditation', emoji: '🧘', description: '10 minutes of mindful breathing', gradient: 'linear-gradient(135deg, #e9d5ff, #f3e8ff)' },
+    { name: 'Daily Exercise', emoji: '💪', description: '30 minutes of physical activity', gradient: 'linear-gradient(135deg, #bbf7d0, #dcfce7)' },
+    { name: 'Journaling', emoji: '📝', description: 'Write your thoughts and reflections', gradient: 'linear-gradient(135deg, #bfdbfe, #dbeafe)' },
+    { name: 'Reading', emoji: '📚', description: 'Read for 20 minutes', gradient: 'linear-gradient(135deg, #fde68a, #fef3c7)' },
+    { name: 'Gratitude Practice', emoji: '🙏', description: 'List 3 things you\'re grateful for', gradient: 'linear-gradient(135deg, #fecdd3, #ffe4e6)' },
   ];
 
   private categoryEmojis: Record<string, string> = {
@@ -416,15 +425,15 @@ export class PracticesPage implements OnInit {
 
   getPracticeGradient(practice: Practice): string {
     if (!practice.isActive) {
-      return 'linear-gradient(135deg, #9E9E9E, #BDBDBD)';
+      return 'linear-gradient(135deg, #e5e7eb, #f3f4f6)';
     }
     if (practice.currentStreak >= 7) {
-      return 'linear-gradient(135deg, #FF9800, #FF5722)';
+      return 'linear-gradient(135deg, #fde68a, #fef3c7)'; // soft amber for strong streak
     }
     if (practice.currentStreak > 0) {
-      return 'linear-gradient(135deg, #4CAF50, #8BC34A)';
+      return 'linear-gradient(135deg, #bbf7d0, #dcfce7)'; // soft green for active streak
     }
-    return 'linear-gradient(135deg, #2196F3, #03A9F4)';
+    return 'linear-gradient(135deg, #bfdbfe, #dbeafe)'; // soft blue for no streak
   }
 
   getCategoryEmoji(category: string): string {

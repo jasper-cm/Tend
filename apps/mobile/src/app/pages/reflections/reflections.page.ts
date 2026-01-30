@@ -108,33 +108,36 @@ import { ApiService, Reflection, LifeArea } from '../../services/api.service';
 
       @if (loading()) {
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px;">
-          <ion-spinner name="crescent" color="primary" style="width: 48px; height: 48px;"></ion-spinner>
-          <p style="margin-top: 16px; color: var(--ion-color-medium);">Loading reflections...</p>
+          <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #dcfce7, #bbf7d0); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 32px rgba(34, 197, 94, 0.2);">
+            <span style="font-size: 40px;">📿</span>
+          </div>
+          <p style="margin-top: 20px; color: #22c55e; font-weight: 500;">Loading reflections...</p>
         </div>
       } @else {
-        <!-- Stats Card -->
+        <!-- Stats Card - Zen Style -->
         @if (reflections().length > 0) {
-          <ion-card color="secondary">
-            <ion-card-header>
-              <ion-card-subtitle>Your Journey</ion-card-subtitle>
-              <ion-card-title style="font-size: 20px;">
-                <ion-icon name="sparkles-outline" style="margin-right: 8px; vertical-align: middle;"></ion-icon>
+          <ion-card style="--background: linear-gradient(135deg, #e9d5ff 0%, #f3e8ff 50%, #faf5ff 100%); border-radius: 24px; box-shadow: 0 8px 32px rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.2); position: relative; overflow: hidden; margin-bottom: 20px;">
+            <div style="position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%); pointer-events: none;"></div>
+            <ion-card-header style="padding-bottom: 8px;">
+              <ion-card-subtitle style="color: #7c3aed; font-weight: 500;">Your Journey</ion-card-subtitle>
+              <ion-card-title style="font-size: 22px; color: #5b21b6; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 24px;">✨</span>
                 Reflection Stats
               </ion-card-title>
             </ion-card-header>
             <ion-card-content>
               <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; text-align: center;">
                 <div>
-                  <div style="font-size: 32px; font-weight: bold;">{{ reflections().length }}</div>
-                  <div style="font-size: 11px; opacity: 0.8;">Total Entries</div>
+                  <div style="font-size: 32px; font-weight: 700; color: #5b21b6;">{{ reflections().length }}</div>
+                  <div style="font-size: 11px; color: #7c3aed; font-weight: 500;">Total Entries</div>
                 </div>
                 <div>
-                  <div style="font-size: 32px; font-weight: bold;">{{ currentStreak() }}</div>
-                  <div style="font-size: 11px; opacity: 0.8;">Day Streak</div>
+                  <div style="font-size: 32px; font-weight: 700; color: #5b21b6;">{{ currentStreak() }}</div>
+                  <div style="font-size: 11px; color: #7c3aed; font-weight: 500;">Day Streak</div>
                 </div>
                 <div>
-                  <div style="font-size: 32px; font-weight: bold;">{{ getMostCommonMood() }}</div>
-                  <div style="font-size: 11px; opacity: 0.8;">Top Mood</div>
+                  <div style="font-size: 32px; font-weight: 700; color: #5b21b6;">{{ getMostCommonMood() }}</div>
+                  <div style="font-size: 11px; color: #7c3aed; font-weight: 500;">Top Mood</div>
                 </div>
               </div>
             </ion-card-content>
@@ -142,87 +145,90 @@ import { ApiService, Reflection, LifeArea } from '../../services/api.service';
         }
 
         @if (reflections().length === 0) {
-          <ion-card>
-            <ion-card-content style="text-align: center; padding: 40px 20px;">
-              <div style="font-size: 64px; margin-bottom: 16px;">📝</div>
-              <h2 style="font-size: 20px; font-weight: 600; margin: 0 0 8px 0; color: var(--ion-color-dark);">
+          <!-- Empty State - Zen Style -->
+          <ion-card style="--background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid rgba(134, 239, 172, 0.2); box-shadow: 0 4px 24px rgba(34, 197, 94, 0.1);">
+            <ion-card-content style="text-align: center; padding: 48px 24px;">
+              <div style="width: 96px; height: 96px; background: linear-gradient(135deg, #e9d5ff, #f3e8ff); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 8px 32px rgba(139, 92, 246, 0.2);">
+                <span style="font-size: 48px;">📿</span>
+              </div>
+              <h2 style="font-size: 22px; font-weight: 700; margin: 0 0 12px 0; color: #1f2937;">
                 No Reflections Yet
               </h2>
-              <p style="color: var(--ion-color-medium); margin: 0 0 24px 0;">
+              <p style="color: #6b7280; margin: 0 0 28px 0; line-height: 1.6; font-size: 14px;">
                 Start journaling to track your growth, celebrate wins,<br>
                 and gain insights about your life garden.
               </p>
-              <ion-button expand="block" color="primary" size="large" (click)="openNewReflection()">
+              <ion-button expand="block" size="large" (click)="openNewReflection()" style="--background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); --border-radius: 16px; --box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);">
                 <ion-icon name="add-outline" slot="start"></ion-icon>
                 Write Your First Reflection
               </ion-button>
             </ion-card-content>
           </ion-card>
 
-          <!-- Writing Prompts -->
-          <ion-card>
-            <ion-card-header>
-              <ion-card-title>Writing Prompts</ion-card-title>
-              <ion-card-subtitle>Get inspired to start journaling</ion-card-subtitle>
+          <!-- Writing Prompts - Zen Style -->
+          <ion-card style="--background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid rgba(134, 239, 172, 0.2); box-shadow: 0 4px 24px rgba(34, 197, 94, 0.1); overflow: hidden;">
+            <ion-card-header style="border-bottom: 1px solid rgba(134, 239, 172, 0.15); padding: 20px;">
+              <ion-card-title style="color: #1f2937; font-weight: 600; font-size: 18px;">Writing Prompts</ion-card-title>
+              <ion-card-subtitle style="color: #22c55e; font-size: 13px;">Get inspired to start journaling</ion-card-subtitle>
             </ion-card-header>
-            <ion-list>
+            <ion-list style="--ion-item-background: transparent;">
               @for (prompt of writingPrompts; track prompt.title) {
-                <ion-item button (click)="startWithPrompt(prompt.starter)">
-                  <ion-avatar slot="start" [style.background]="prompt.gradient">
-                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                <ion-item button (click)="startWithPrompt(prompt.starter)" style="--padding-start: 16px; --padding-end: 16px;">
+                  <ion-avatar slot="start" [style.background]="prompt.gradient" style="width: 48px; height: 48px; border-radius: 14px;">
+                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 22px;">
                       {{ prompt.emoji }}
                     </div>
                   </ion-avatar>
                   <ion-label>
-                    <h2 style="font-weight: 600;">{{ prompt.title }}</h2>
-                    <p>{{ prompt.starter }}</p>
+                    <h2 style="font-weight: 600; color: #1f2937; font-size: 15px;">{{ prompt.title }}</h2>
+                    <p style="color: #6b7280; font-size: 13px;">{{ prompt.starter }}</p>
                   </ion-label>
-                  <ion-icon name="add-outline" slot="end" color="primary"></ion-icon>
+                  <ion-icon name="add-outline" slot="end" style="color: #22c55e;"></ion-icon>
                 </ion-item>
               }
             </ion-list>
           </ion-card>
         } @else {
-          <!-- Reflections List -->
-          <ion-card>
-            <ion-card-header>
-              <ion-card-title>Your Reflections</ion-card-title>
-              <ion-card-subtitle>{{ reflections().length }} entries in your journal</ion-card-subtitle>
+          <!-- Reflections List - Zen Style -->
+          <ion-card style="--background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid rgba(134, 239, 172, 0.2); box-shadow: 0 4px 24px rgba(34, 197, 94, 0.1); overflow: hidden;">
+            <ion-card-header style="border-bottom: 1px solid rgba(134, 239, 172, 0.15); padding: 20px;">
+              <ion-card-title style="color: #1f2937; font-weight: 600; font-size: 18px;">Your Reflections</ion-card-title>
+              <ion-card-subtitle style="color: #22c55e; font-size: 13px;">{{ reflections().length }} entries in your journal</ion-card-subtitle>
             </ion-card-header>
-            <ion-list>
+            <ion-list style="--ion-item-background: transparent;">
               @for (reflection of reflections(); track reflection.id) {
-                <ion-item button detail="true">
-                  <ion-avatar slot="start" [style.background]="getMoodGradient(reflection.mood || 'okay')">
-                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                <ion-item button detail="true" style="--padding-start: 16px; --padding-end: 16px; --detail-icon-color: #22c55e;">
+                  <ion-avatar slot="start" [style.background]="getMoodGradient(reflection.mood || 'okay')" style="width: 52px; height: 52px; border-radius: 16px;">
+                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 26px;">
                       {{ getMoodEmoji(reflection.mood || 'okay') }}
                     </div>
                   </ion-avatar>
                   <ion-label>
                     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                      <h2 style="font-weight: 600; margin: 0;">{{ reflection.title }}</h2>
+                      <h2 style="font-weight: 600; color: #1f2937; font-size: 15px; margin: 0;">{{ reflection.title }}</h2>
                     </div>
-                    <p style="font-size: 12px; color: var(--ion-color-medium); margin: 4px 0 8px 0;">
-                      <ion-icon name="calendar-outline" style="font-size: 12px; margin-right: 4px; vertical-align: middle;"></ion-icon>
+                    <p style="font-size: 12px; color: #9ca3af; margin: 4px 0 8px 0; display: flex; align-items: center; gap: 4px;">
+                      <ion-icon name="calendar-outline" style="font-size: 12px;"></ion-icon>
                       {{ formatDate(reflection.createdAt) }}
                     </p>
-                    <p style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin: 0 0 8px 0;">
+                    <p style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin: 0 0 10px 0; color: #6b7280; font-size: 13px; line-height: 1.5;">
                       {{ reflection.content }}
                     </p>
                     @if (reflection.gratitude && reflection.gratitude.length > 0) {
-                      <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
-                        <ion-icon name="heart-outline" color="danger" style="font-size: 14px;"></ion-icon>
-                        <span style="font-size: 12px; color: var(--ion-color-medium);">
+                      <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 10px;">
+                        <span style="font-size: 14px;">❤️</span>
+                        <span style="font-size: 12px; color: #9ca3af;">
                           {{ reflection.gratitude.length }} gratitude{{ reflection.gratitude.length > 1 ? 's' : '' }}
                         </span>
                       </div>
                     }
                     @if (reflection.lifeAreas && reflection.lifeAreas.length > 0) {
-                      <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                      <div style="display: flex; flex-wrap: wrap; gap: 6px;">
                         @for (la of reflection.lifeAreas.slice(0, 3); track la.lifeArea.id) {
-                          <ion-chip size="small" color="tertiary">{{ la.lifeArea.name }}</ion-chip>
+                          <span style="font-size: 11px; background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #166534; padding: 4px 10px; border-radius: 10px; font-weight: 500;">{{ la.lifeArea.name }}</span>
                         }
                         @if (reflection.lifeAreas.length > 3) {
-                          <ion-chip size="small" color="medium">+{{ reflection.lifeAreas.length - 3 }}</ion-chip>
+                          <span style="font-size: 11px; background: #f3f4f6; color: #6b7280; padding: 4px 10px; border-radius: 10px;">+{{ reflection.lifeAreas.length - 3 }}</span>
                         }
                       </div>
                     }
@@ -359,8 +365,9 @@ import { ApiService, Reflection, LifeArea } from '../../services/api.service';
         </ng-template>
       </ion-modal>
 
-      <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-        <ion-fab-button (click)="openNewReflection()" color="primary">
+      <!-- FAB - Zen Style -->
+      <ion-fab slot="fixed" vertical="bottom" horizontal="end" style="margin-bottom: 8px; margin-right: 8px;">
+        <ion-fab-button (click)="openNewReflection()" style="--background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); --box-shadow: 0 8px 24px rgba(34, 197, 94, 0.35);">
           <ion-icon name="add-outline"></ion-icon>
         </ion-fab-button>
       </ion-fab>
@@ -394,10 +401,10 @@ export class ReflectionsPage implements OnInit {
   ];
 
   writingPrompts = [
-    { title: 'Gratitude', emoji: '🙏', starter: 'Today I am grateful for...', gradient: 'linear-gradient(135deg, #FF9800, #FFB74D)' },
-    { title: 'Achievement', emoji: '🏆', starter: 'Something I accomplished recently...', gradient: 'linear-gradient(135deg, #4CAF50, #8BC34A)' },
-    { title: 'Learning', emoji: '💡', starter: 'A lesson I learned today...', gradient: 'linear-gradient(135deg, #2196F3, #03A9F4)' },
-    { title: 'Challenge', emoji: '💪', starter: 'A challenge I\'m facing and how I plan to overcome it...', gradient: 'linear-gradient(135deg, #E91E63, #F48FB1)' },
+    { title: 'Gratitude', emoji: '🙏', starter: 'Today I am grateful for...', gradient: 'linear-gradient(135deg, #fde68a, #fef3c7)' },
+    { title: 'Achievement', emoji: '🏆', starter: 'Something I accomplished recently...', gradient: 'linear-gradient(135deg, #bbf7d0, #dcfce7)' },
+    { title: 'Learning', emoji: '💡', starter: 'A lesson I learned today...', gradient: 'linear-gradient(135deg, #bfdbfe, #dbeafe)' },
+    { title: 'Challenge', emoji: '💪', starter: 'A challenge I\'m facing and how I plan to overcome it...', gradient: 'linear-gradient(135deg, #fecdd3, #ffe4e6)' },
   ];
 
   private moodEmojis: Record<string, string> = {
@@ -566,17 +573,17 @@ export class ReflectionsPage implements OnInit {
   getMoodGradient(mood: string | undefined): string {
     switch (mood?.toLowerCase()) {
       case 'great':
-        return 'linear-gradient(135deg, #4CAF50, #8BC34A)';
+        return 'linear-gradient(135deg, #bbf7d0, #dcfce7)'; // soft green
       case 'good':
-        return 'linear-gradient(135deg, #8BC34A, #CDDC39)';
+        return 'linear-gradient(135deg, #d9f99d, #ecfccb)'; // soft lime
       case 'okay':
-        return 'linear-gradient(135deg, #FFC107, #FFEB3B)';
+        return 'linear-gradient(135deg, #fde68a, #fef3c7)'; // soft amber
       case 'low':
-        return 'linear-gradient(135deg, #FF9800, #FFB74D)';
+        return 'linear-gradient(135deg, #fed7aa, #ffedd5)'; // soft orange
       case 'difficult':
-        return 'linear-gradient(135deg, #f44336, #E57373)';
+        return 'linear-gradient(135deg, #fecdd3, #ffe4e6)'; // soft rose
       default:
-        return 'linear-gradient(135deg, #9E9E9E, #BDBDBD)';
+        return 'linear-gradient(135deg, #e5e7eb, #f3f4f6)'; // soft gray
     }
   }
 

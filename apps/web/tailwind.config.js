@@ -4,7 +4,21 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Spiritual green palette — soft, nurturing, ethereal
+        // Zen — primary spiritual light green palette
+        zen: {
+          50: '#f0fdf4',
+          100: '#dcfce7',
+          200: '#bbf7d0',
+          300: '#86efac',
+          400: '#4ade80',
+          500: '#22c55e',
+          600: '#16a34a',
+          700: '#15803d',
+          800: '#166534',
+          900: '#14532d',
+          950: '#052e16',
+        },
+        // Spirit — soft nurturing greens
         spirit: {
           50: '#f0f7f1',
           100: '#dceedf',
@@ -31,6 +45,20 @@ module.exports = {
           800: '#314335',
           900: '#2a382d',
           950: '#141e17',
+        },
+        // Mint — fresh, airy greens
+        mint: {
+          50: '#f0fdfa',
+          100: '#ccfbf1',
+          200: '#99f6e4',
+          300: '#5eead4',
+          400: '#2dd4bf',
+          500: '#14b8a6',
+          600: '#0d9488',
+          700: '#0f766e',
+          800: '#115e59',
+          900: '#134e4a',
+          950: '#042f2e',
         },
         // Earth — grounding tones
         earth: {
@@ -102,10 +130,12 @@ module.exports = {
           900: '#27444f',
           950: '#152c35',
         },
-        // Background tones
+        // Background tones — clean, light
         cream: '#fdfcf9',
         parchment: '#f8f6f1',
         sand: '#efe9de',
+        lotus: '#f0fdf4',
+        serenity: '#f7fdf9',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
@@ -114,47 +144,81 @@ module.exports = {
       borderRadius: {
         'soft': '0.625rem',
         'softer': '1rem',
+        'spiritual': '1.5rem',
         'pill': '9999px',
       },
       boxShadow: {
         'soft': '0 2px 8px -2px rgba(45, 62, 48, 0.08), 0 4px 16px -4px rgba(45, 62, 48, 0.12)',
         'soft-lg': '0 4px 16px -4px rgba(45, 62, 48, 0.1), 0 8px 32px -8px rgba(45, 62, 48, 0.15)',
-        'glow': '0 0 20px -5px rgba(61, 154, 80, 0.25)',
-        'glow-lg': '0 0 40px -10px rgba(61, 154, 80, 0.35)',
+        'zen': '0 4px 20px -4px rgba(34, 197, 94, 0.15)',
+        'zen-lg': '0 8px 40px -8px rgba(34, 197, 94, 0.2)',
+        'glow': '0 0 20px -5px rgba(34, 197, 94, 0.25)',
+        'glow-lg': '0 0 40px -10px rgba(34, 197, 94, 0.35)',
         'inner-soft': 'inset 0 2px 4px 0 rgba(45, 62, 48, 0.05)',
+        'meditation': '0 0 60px -15px rgba(34, 197, 94, 0.2)',
       },
       backgroundImage: {
-        'gradient-spirit': 'linear-gradient(135deg, #f0f7f1 0%, #e3ebe4 50%, #f0f7f1 100%)',
+        'gradient-spirit': 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #f0fdf4 100%)',
+        'gradient-zen': 'linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%)',
+        'gradient-meditation': 'linear-gradient(135deg, #f0fdf4 0%, #ccfbf1 50%, #f0fdf4 100%)',
         'gradient-earth': 'linear-gradient(180deg, #fdfcf9 0%, #f8f6f1 100%)',
-        'gradient-glow': 'radial-gradient(ellipse at center, rgba(61, 154, 80, 0.08) 0%, transparent 70%)',
-        'gradient-mist': 'linear-gradient(180deg, rgba(222, 233, 230, 0.5) 0%, transparent 100%)',
+        'gradient-glow': 'radial-gradient(ellipse at center, rgba(34, 197, 94, 0.08) 0%, transparent 70%)',
+        'gradient-mist': 'linear-gradient(180deg, rgba(240, 253, 244, 0.8) 0%, transparent 100%)',
+        'gradient-serene': 'linear-gradient(180deg, #f0fdf4 0%, #f7fdf9 50%, #ffffff 100%)',
+        'gradient-lotus': 'radial-gradient(ellipse at top, rgba(134, 239, 172, 0.15) 0%, transparent 50%)',
       },
       animation: {
-        'breathe': 'breathe 4s ease-in-out infinite',
-        'float': 'float 6s ease-in-out infinite',
-        'glow-pulse': 'glow-pulse 3s ease-in-out infinite',
+        'breathe': 'breathe 6s ease-in-out infinite',
+        'breathe-slow': 'breathe 8s ease-in-out infinite',
+        'float': 'float 8s ease-in-out infinite',
+        'float-slow': 'float 12s ease-in-out infinite',
+        'glow-pulse': 'glow-pulse 4s ease-in-out infinite',
+        'fade-in': 'fadeIn 0.5s ease-out',
+        'slide-up': 'slideUp 0.5s ease-out',
+        'zen-pulse': 'zenPulse 6s ease-in-out infinite',
+        'ripple': 'ripple 2s ease-out infinite',
       },
       keyframes: {
         breathe: {
-          '0%, 100%': { transform: 'scale(1)' },
-          '50%': { transform: 'scale(1.02)' },
+          '0%, 100%': { transform: 'scale(1)', opacity: '1' },
+          '50%': { transform: 'scale(1.02)', opacity: '0.95' },
         },
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-4px)' },
+          '50%': { transform: 'translateY(-8px)' },
         },
         'glow-pulse': {
-          '0%, 100%': { boxShadow: '0 0 20px -5px rgba(61, 154, 80, 0.25)' },
-          '50%': { boxShadow: '0 0 30px -5px rgba(61, 154, 80, 0.4)' },
+          '0%, 100%': { boxShadow: '0 0 20px -5px rgba(34, 197, 94, 0.25)' },
+          '50%': { boxShadow: '0 0 40px -5px rgba(34, 197, 94, 0.4)' },
+        },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideUp: {
+          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        zenPulse: {
+          '0%, 100%': { opacity: '0.6' },
+          '50%': { opacity: '1' },
+        },
+        ripple: {
+          '0%': { transform: 'scale(1)', opacity: '0.4' },
+          '100%': { transform: 'scale(2)', opacity: '0' },
         },
       },
       transitionTimingFunction: {
         'soft': 'cubic-bezier(0.4, 0, 0.2, 1)',
         'gentle': 'cubic-bezier(0.22, 1, 0.36, 1)',
+        'zen': 'cubic-bezier(0.4, 0, 0.1, 1)',
       },
       spacing: {
         '18': '4.5rem',
         '22': '5.5rem',
+      },
+      backdropBlur: {
+        'zen': '20px',
       },
     },
   },

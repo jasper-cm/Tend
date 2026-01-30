@@ -23,10 +23,10 @@ describe('AppComponent', () => {
     expect(component.title).toBe('Tend');
   });
 
-  it('should render the header', () => {
+  it('should render the sidebar title', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('header h1')?.textContent).toContain('Tend');
+    expect(compiled.querySelector('aside h1')?.textContent).toContain('Tend');
   });
 
   it('should render the router outlet', () => {

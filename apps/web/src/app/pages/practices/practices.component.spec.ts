@@ -20,6 +20,6 @@ describe('PracticesComponent', () => {
   it('should render the page title', () => {
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
-    expect(el.querySelector('h2')?.textContent).toContain('Practices');
+    expect(el.querySelector('h1')?.textContent).toContain('Practices');
   });
 });

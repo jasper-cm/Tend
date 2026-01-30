@@ -258,10 +258,10 @@ import { ApiService, Practice } from '../../services/api.service';
                           <ion-icon name="repeat-outline" style="margin-right: 4px;"></ion-icon>
                           {{ practice.frequency }}
                         </ion-chip>
-                        @if (practice.duration) {
+                        @if (practice.durationMinutes) {
                           <ion-chip size="small" outline>
                             <ion-icon name="timer-outline" style="margin-right: 4px;"></ion-icon>
-                            {{ practice.duration }}m
+                            {{ practice.durationMinutes }}m
                           </ion-chip>
                         }
                       </div>

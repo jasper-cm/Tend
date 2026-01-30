@@ -3,7 +3,6 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
 import { LifeAreaDetailPage } from './life-area-detail.page';
 
 describe('LifeAreaDetailPage', () => {

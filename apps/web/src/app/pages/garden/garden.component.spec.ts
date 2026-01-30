@@ -22,6 +22,6 @@ describe('GardenComponent', () => {
   it('should render the page title', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h2')?.textContent).toContain('Your Life Garden');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Your Life Garden');
   });
 });

@@ -15,108 +15,160 @@ interface ChatMessage {
   imports: [CommonModule, FormsModule],
   template: `
     <div class="space-y-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <h2 class="text-2xl font-bold text-earth-800">Garden Guide</h2>
-          <p class="text-earth-600">
-            Your AI-powered life coach. Ask questions and receive personalized guidance.
-          </p>
+      <!-- Hero Section -->
+      <div class="bg-gradient-to-br from-purple-500 via-purple-600 to-indigo-700 rounded-2xl p-6 lg:p-8 text-white relative overflow-hidden shadow-lg">
+        <!-- Decorative elements -->
+        <div class="absolute -top-16 -right-16 w-48 h-48 bg-white/10 rounded-full blur-xl"></div>
+        <div class="absolute -bottom-12 -left-12 w-36 h-36 bg-white/5 rounded-full blur-lg"></div>
+        <div class="absolute top-1/2 right-1/4 w-20 h-20 bg-white/5 rounded-full blur-lg"></div>
+
+        <div class="relative z-10">
+          <div class="flex items-start justify-between">
+            <div>
+              <h1 class="text-3xl lg:text-4xl font-bold mb-2">Garden Guide</h1>
+              <p class="text-white/90 max-w-lg">
+                Your AI-powered life coach. Ask questions and receive personalized guidance for your growth journey.
+              </p>
+            </div>
+            <div class="hidden md:block">
+              <div class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                <span class="text-4xl">✨</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Toggle Button -->
+          <div class="mt-6">
+            <button
+              (click)="toggleInsights()"
+              class="px-5 py-2.5 bg-white/20 backdrop-blur-sm text-white rounded-xl hover:bg-white/30 transition-all font-medium flex items-center gap-2"
+            >
+              @if (showInsights()) {
+                <span>💬</span>
+                <span>Open Chat</span>
+              } @else {
+                <span>💡</span>
+                <span>View Insights</span>
+              }
+            </button>
+          </div>
         </div>
-        <button
-          (click)="toggleInsights()"
-          class="px-4 py-2 bg-golden-400 text-earth-800 rounded-soft hover:bg-golden-300 transition-colors text-sm font-medium"
-        >
-          {{ showInsights() ? 'Show Chat' : 'View Insights' }}
-        </button>
       </div>
 
       @if (showInsights()) {
         <!-- Insights Panel -->
         <div class="space-y-4">
           @if (loadingInsights()) {
-            <div class="flex items-center justify-center py-12">
-              <div class="animate-pulse text-sage-500">Gathering insights...</div>
+            <div class="flex flex-col items-center justify-center py-16">
+              <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center animate-pulse mb-4">
+                <span class="text-3xl">✨</span>
+              </div>
+              <p class="text-gray-500">Gathering insights...</p>
             </div>
           } @else {
-            <div class="bg-parchment rounded-soft p-4 border border-sage-300/30">
-              <p class="text-earth-600">{{ insightsSummary() }}</p>
+            <!-- Summary Card -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <span class="text-2xl">🌟</span>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-gray-800 mb-1">Garden Summary</h3>
+                  <p class="text-gray-600">{{ insightsSummary() }}</p>
+                </div>
+              </div>
             </div>
 
             @if (insights().length === 0) {
-              <div class="bg-parchment rounded-soft p-8 text-center border border-sage-300/30">
-                <div class="text-4xl mb-4">🌱</div>
-                <p class="text-earth-600">No specific insights right now. Your garden is doing well!</p>
+              <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span class="text-4xl">🌱</span>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">All is Well!</h3>
+                <p class="text-gray-500">No specific insights right now. Your garden is flourishing!</p>
               </div>
             } @else {
-              <div class="space-y-3">
-                @for (insight of insights(); track $index) {
-                  <div
-                    class="bg-parchment rounded-soft p-4 border-l-4 transition-colors"
-                    [class.border-l-spirit-500]="insight.type === 'celebration'"
-                    [class.border-l-golden-400]="insight.type === 'encouragement'"
-                    [class.border-l-water-500]="insight.type === 'suggestion'"
-                    [class.border-l-earth-500]="insight.type === 'observation'"
-                  >
-                    <div class="flex items-start gap-3">
-                      <span class="text-2xl">{{ getInsightIcon(insight.type) }}</span>
-                      <div>
-                        <h4 class="font-medium text-earth-800">{{ insight.title }}</h4>
-                        <p class="text-earth-600 text-sm mt-1">{{ insight.message }}</p>
-                        @if (insight.lifeArea) {
-                          <span class="inline-block mt-2 px-2 py-0.5 bg-sage-200/30 text-spirit-600 text-xs rounded">
-                            {{ insight.lifeArea }}
-                          </span>
-                        }
+              <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-100">
+                  <h2 class="text-lg font-semibold text-gray-800">Personalized Insights</h2>
+                  <p class="text-sm text-gray-500">{{ insights().length }} insights for your growth</p>
+                </div>
+                <div class="divide-y divide-gray-100">
+                  @for (insight of insights(); track $index) {
+                    <div class="p-5 hover:bg-gray-50 transition-colors">
+                      <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                             [style.background]="getInsightGradient(insight.type)">
+                          <span class="text-2xl">{{ getInsightIcon(insight.type) }}</span>
+                        </div>
+                        <div class="flex-1">
+                          <h4 class="font-semibold text-gray-800 mb-1">{{ insight.title }}</h4>
+                          <p class="text-gray-600 text-sm">{{ insight.message }}</p>
+                          @if (insight.lifeArea) {
+                            <span class="inline-block mt-2 px-3 py-1 bg-spirit-100 text-spirit-700 text-xs rounded-full">
+                              {{ insight.lifeArea }}
+                            </span>
+                          }
+                        </div>
                       </div>
                     </div>
-                  </div>
-                }
+                  }
+                </div>
               </div>
             }
           }
         </div>
       } @else {
         <!-- Chat Interface -->
-        <div class="bg-parchment rounded-soft border border-sage-300/30 overflow-hidden flex flex-col" style="height: 500px;">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col" style="height: 550px;">
           <!-- Chat Messages -->
-          <div #chatContainer class="flex-1 overflow-y-auto p-4 space-y-4">
+          <div #chatContainer class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50">
             @if (messages().length === 0) {
-              <div class="text-center py-8">
-                <div class="text-5xl mb-4">🌿</div>
-                <h3 class="text-lg font-medium text-earth-800 mb-2">Welcome to the Garden Guide</h3>
-                <p class="text-earth-600 text-sm max-w-md mx-auto">
+              <div class="text-center py-12">
+                <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <span class="text-4xl">🌿</span>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Welcome to the Garden Guide</h3>
+                <p class="text-gray-500 text-sm max-w-md mx-auto mb-6">
                   I'm here to help you tend your life garden. Ask me about your progress,
                   get suggestions for practices, or just chat about how you're doing.
                 </p>
-                <div class="flex flex-wrap gap-2 justify-center mt-4">
-                  @for (prompt of quickPrompts; track prompt) {
+
+                <!-- Quick Prompts -->
+                <div class="grid grid-cols-2 gap-3 max-w-lg mx-auto">
+                  @for (prompt of quickPromptsWithIcons; track prompt.text) {
                     <button
-                      (click)="sendMessage(prompt)"
-                      class="px-3 py-1 bg-cream text-earth-800 rounded-full text-sm hover:bg-sage-200/30 transition-colors"
+                      (click)="sendMessage(prompt.text)"
+                      class="p-4 bg-white rounded-xl text-left hover:shadow-md transition-all group border border-gray-100"
                     >
-                      {{ prompt }}
+                      <div class="flex items-center gap-3">
+                        <span class="text-2xl group-hover:scale-110 transition-transform">{{ prompt.icon }}</span>
+                        <span class="text-sm text-gray-700">{{ prompt.text }}</span>
+                      </div>
                     </button>
                   }
                 </div>
               </div>
             } @else {
               @for (message of messages(); track $index) {
-                <div
-                  class="flex"
-                  [class.justify-end]="message.role === 'user'"
-                >
+                <div class="flex" [class.justify-end]="message.role === 'user'">
                   <div
-                    class="max-w-[80%] rounded-soft px-4 py-2"
-                    [class.bg-spirit-500]="message.role === 'user'"
+                    class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm"
+                    [class.bg-gradient-to-br]="message.role === 'user'"
+                    [class.from-spirit-500]="message.role === 'user'"
+                    [class.to-spirit-600]="message.role === 'user'"
                     [class.text-white]="message.role === 'user'"
-                    [class.bg-cream]="message.role === 'assistant'"
-                    [class.text-earth-800]="message.role === 'assistant'"
+                    [class.bg-white]="message.role === 'assistant'"
+                    [class.text-gray-800]="message.role === 'assistant'"
                   >
+                    @if (message.role === 'assistant') {
+                      <div class="flex items-center gap-2 mb-2">
+                        <span class="text-lg">✨</span>
+                        <span class="text-xs font-medium text-purple-600">Garden Guide</span>
+                      </div>
+                    }
                     <p class="whitespace-pre-line">{{ message.content }}</p>
-                    <div
-                      class="text-xs mt-1 opacity-70"
-                      [class.text-right]="message.role === 'user'"
-                    >
+                    <div class="text-xs mt-2 opacity-70" [class.text-right]="message.role === 'user'">
                       {{ formatTime(message.timestamp) }}
                     </div>
                   </div>
@@ -125,11 +177,15 @@ interface ChatMessage {
 
               @if (isTyping()) {
                 <div class="flex">
-                  <div class="bg-cream rounded-soft px-4 py-2">
-                    <div class="flex gap-1">
-                      <span class="w-2 h-2 bg-sage-400 rounded-full animate-bounce" style="animation-delay: 0ms;"></span>
-                      <span class="w-2 h-2 bg-sage-400 rounded-full animate-bounce" style="animation-delay: 150ms;"></span>
-                      <span class="w-2 h-2 bg-sage-400 rounded-full animate-bounce" style="animation-delay: 300ms;"></span>
+                  <div class="bg-white rounded-2xl px-4 py-3 shadow-sm">
+                    <div class="flex items-center gap-2 mb-2">
+                      <span class="text-lg">✨</span>
+                      <span class="text-xs font-medium text-purple-600">Garden Guide</span>
+                    </div>
+                    <div class="flex gap-1.5 py-1">
+                      <span class="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style="animation-delay: 0ms;"></span>
+                      <span class="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style="animation-delay: 150ms;"></span>
+                      <span class="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style="animation-delay: 300ms;"></span>
                     </div>
                   </div>
                 </div>
@@ -138,20 +194,20 @@ interface ChatMessage {
           </div>
 
           <!-- Input Area -->
-          <div class="border-t border-sage-300/30 p-4">
-            <div class="flex gap-2">
+          <div class="border-t border-gray-100 p-4 bg-white">
+            <div class="flex gap-3">
               <input
                 type="text"
                 [(ngModel)]="inputMessage"
                 (keyup.enter)="sendMessage()"
                 [disabled]="isTyping()"
-                class="flex-1 px-4 py-2 border border-sage-300/40 rounded-soft focus:outline-none focus:border-spirit-500 disabled:opacity-50"
+                class="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:opacity-50 transition-all"
                 placeholder="Ask the Garden Guide..."
               />
               <button
                 (click)="sendMessage()"
                 [disabled]="!inputMessage.trim() || isTyping()"
-                class="px-4 py-2 bg-spirit-500 text-white rounded-soft hover:bg-spirit-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                class="px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-xl hover:from-purple-600 hover:to-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-sm"
               >
                 Send
               </button>
@@ -182,6 +238,20 @@ export class GardenGuideComponent implements OnInit {
     'Show me my progress',
     'I need some encouragement',
   ];
+
+  quickPromptsWithIcons = [
+    { icon: '🌿', text: 'How is my garden doing?' },
+    { icon: '🎯', text: 'What should I focus on?' },
+    { icon: '📈', text: 'Show me my progress' },
+    { icon: '💪', text: 'I need some encouragement' },
+  ];
+
+  private insightGradients: Record<string, string> = {
+    celebration: 'linear-gradient(135deg, #4CAF50, #8BC34A)',
+    encouragement: 'linear-gradient(135deg, #FF9800, #FFB74D)',
+    suggestion: 'linear-gradient(135deg, #2196F3, #64B5F6)',
+    observation: 'linear-gradient(135deg, #9C27B0, #BA68C8)',
+  };
 
   ngOnInit(): void {
     this.loadInsights();
@@ -266,6 +336,10 @@ export class GardenGuideComponent implements OnInit {
       observation: '👀',
     };
     return icons[type] || '🌱';
+  }
+
+  getInsightGradient(type: string): string {
+    return this.insightGradients[type] || 'linear-gradient(135deg, #9C27B0, #BA68C8)';
   }
 
   formatTime(date: Date): string {

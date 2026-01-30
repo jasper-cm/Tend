@@ -29,15 +29,25 @@ import {
   IonItemOption,
   IonSegment,
   IonSegmentButton,
+  IonAvatar,
+  IonFab,
+  IonFabButton,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   leafOutline,
   flameOutline,
+  flame,
   checkmarkCircleOutline,
+  checkmarkCircle,
   calendarOutline,
   trendingUpOutline,
   sparklesOutline,
+  addOutline,
+  timerOutline,
+  repeatOutline,
+  heartOutline,
+  arrowBackOutline,
 } from 'ionicons/icons';
 import { ApiService, LifeArea, Practice, Reflection } from '../../services/api.service';
 
@@ -73,14 +83,17 @@ import { ApiService, LifeArea, Practice, Reflection } from '../../services/api.s
     IonItemOption,
     IonSegment,
     IonSegmentButton,
+    IonAvatar,
+    IonFab,
+    IonFabButton,
   ],
   template: `
     <ion-header>
-      <ion-toolbar color="primary">
+      <ion-toolbar [style.--background]="getGradient()" style="--color: white;">
         <ion-buttons slot="start">
-          <ion-back-button defaultHref="/garden"></ion-back-button>
+          <ion-back-button defaultHref="/garden" color="light"></ion-back-button>
         </ion-buttons>
-        <ion-title>{{ lifeArea()?.name || 'Life Area' }}</ion-title>
+        <ion-title style="color: white;">{{ lifeArea()?.name || 'Life Area' }}</ion-title>
       </ion-toolbar>
     </ion-header>
 
@@ -90,405 +103,257 @@ import { ApiService, LifeArea, Practice, Reflection } from '../../services/api.s
       </ion-refresher>
 
       @if (loading()) {
-        <div class="loading-container">
-          <ion-spinner name="crescent" color="primary"></ion-spinner>
-          <p>Loading...</p>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px;">
+          <ion-spinner name="crescent" color="primary" style="width: 48px; height: 48px;"></ion-spinner>
+          <p style="margin-top: 16px; color: var(--ion-color-medium);">Loading life area...</p>
         </div>
       } @else if (lifeArea()) {
-        <!-- Hero Card -->
-        <div class="hero-section" [style.background]="getGradient()">
-          <div class="hero-content">
-            <div class="hero-icon">{{ getIcon() }}</div>
-            <h1 class="hero-title">{{ lifeArea()!.name }}</h1>
-            <p class="hero-description">{{ lifeArea()!.description }}</p>
+        <!-- Hero Section -->
+        <div [style.background]="getGradient()" style="padding: 24px 24px 80px; color: white; position: relative; overflow: hidden;">
+          <!-- Decorative circles -->
+          <div style="position: absolute; top: -30%; right: -20%; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+          <div style="position: absolute; bottom: -40%; left: -15%; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%;"></div>
 
-            <div class="health-ring">
-              <svg viewBox="0 0 120 120" class="progress-ring">
-                <circle
-                  class="progress-ring-bg"
-                  cx="60"
-                  cy="60"
-                  r="52"
-                  fill="none"
-                  stroke="rgba(255,255,255,0.3)"
-                  stroke-width="8"
-                />
-                <circle
-                  class="progress-ring-fill"
-                  cx="60"
-                  cy="60"
-                  r="52"
-                  fill="none"
-                  stroke="white"
-                  stroke-width="8"
-                  stroke-linecap="round"
-                  [style.strokeDasharray]="getStrokeDasharray()"
-                  [style.strokeDashoffset]="getStrokeDashoffset()"
-                />
-              </svg>
-              <div class="health-value">
-                <span class="health-number">{{ lifeArea()!.healthScore }}</span>
-                <span class="health-label">Health</span>
-              </div>
+          <div style="position: relative; z-index: 1; text-align: center;">
+            <!-- Icon -->
+            <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; border: 2px solid rgba(255,255,255,0.3);">
+              <span style="font-size: 40px;">{{ getIcon() }}</span>
             </div>
+
+            <!-- Title & Description -->
+            <h1 style="margin: 0 0 8px 0; font-size: 28px; font-weight: 700;">{{ lifeArea()!.name }}</h1>
+            <p style="margin: 0; opacity: 0.9; font-size: 15px; line-height: 1.5;">{{ lifeArea()!.description }}</p>
           </div>
         </div>
 
+        <!-- Health Score Card (overlapping) -->
+        <div style="margin: -60px 16px 16px; position: relative; z-index: 2;">
+          <ion-card style="margin: 0; border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);">
+            <ion-card-content style="padding: 24px;">
+              <div style="display: flex; align-items: center; gap: 24px;">
+                <!-- Health Ring -->
+                <div style="position: relative; width: 100px; height: 100px; flex-shrink: 0;">
+                  <svg viewBox="0 0 100 100" style="transform: rotate(-90deg); width: 100%; height: 100%;">
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="42"
+                      fill="none"
+                      [attr.stroke]="getHealthBgColor()"
+                      stroke-width="10"
+                    />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="42"
+                      fill="none"
+                      [attr.stroke]="getHealthColor()"
+                      stroke-width="10"
+                      stroke-linecap="round"
+                      [attr.stroke-dasharray]="getCircumference()"
+                      [attr.stroke-dashoffset]="getStrokeDashoffset()"
+                      style="transition: stroke-dashoffset 0.8s ease;"
+                    />
+                  </svg>
+                  <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                    <span style="font-size: 28px; font-weight: 700; color: var(--ion-color-dark);">{{ lifeArea()!.healthScore }}</span>
+                    <span style="font-size: 12px; color: var(--ion-color-medium); display: block; margin-top: -2px;">%</span>
+                  </div>
+                </div>
+
+                <!-- Stats -->
+                <div style="flex: 1;">
+                  <h3 style="margin: 0 0 4px 0; font-size: 18px; font-weight: 600; color: var(--ion-color-dark);">{{ getHealthLabel() }}</h3>
+                  <p style="margin: 0 0 12px 0; font-size: 13px; color: var(--ion-color-medium);">{{ getHealthDescription() }}</p>
+                  <div style="display: flex; gap: 16px;">
+                    <div>
+                      <span style="font-size: 20px; font-weight: 700; color: var(--ion-color-primary);">{{ practices().length }}</span>
+                      <span style="font-size: 12px; color: var(--ion-color-medium); display: block;">Practices</span>
+                    </div>
+                    <div>
+                      <span style="font-size: 20px; font-weight: 700; color: var(--ion-color-secondary);">{{ reflections().length }}</span>
+                      <span style="font-size: 12px; color: var(--ion-color-medium); display: block;">Reflections</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </div>
+
         <!-- Tab Segment -->
-        <ion-segment [value]="activeTab()" (ionChange)="switchTab($event)" class="detail-segment">
-          <ion-segment-button value="practices">
-            <ion-label>Practices</ion-label>
-          </ion-segment-button>
-          <ion-segment-button value="reflections">
-            <ion-label>Reflections</ion-label>
-          </ion-segment-button>
-        </ion-segment>
+        <div style="padding: 0 16px 16px;">
+          <ion-segment [value]="activeTab()" (ionChange)="switchTab($event)" style="--background: var(--ion-color-light);">
+            <ion-segment-button value="practices">
+              <ion-icon name="leaf-outline" style="margin-right: 6px;"></ion-icon>
+              <ion-label>Practices</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="reflections">
+              <ion-icon name="calendar-outline" style="margin-right: 6px;"></ion-icon>
+              <ion-label>Reflections</ion-label>
+            </ion-segment-button>
+          </ion-segment>
+        </div>
 
         @if (activeTab() === 'practices') {
           <!-- Practices Section -->
-          @if (practices().length === 0) {
-            <ion-card>
-              <ion-card-content class="empty-state">
-                <div class="empty-icon">🌱</div>
-                <h3>No practices yet</h3>
-                <p>Add practices to nurture this area of your life.</p>
-              </ion-card-content>
-            </ion-card>
-          } @else {
-            <div class="section-header">
-              <span class="section-title">{{ practices().length }} Practice{{ practices().length !== 1 ? 's' : '' }}</span>
-              <span class="section-subtitle">{{ activePracticeCount() }} active</span>
-            </div>
+          <div style="padding: 0 16px 100px;">
+            @if (practices().length === 0) {
+              <ion-card style="margin: 0; border-radius: 16px;">
+                <ion-card-content style="text-align: center; padding: 40px 24px;">
+                  <div style="width: 72px; height: 72px; background: linear-gradient(135deg, #E8F5E9, #C8E6C9); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                    <span style="font-size: 36px;">🌱</span>
+                  </div>
+                  <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: var(--ion-color-dark);">No Practices Yet</h3>
+                  <p style="margin: 0 0 20px 0; color: var(--ion-color-medium); line-height: 1.5;">
+                    Add practices to nurture<br>this area of your life.
+                  </p>
+                  <ion-button expand="block" style="--border-radius: 12px;">
+                    <ion-icon name="add-outline" slot="start"></ion-icon>
+                    Add Practice
+                  </ion-button>
+                </ion-card-content>
+              </ion-card>
+            } @else {
+              <!-- Section Header -->
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div>
+                  <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: var(--ion-color-dark);">Your Practices</h3>
+                  <p style="margin: 4px 0 0; font-size: 13px; color: var(--ion-color-medium);">
+                    {{ activePracticeCount() }} active · Swipe left to log
+                  </p>
+                </div>
+              </div>
 
-            <ion-list class="practice-list">
-              @for (practice of practices(); track practice.id) {
-                <ion-item-sliding>
-                  <ion-item class="practice-item">
-                    <div class="practice-content" slot="start">
-                      <div class="practice-icon" [class.inactive]="!practice.isActive">
-                        <ion-icon name="leaf-outline"></ion-icon>
-                      </div>
-                    </div>
-                    <ion-label>
-                      <h2 class="practice-name">
-                        {{ practice.name }}
-                        @if (!practice.isActive) {
-                          <ion-badge color="medium">Paused</ion-badge>
-                        }
-                      </h2>
-                      <p class="practice-description">{{ practice.description }}</p>
-                      <div class="practice-meta">
-                        <ion-chip size="small" outline>{{ practice.frequency }}</ion-chip>
-                        @if (practice.currentStreak > 0) {
-                          <div class="streak-indicator">
-                            <ion-icon name="flame-outline" color="warning"></ion-icon>
-                            <span>{{ practice.currentStreak }} day streak</span>
+              <ion-card style="margin: 0; border-radius: 16px; overflow: hidden;">
+                <ion-list style="padding: 0;">
+                  @for (practice of practices(); track practice.id; let last = $last) {
+                    <ion-item-sliding>
+                      <ion-item [style.--border-color]="last ? 'transparent' : 'var(--ion-color-light)'" style="--padding-start: 16px; --inner-padding-end: 16px;">
+                        <ion-avatar slot="start" [style.background]="getPracticeGradient(practice)" style="width: 48px; height: 48px; border-radius: 14px;">
+                          <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                            <ion-icon [name]="practice.isActive ? 'leaf-outline' : 'timer-outline'" style="font-size: 22px; color: white;"></ion-icon>
+                          </div>
+                        </ion-avatar>
+                        <ion-label>
+                          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                            <h2 style="font-weight: 600; margin: 0; font-size: 16px;">{{ practice.name }}</h2>
+                            @if (!practice.isActive) {
+                              <ion-badge color="medium" style="font-size: 10px; padding: 3px 6px;">Paused</ion-badge>
+                            }
+                            @if (practice.currentStreak > 0) {
+                              <div style="display: flex; align-items: center; gap: 3px; background: linear-gradient(135deg, #FF9800, #FF5722); padding: 3px 8px; border-radius: 10px;">
+                                <ion-icon name="flame" style="font-size: 12px; color: white;"></ion-icon>
+                                <span style="font-size: 11px; font-weight: 600; color: white;">{{ practice.currentStreak }}</span>
+                              </div>
+                            }
+                          </div>
+                          <p style="color: var(--ion-color-medium-shade); margin: 0 0 8px 0; font-size: 13px;">{{ practice.description }}</p>
+                          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <ion-chip size="small" outline style="height: 24px; font-size: 11px; margin: 0;">
+                              <ion-icon name="repeat-outline" style="font-size: 12px; margin-right: 4px;"></ion-icon>
+                              {{ practice.frequency }}
+                            </ion-chip>
+                            @if (practice.duration) {
+                              <ion-chip size="small" outline style="height: 24px; font-size: 11px; margin: 0;">
+                                <ion-icon name="timer-outline" style="font-size: 12px; margin-right: 4px;"></ion-icon>
+                                {{ practice.duration }}m
+                              </ion-chip>
+                            }
+                          </div>
+                        </ion-label>
+                      </ion-item>
+                      <ion-item-options side="end">
+                        <ion-item-option
+                          color="success"
+                          (click)="logPractice(practice)"
+                          [disabled]="!practice.isActive"
+                          style="width: 72px;"
+                        >
+                          <div style="display: flex; flex-direction: column; align-items: center;">
+                            <ion-icon name="checkmark-circle" style="font-size: 26px;"></ion-icon>
+                            <span style="font-size: 11px; margin-top: 4px;">Log</span>
+                          </div>
+                        </ion-item-option>
+                      </ion-item-options>
+                    </ion-item-sliding>
+                  }
+                </ion-list>
+              </ion-card>
+            }
+          </div>
+        } @else {
+          <!-- Reflections Section -->
+          <div style="padding: 0 16px 100px;">
+            @if (reflections().length === 0) {
+              <ion-card style="margin: 0; border-radius: 16px;">
+                <ion-card-content style="text-align: center; padding: 40px 24px;">
+                  <div style="width: 72px; height: 72px; background: linear-gradient(135deg, #E3F2FD, #BBDEFB); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                    <span style="font-size: 36px;">📝</span>
+                  </div>
+                  <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: var(--ion-color-dark);">No Reflections Yet</h3>
+                  <p style="margin: 0; color: var(--ion-color-medium); line-height: 1.5;">
+                    Journal entries tagged with<br>this life area will appear here.
+                  </p>
+                </ion-card-content>
+              </ion-card>
+            } @else {
+              <!-- Section Header -->
+              <div style="margin-bottom: 12px;">
+                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: var(--ion-color-dark);">Your Reflections</h3>
+                <p style="margin: 4px 0 0; font-size: 13px; color: var(--ion-color-medium);">
+                  {{ reflections().length }} journal {{ reflections().length === 1 ? 'entry' : 'entries' }}
+                </p>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                @for (reflection of reflections(); track reflection.id) {
+                  <ion-card style="margin: 0; border-radius: 16px;">
+                    <ion-card-content style="padding: 16px;">
+                      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div style="flex: 1;">
+                          <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 600; color: var(--ion-color-dark);">{{ reflection.title }}</h3>
+                          <div style="display: flex; align-items: center; gap: 4px; color: var(--ion-color-medium); font-size: 12px;">
+                            <ion-icon name="calendar-outline" style="font-size: 14px;"></ion-icon>
+                            <span>{{ formatDate(reflection.createdAt) }}</span>
+                          </div>
+                        </div>
+                        @if (reflection.mood) {
+                          <div [style.background]="getMoodGradient(reflection.mood)" style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 22px;">{{ getMoodEmoji(reflection.mood) }}</span>
                           </div>
                         }
                       </div>
-                    </ion-label>
-                  </ion-item>
-                  <ion-item-options side="end">
-                    <ion-item-option color="success" (click)="logPractice(practice)">
-                      <ion-icon slot="icon-only" name="checkmark-circle-outline"></ion-icon>
-                    </ion-item-option>
-                  </ion-item-options>
-                </ion-item-sliding>
-              }
-            </ion-list>
-          }
-        } @else {
-          <!-- Reflections Section -->
-          @if (reflections().length === 0) {
-            <ion-card>
-              <ion-card-content class="empty-state">
-                <div class="empty-icon">📝</div>
-                <h3>No reflections yet</h3>
-                <p>Journal entries tagged with this life area will appear here.</p>
-              </ion-card-content>
-            </ion-card>
-          } @else {
-            <div class="section-header">
-              <span class="section-title">{{ reflections().length }} Reflection{{ reflections().length !== 1 ? 's' : '' }}</span>
-            </div>
 
-            @for (reflection of reflections(); track reflection.id) {
-              <ion-card class="reflection-card">
-                <ion-card-header>
-                  <div class="reflection-header">
-                    <ion-card-title>{{ reflection.title }}</ion-card-title>
-                    @if (reflection.mood) {
-                      <span class="mood-emoji">{{ getMoodEmoji(reflection.mood) }}</span>
-                    }
-                  </div>
-                  <ion-card-subtitle>
-                    <ion-icon name="calendar-outline"></ion-icon>
-                    {{ formatDate(reflection.createdAt) }}
-                  </ion-card-subtitle>
-                </ion-card-header>
-                <ion-card-content>
-                  <p class="reflection-content">{{ reflection.content | slice:0:200 }}{{ reflection.content.length > 200 ? '...' : '' }}</p>
-                  @if (reflection.gratitude && reflection.gratitude.length > 0) {
-                    <div class="gratitude-section">
-                      <ion-icon name="sparkles-outline" color="warning"></ion-icon>
-                      <span>{{ reflection.gratitude.length }} gratitude item{{ reflection.gratitude.length !== 1 ? 's' : '' }}</span>
-                    </div>
-                  }
-                </ion-card-content>
-              </ion-card>
+                      <p style="margin: 0 0 12px 0; color: var(--ion-color-medium-shade); font-size: 14px; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                        {{ reflection.content }}
+                      </p>
+
+                      @if (reflection.gratitude && reflection.gratitude.length > 0) {
+                        <div style="display: flex; align-items: center; gap: 6px; padding-top: 12px; border-top: 1px solid var(--ion-color-light);">
+                          <ion-icon name="heart-outline" color="danger" style="font-size: 16px;"></ion-icon>
+                          <span style="font-size: 13px; color: var(--ion-color-medium);">
+                            {{ reflection.gratitude.length }} gratitude{{ reflection.gratitude.length > 1 ? 's' : '' }}
+                          </span>
+                        </div>
+                      }
+                    </ion-card-content>
+                  </ion-card>
+                }
+              </div>
             }
-          }
+          </div>
         }
       }
+
+      <!-- FAB for adding -->
+      <ion-fab slot="fixed" vertical="bottom" horizontal="end" style="margin-bottom: 16px; margin-right: 16px;">
+        <ion-fab-button color="primary">
+          <ion-icon name="add-outline"></ion-icon>
+        </ion-fab-button>
+      </ion-fab>
     </ion-content>
   `,
-  styles: [`
-    .loading-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 200px;
-      color: var(--ion-color-medium);
-    }
-
-    .hero-section {
-      padding: 32px 24px;
-      color: white;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-section::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -30%;
-      width: 80%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
-      pointer-events: none;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-    }
-
-    .hero-icon {
-      font-size: 48px;
-      margin-bottom: 12px;
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
-    }
-
-    .hero-title {
-      font-size: 28px;
-      font-weight: 700;
-      margin: 0 0 8px 0;
-      letter-spacing: -0.02em;
-    }
-
-    .hero-description {
-      font-size: 15px;
-      opacity: 0.9;
-      margin: 0 0 24px 0;
-      line-height: 1.5;
-    }
-
-    .health-ring {
-      position: relative;
-      width: 120px;
-      height: 120px;
-      margin: 0 auto;
-    }
-
-    .progress-ring {
-      transform: rotate(-90deg);
-      width: 100%;
-      height: 100%;
-    }
-
-    .progress-ring-fill {
-      transition: stroke-dashoffset 0.5s ease;
-    }
-
-    .health-value {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-    }
-
-    .health-number {
-      display: block;
-      font-size: 32px;
-      font-weight: 700;
-      line-height: 1;
-    }
-
-    .health-label {
-      display: block;
-      font-size: 11px;
-      opacity: 0.8;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-top: 4px;
-    }
-
-    .detail-segment {
-      margin: 16px;
-    }
-
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 16px 8px;
-    }
-
-    .section-title {
-      font-weight: 600;
-      color: var(--ion-color-dark);
-    }
-
-    .section-subtitle {
-      font-size: 13px;
-      color: var(--ion-color-medium);
-    }
-
-    .practice-list {
-      background: transparent;
-    }
-
-    .practice-item {
-      --padding-start: 16px;
-      --inner-padding-end: 16px;
-    }
-
-    .practice-content {
-      margin-right: 12px;
-    }
-
-    .practice-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-primary-shade) 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 20px;
-    }
-
-    .practice-icon.inactive {
-      background: var(--ion-color-medium-tint);
-    }
-
-    .practice-name {
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .practice-name ion-badge {
-      font-size: 10px;
-    }
-
-    .practice-description {
-      color: var(--ion-color-medium-shade);
-      margin: 4px 0 8px;
-    }
-
-    .practice-meta {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .practice-meta ion-chip {
-      height: 24px;
-      font-size: 11px;
-    }
-
-    .streak-indicator {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 12px;
-      color: var(--ion-color-warning-shade);
-      font-weight: 500;
-    }
-
-    .streak-indicator ion-icon {
-      font-size: 14px;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 40px 20px;
-    }
-
-    .empty-icon {
-      font-size: 48px;
-      margin-bottom: 16px;
-    }
-
-    .empty-state h3 {
-      margin: 0 0 8px 0;
-      color: var(--ion-color-dark);
-    }
-
-    .empty-state p {
-      margin: 0;
-      color: var(--ion-color-medium);
-    }
-
-    .reflection-card {
-      margin: 16px;
-    }
-
-    .reflection-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-
-    .mood-emoji {
-      font-size: 24px;
-    }
-
-    ion-card-subtitle {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      margin-top: 4px;
-    }
-
-    ion-card-subtitle ion-icon {
-      font-size: 14px;
-    }
-
-    .reflection-content {
-      white-space: pre-line;
-      color: var(--ion-color-medium-shade);
-      line-height: 1.6;
-    }
-
-    .gratitude-section {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px solid var(--ion-color-light-shade);
-      font-size: 13px;
-      color: var(--ion-color-warning-shade);
-    }
-  `],
 })
 export class LifeAreaDetailPage implements OnInit {
   private route = inject(ActivatedRoute);
@@ -510,6 +375,12 @@ export class LifeAreaDetailPage implements OnInit {
     users: '👥',
     dollar: '💰',
     leaf: '🌿',
+    home: '🏠',
+    star: '⭐',
+    sun: '☀️',
+    moon: '🌙',
+    music: '🎵',
+    camera: '📷',
   };
 
   private moodEmojis: Record<string, string> = {
@@ -525,10 +396,17 @@ export class LifeAreaDetailPage implements OnInit {
     addIcons({
       leafOutline,
       flameOutline,
+      flame,
       checkmarkCircleOutline,
+      checkmarkCircle,
       calendarOutline,
       trendingUpOutline,
       sparklesOutline,
+      addOutline,
+      timerOutline,
+      repeatOutline,
+      heartOutline,
+      arrowBackOutline,
     });
   }
 
@@ -557,7 +435,6 @@ export class LifeAreaDetailPage implements OnInit {
         this.lifeArea.set(lifeArea);
         this.practices.set(lifeArea.practices || []);
 
-        // Extract reflections from the nested structure
         const reflections = (lifeArea.reflections || [])
           .map((r) => r.reflection)
           .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
@@ -598,7 +475,7 @@ export class LifeAreaDetailPage implements OnInit {
   }
 
   getGradient(): string {
-    const color = this.lifeArea()?.color || '#3d9a50';
+    const color = this.lifeArea()?.color || '#4CAF50';
     return `linear-gradient(135deg, ${color} 0%, ${this.darkenColor(color)} 100%)`;
   }
 
@@ -611,20 +488,76 @@ export class LifeAreaDetailPage implements OnInit {
     return `#${(0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1)}`;
   }
 
-  getStrokeDasharray(): string {
-    const circumference = 2 * Math.PI * 52;
-    return `${circumference}`;
+  getCircumference(): number {
+    return 2 * Math.PI * 42;
   }
 
-  getStrokeDashoffset(): string {
-    const circumference = 2 * Math.PI * 52;
+  getStrokeDashoffset(): number {
+    const circumference = this.getCircumference();
     const health = this.lifeArea()?.healthScore || 0;
-    const offset = circumference - (health / 100) * circumference;
-    return `${offset}`;
+    return circumference - (health / 100) * circumference;
+  }
+
+  getHealthColor(): string {
+    const health = this.lifeArea()?.healthScore || 0;
+    if (health >= 70) return '#4CAF50';
+    if (health >= 40) return '#FF9800';
+    return '#f44336';
+  }
+
+  getHealthBgColor(): string {
+    const health = this.lifeArea()?.healthScore || 0;
+    if (health >= 70) return '#E8F5E9';
+    if (health >= 40) return '#FFF3E0';
+    return '#FFEBEE';
+  }
+
+  getHealthLabel(): string {
+    const health = this.lifeArea()?.healthScore || 0;
+    if (health >= 70) return 'Thriving';
+    if (health >= 40) return 'Growing';
+    return 'Needs Care';
+  }
+
+  getHealthDescription(): string {
+    const health = this.lifeArea()?.healthScore || 0;
+    if (health >= 70) return 'This area of your life is flourishing beautifully!';
+    if (health >= 40) return 'Making progress - keep up the good work!';
+    return 'This area could use some extra attention and care.';
+  }
+
+  getPracticeGradient(practice: Practice): string {
+    if (!practice.isActive) {
+      return 'linear-gradient(135deg, #9E9E9E, #757575)';
+    }
+    if (practice.currentStreak >= 7) {
+      return 'linear-gradient(135deg, #FF9800, #FF5722)';
+    }
+    if (practice.currentStreak > 0) {
+      return 'linear-gradient(135deg, #4CAF50, #2E7D32)';
+    }
+    return 'linear-gradient(135deg, #2196F3, #1976D2)';
   }
 
   getMoodEmoji(mood: string): string {
     return this.moodEmojis[mood.toLowerCase()] || '😐';
+  }
+
+  getMoodGradient(mood: string): string {
+    switch (mood?.toLowerCase()) {
+      case 'great':
+        return 'linear-gradient(135deg, #E8F5E9, #C8E6C9)';
+      case 'good':
+        return 'linear-gradient(135deg, #F1F8E9, #DCEDC8)';
+      case 'okay':
+        return 'linear-gradient(135deg, #FFF8E1, #FFECB3)';
+      case 'low':
+        return 'linear-gradient(135deg, #FFF3E0, #FFE0B2)';
+      case 'difficult':
+        return 'linear-gradient(135deg, #FFEBEE, #FFCDD2)';
+      default:
+        return 'linear-gradient(135deg, #F5F5F5, #E0E0E0)';
+    }
   }
 
   formatDate(date: string): string {

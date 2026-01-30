@@ -42,4 +42,23 @@ describe('GardenPage', () => {
     expect(component.getHealthLabel(60)).toBe('Growing');
     expect(component.getHealthLabel(30)).toBe('Needs care');
   });
+
+  it('should return correct greeting based on time of day', () => {
+    const component = fixture.componentInstance;
+    const greeting = component.getGreeting();
+    expect(['Good morning', 'Good afternoon', 'Good evening']).toContain(greeting);
+  });
+
+  it('should return correct emoji for icons', () => {
+    const component = fixture.componentInstance;
+    expect(component.getEmoji('heart')).toBe('❤️');
+    expect(component.getEmoji('brain')).toBe('🧠');
+    expect(component.getEmoji('unknown')).toBe('🌿');
+  });
+
+  it('should calculate circumference correctly', () => {
+    const component = fixture.componentInstance;
+    const circumference = 2 * Math.PI * 60;
+    expect(component.getCircumference()).toBe(`${circumference}`);
+  });
 });

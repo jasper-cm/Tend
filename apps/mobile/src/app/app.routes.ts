@@ -29,4 +29,9 @@ export const appRoutes: Route[] = [
       { path: '', redirectTo: 'garden', pathMatch: 'full' },
     ],
   },
+  {
+    path: 'life-areas/:id',
+    loadComponent: () =>
+      import('./pages/life-area-detail/life-area-detail.page').then((m) => m.LifeAreaDetailPage),
+  },
 ];

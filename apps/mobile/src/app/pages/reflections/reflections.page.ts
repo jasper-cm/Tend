@@ -192,9 +192,9 @@ import { ApiService, Reflection, LifeArea } from '../../services/api.service';
             <ion-list>
               @for (reflection of reflections(); track reflection.id) {
                 <ion-item button detail="true">
-                  <ion-avatar slot="start" [style.background]="getMoodGradient(reflection.mood)">
+                  <ion-avatar slot="start" [style.background]="getMoodGradient(reflection.mood || 'okay')">
                     <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 24px;">
-                      {{ getMoodEmoji(reflection.mood) }}
+                      {{ getMoodEmoji(reflection.mood || 'okay') }}
                     </div>
                   </ion-avatar>
                   <ion-label>

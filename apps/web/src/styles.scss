@@ -61,7 +61,7 @@
 }
 
 // ============================================
-// Base Styles
+// Base Styles — Spiritual & Meditative
 // ============================================
 html {
   scroll-behavior: smooth;
@@ -73,11 +73,26 @@ body {
   font-family: var(--font-sans);
   margin: 0;
   padding: 0;
-  background: linear-gradient(180deg, $cream 0%, $parchment 100%);
+  background: linear-gradient(180deg, #f0fdf4 0%, #f7fdf9 50%, #ffffff 100%);
   background-attachment: fixed;
   color: $earth-900;
   line-height: $line-height-normal;
   min-height: 100vh;
+  position: relative;
+
+  // Subtle lotus glow at top
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 60vh;
+    background: radial-gradient(ellipse at top, rgba(134, 239, 172, 0.12) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
 }
 
 // ============================================
@@ -193,18 +208,31 @@ body {
   }
 
   // ============================================
-  // Cards — Soft, elevated surfaces
+  // Cards — Spiritual, Meditative Surfaces
   // ============================================
   .card {
-    @apply bg-white/70 rounded-softer p-5;
-    box-shadow: $shadow-soft;
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba($spirit-200, 0.3);
-    transition: box-shadow $duration-normal $ease-soft,
-                transform $duration-normal $ease-gentle;
+    @apply bg-white/80 rounded-2xl p-6;
+    box-shadow: 0 4px 20px -4px rgba(34, 197, 94, 0.08);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(134, 239, 172, 0.2);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.1, 1);
 
     &:hover {
-      box-shadow: $shadow-soft-lg;
+      box-shadow: 0 8px 30px -8px rgba(34, 197, 94, 0.15);
+      border-color: rgba(134, 239, 172, 0.35);
+    }
+  }
+
+  .card-zen {
+    @apply bg-gradient-to-br from-white/90 to-white/70 rounded-3xl p-8;
+    box-shadow: 0 4px 30px -8px rgba(34, 197, 94, 0.12);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(134, 239, 172, 0.25);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.1, 1);
+
+    &:hover {
+      box-shadow: 0 12px 40px -12px rgba(34, 197, 94, 0.2);
+      transform: translateY(-2px);
     }
   }
 
@@ -212,19 +240,59 @@ body {
     @apply card cursor-pointer;
 
     &:hover {
-      transform: translateY(-2px);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px -10px rgba(34, 197, 94, 0.18);
     }
 
     &:active {
-      transform: translateY(0) scale(0.995);
+      transform: translateY(-1px) scale(0.995);
     }
   }
 
   .card-glow {
     @apply card;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #86efac, #4ade80, #86efac);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
 
     &:hover {
-      box-shadow: $shadow-glow-lg;
+      box-shadow: 0 0 40px -10px rgba(34, 197, 94, 0.3);
+
+      &::before {
+        opacity: 1;
+      }
+    }
+  }
+
+  .card-meditation {
+    @apply bg-gradient-to-br from-green-50/80 via-white/90 to-emerald-50/80 rounded-3xl p-8;
+    box-shadow: 0 8px 40px -12px rgba(34, 197, 94, 0.15);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(134, 239, 172, 0.3);
+    position: relative;
+    overflow: hidden;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(134, 239, 172, 0.08) 0%, transparent 50%);
+      animation: breathe 8s ease-in-out infinite;
+      pointer-events: none;
     }
   }
 

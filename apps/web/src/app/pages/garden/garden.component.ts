@@ -18,62 +18,73 @@ interface PlantData {
   standalone: true,
   imports: [CommonModule, RouterLink],
   template: `
-    <div class="space-y-6">
-      <!-- Hero Welcome Section -->
-      <div class="bg-gradient-to-br from-spirit-500 via-spirit-600 to-spirit-700 rounded-2xl p-6 lg:p-8 text-white relative overflow-hidden shadow-lg">
+    <div class="space-y-8">
+      <!-- Hero Welcome Section - Spiritual/Meditative -->
+      <div class="bg-gradient-to-br from-green-50 via-white to-emerald-50/50 rounded-3xl p-8 lg:p-10 relative overflow-hidden border border-green-100/50 shadow-xl shadow-green-100/20">
         <!-- Decorative elements -->
-        <div class="absolute -top-16 -right-16 w-48 h-48 bg-white/10 rounded-full blur-xl"></div>
-        <div class="absolute -bottom-12 -left-12 w-36 h-36 bg-white/5 rounded-full blur-lg"></div>
+        <div class="absolute -top-20 -right-20 w-64 h-64 bg-gradient-to-br from-green-200/30 to-emerald-200/20 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-16 -left-16 w-48 h-48 bg-gradient-to-tr from-green-100/40 to-transparent rounded-full blur-2xl"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-radial from-green-100/20 to-transparent rounded-full blur-3xl animate-breathe-slow"></div>
 
         <div class="relative z-10">
-          <div class="flex items-start justify-between">
-            <div>
-              <p class="text-white/80 text-sm mb-1">{{ getGreeting() }}</p>
-              <h1 class="text-3xl lg:text-4xl font-bold mb-2">Your Life Garden</h1>
-              <p class="text-white/90 max-w-lg">
-                Nurture every dimension of your life. Each area is a plot in your personal garden, waiting to flourish.
+          <div class="flex items-start justify-between gap-8">
+            <div class="flex-1">
+              <p class="text-green-600/70 text-sm mb-2 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                {{ getGreeting() }}
+              </p>
+              <h1 class="text-3xl lg:text-4xl font-semibold text-gray-800 mb-3 tracking-tight">Your Life Garden</h1>
+              <p class="text-gray-600 max-w-lg leading-relaxed">
+                Nurture every dimension of your life with mindful intention. Each area is a sacred plot in your personal garden.
               </p>
             </div>
 
             @if (averageHealth() > 0) {
-              <!-- Health Ring -->
+              <!-- Health Ring - Zen Style -->
               <div class="hidden md:flex flex-col items-center">
-                <div class="relative w-24 h-24">
-                  <svg class="w-24 h-24 transform -rotate-90">
-                    <circle cx="48" cy="48" r="40" stroke="rgba(255,255,255,0.2)" stroke-width="8" fill="none"/>
+                <div class="relative w-28 h-28">
+                  <svg class="w-28 h-28 transform -rotate-90">
+                    <circle cx="56" cy="56" r="48" stroke="#dcfce7" stroke-width="6" fill="none"/>
                     <circle
-                      cx="48" cy="48" r="40"
-                      stroke="white"
-                      stroke-width="8"
+                      cx="56" cy="56" r="48"
+                      stroke="url(#healthGradient)"
+                      stroke-width="6"
                       fill="none"
                       stroke-linecap="round"
-                      [attr.stroke-dasharray]="251.2"
-                      [attr.stroke-dashoffset]="251.2 - (251.2 * averageHealth() / 100)"
+                      [attr.stroke-dasharray]="301.6"
+                      [attr.stroke-dashoffset]="301.6 - (301.6 * averageHealth() / 100)"
+                      class="transition-all duration-1000 ease-out"
                     />
+                    <defs>
+                      <linearGradient id="healthGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#4ade80"/>
+                        <stop offset="100%" stop-color="#22c55e"/>
+                      </linearGradient>
+                    </defs>
                   </svg>
-                  <div class="absolute inset-0 flex items-center justify-center">
-                    <span class="text-2xl font-bold">{{ averageHealth() }}</span>
+                  <div class="absolute inset-0 flex flex-col items-center justify-center">
+                    <span class="text-3xl font-semibold text-gray-800">{{ averageHealth() }}</span>
+                    <span class="text-xs text-green-600/70">wellness</span>
                   </div>
                 </div>
-                <span class="text-sm text-white/80 mt-2">Garden Health</span>
               </div>
             }
           </div>
 
-          <!-- Quick Stats -->
+          <!-- Quick Stats - Clean Minimal -->
           @if (plants().length > 0) {
-            <div class="flex gap-8 mt-6">
-              <div>
-                <span class="text-3xl font-bold">{{ plants().length }}</span>
-                <span class="text-white/70 text-sm block">Life Areas</span>
+            <div class="flex gap-10 mt-8 pt-6 border-t border-green-100/50">
+              <div class="text-center">
+                <span class="text-3xl font-semibold text-gray-800">{{ plants().length }}</span>
+                <span class="text-green-600/70 text-sm block mt-1">Life Areas</span>
               </div>
-              <div>
-                <span class="text-3xl font-bold">{{ thrivingCount() }}</span>
-                <span class="text-white/70 text-sm block">Thriving</span>
+              <div class="text-center">
+                <span class="text-3xl font-semibold text-green-600">{{ thrivingCount() }}</span>
+                <span class="text-green-600/70 text-sm block mt-1">Thriving</span>
               </div>
-              <div class="md:hidden">
-                <span class="text-3xl font-bold">{{ averageHealth() }}%</span>
-                <span class="text-white/70 text-sm block">Health</span>
+              <div class="text-center md:hidden">
+                <span class="text-3xl font-semibold text-gray-800">{{ averageHealth() }}%</span>
+                <span class="text-green-600/70 text-sm block mt-1">Health</span>
               </div>
             </div>
           }
@@ -81,63 +92,68 @@ interface PlantData {
       </div>
 
       @if (loading()) {
-        <div class="flex flex-col items-center justify-center py-16">
-          <div class="w-16 h-16 bg-spirit-100 rounded-full flex items-center justify-center animate-pulse mb-4">
-            <span class="text-3xl">🌱</span>
+        <div class="flex flex-col items-center justify-center py-20">
+          <div class="w-20 h-20 bg-gradient-to-br from-green-100 to-emerald-50 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-green-100/50 animate-breathe">
+            <span class="text-4xl">🌱</span>
           </div>
-          <p class="text-sage-600">Growing your garden...</p>
+          <p class="text-green-600/70 text-lg">Growing your garden...</p>
+          <div class="flex gap-1.5 mt-4">
+            <div class="w-2 h-2 bg-green-400 rounded-full animate-bounce" style="animation-delay: 0s"></div>
+            <div class="w-2 h-2 bg-green-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+            <div class="w-2 h-2 bg-green-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+          </div>
         </div>
       } @else {
-        <!-- Garden Stats Cards -->
+        <!-- Garden Stats Cards - Clean Zen Style -->
         @if (plants().length > 0) {
-          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-              <div class="flex items-center gap-3 mb-3">
-                <div class="w-10 h-10 bg-spirit-100 rounded-xl flex items-center justify-center">
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-green-100/50 hover:shadow-lg hover:shadow-green-100/30 transition-all duration-300 hover:-translate-y-1">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-11 h-11 bg-gradient-to-br from-green-100 to-emerald-50 rounded-xl flex items-center justify-center">
                   <span class="text-xl">🌿</span>
                 </div>
                 <span class="text-sm font-medium text-gray-500">Life Areas</span>
               </div>
-              <div class="text-3xl font-bold text-spirit-600">{{ plants().length }}</div>
+              <div class="text-3xl font-semibold text-gray-800">{{ plants().length }}</div>
             </div>
 
-            <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-              <div class="flex items-center gap-3 mb-3">
-                <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-green-100/50 hover:shadow-lg hover:shadow-green-100/30 transition-all duration-300 hover:-translate-y-1">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-11 h-11 bg-gradient-to-br from-green-200/70 to-emerald-100 rounded-xl flex items-center justify-center">
                   <span class="text-xl">✨</span>
                 </div>
                 <span class="text-sm font-medium text-gray-500">Thriving</span>
               </div>
-              <div class="text-3xl font-bold text-green-600">{{ thrivingCount() }}</div>
+              <div class="text-3xl font-semibold text-green-600">{{ thrivingCount() }}</div>
             </div>
 
-            <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-              <div class="flex items-center gap-3 mb-3">
-                <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
-                  <span class="text-xl">📈</span>
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-green-100/50 hover:shadow-lg hover:shadow-green-100/30 transition-all duration-300 hover:-translate-y-1">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-11 h-11 bg-gradient-to-br from-amber-100/70 to-yellow-50 rounded-xl flex items-center justify-center">
+                  <span class="text-xl">🌻</span>
                 </div>
                 <span class="text-sm font-medium text-gray-500">Growing</span>
               </div>
-              <div class="text-3xl font-bold text-amber-500">{{ growingCount() }}</div>
+              <div class="text-3xl font-semibold text-amber-600">{{ growingCount() }}</div>
             </div>
 
-            <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-              <div class="flex items-center gap-3 mb-3">
-                <div class="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-green-100/50 hover:shadow-lg hover:shadow-green-100/30 transition-all duration-300 hover:-translate-y-1">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-11 h-11 bg-gradient-to-br from-rose-100/70 to-pink-50 rounded-xl flex items-center justify-center">
                   <span class="text-xl">💧</span>
                 </div>
                 <span class="text-sm font-medium text-gray-500">Needs Care</span>
               </div>
-              <div class="text-3xl font-bold text-rose-500">{{ needsAttentionCount() }}</div>
+              <div class="text-3xl font-semibold text-rose-500">{{ needsAttentionCount() }}</div>
             </div>
           </div>
         }
 
-        <!-- Side-scrolling Garden Visualization -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <div class="px-6 py-4 border-b border-gray-100">
+        <!-- Side-scrolling Garden Visualization - Zen Style -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-3xl border border-green-100/50 overflow-hidden shadow-lg shadow-green-100/10">
+          <div class="px-8 py-5 border-b border-green-50">
             <h2 class="text-lg font-semibold text-gray-800">Garden Visualization</h2>
-            <p class="text-sm text-gray-500">Watch your life areas grow as you tend them</p>
+            <p class="text-sm text-green-600/60">Watch your life areas grow as you tend them</p>
           </div>
 
           <div class="relative bg-gradient-spirit overflow-hidden" style="height: 320px;">
@@ -213,35 +229,35 @@ interface PlantData {
           </div>
         </div>
 
-        <!-- Life Areas List -->
+        <!-- Life Areas List - Zen Style -->
         @if (plants().length > 0) {
-          <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+          <div class="bg-white/80 backdrop-blur-sm rounded-3xl border border-green-100/50 overflow-hidden shadow-lg shadow-green-100/10">
+            <div class="px-8 py-5 border-b border-green-50 flex items-center justify-between">
               <div>
                 <h2 class="text-lg font-semibold text-gray-800">Life Areas</h2>
-                <p class="text-sm text-gray-500">Tap an area to see details and tend it</p>
+                <p class="text-sm text-green-600/60">Tap an area to see details and tend it</p>
               </div>
-              <a routerLink="/life-areas" class="text-sm text-spirit-600 hover:text-spirit-700 font-medium">
-                Manage all &rarr;
+              <a routerLink="/life-areas" class="text-sm text-green-600 hover:text-green-700 font-medium transition-colors">
+                Manage all →
               </a>
             </div>
 
-            <div class="divide-y divide-gray-100">
+            <div class="divide-y divide-green-50">
               @for (plant of plants(); track plant.lifeArea.id) {
-                <a [routerLink]="['/life-areas', plant.lifeArea.id]" class="flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors">
-                  <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl" [style.background]="getHealthGradient(plant.lifeArea.healthScore)">
+                <a [routerLink]="['/life-areas', plant.lifeArea.id]" class="flex items-center gap-5 p-5 hover:bg-green-50/50 transition-all duration-300 group">
+                  <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-sm transition-transform duration-300 group-hover:scale-105" [style.background]="getHealthGradient(plant.lifeArea.healthScore)">
                     {{ getEmoji(plant.lifeArea.icon) }}
                   </div>
                   <div class="flex-1 min-w-0">
-                    <h3 class="font-semibold text-gray-800">{{ plant.lifeArea.name }}</h3>
-                    <p class="text-sm text-gray-500 truncate">{{ plant.lifeArea.description }}</p>
-                    <div class="mt-2 h-2 bg-gray-100 rounded-full overflow-hidden">
-                      <div class="h-full rounded-full transition-all duration-500" [style.width.%]="plant.lifeArea.healthScore" [style.background]="getHealthColor(plant.lifeArea.healthScore)"></div>
+                    <h3 class="font-semibold text-gray-800 group-hover:text-green-700 transition-colors">{{ plant.lifeArea.name }}</h3>
+                    <p class="text-sm text-gray-500 truncate mt-0.5">{{ plant.lifeArea.description }}</p>
+                    <div class="mt-3 h-2 bg-green-100/50 rounded-full overflow-hidden">
+                      <div class="h-full rounded-full transition-all duration-700 ease-out" [style.width.%]="plant.lifeArea.healthScore" [style.background]="'linear-gradient(90deg, ' + getHealthColor(plant.lifeArea.healthScore) + ', ' + getHealthColorLight(plant.lifeArea.healthScore) + ')'"></div>
                     </div>
                   </div>
                   <div class="text-right">
-                    <div class="text-xl font-bold" [style.color]="getHealthColor(plant.lifeArea.healthScore)">{{ plant.lifeArea.healthScore }}%</div>
-                    <div class="text-xs text-gray-500">{{ getHealthLabel(plant.lifeArea.healthScore) }}</div>
+                    <div class="text-2xl font-semibold" [style.color]="getHealthColor(plant.lifeArea.healthScore)">{{ plant.lifeArea.healthScore }}%</div>
+                    <div class="text-xs text-gray-500 mt-1">{{ getHealthLabel(plant.lifeArea.healthScore) }}</div>
                   </div>
                 </a>
               }
@@ -249,53 +265,53 @@ interface PlantData {
           </div>
         }
 
-        <!-- Quick Actions Card -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-          <h2 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h2>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <a routerLink="/practices" class="flex items-center gap-3 p-4 rounded-xl bg-amber-50 hover:bg-amber-100 transition-colors group">
-              <div class="w-10 h-10 bg-amber-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                <span class="text-xl">💪</span>
+        <!-- Quick Actions - Zen Style -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-3xl border border-green-100/50 p-8 shadow-lg shadow-green-100/10">
+          <h2 class="text-lg font-semibold text-gray-800 mb-6">Mindful Actions</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <a routerLink="/practices" class="flex items-center gap-4 p-5 rounded-2xl bg-gradient-to-br from-green-50/80 to-emerald-50/50 border border-green-100/50 hover:shadow-lg hover:shadow-green-100/30 hover:-translate-y-1 transition-all duration-300 group">
+              <div class="w-12 h-12 bg-gradient-to-br from-green-200 to-emerald-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-sm">
+                <span class="text-xl">🧘</span>
               </div>
               <div>
-                <div class="font-medium text-gray-800">Log Practice</div>
-                <div class="text-sm text-gray-500">Track your habits</div>
+                <div class="font-semibold text-gray-800">Log Practice</div>
+                <div class="text-sm text-green-600/70">Track your rituals</div>
               </div>
             </a>
-            <a routerLink="/reflections" class="flex items-center gap-3 p-4 rounded-xl bg-blue-50 hover:bg-blue-100 transition-colors group">
-              <div class="w-10 h-10 bg-blue-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                <span class="text-xl">📝</span>
+            <a routerLink="/reflections" class="flex items-center gap-4 p-5 rounded-2xl bg-gradient-to-br from-blue-50/80 to-indigo-50/50 border border-blue-100/50 hover:shadow-lg hover:shadow-blue-100/30 hover:-translate-y-1 transition-all duration-300 group">
+              <div class="w-12 h-12 bg-gradient-to-br from-blue-200 to-indigo-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-sm">
+                <span class="text-xl">📿</span>
               </div>
               <div>
-                <div class="font-medium text-gray-800">Write Reflection</div>
-                <div class="text-sm text-gray-500">Journal your thoughts</div>
+                <div class="font-semibold text-gray-800">Write Reflection</div>
+                <div class="text-sm text-blue-600/70">Journal mindfully</div>
               </div>
             </a>
-            <a routerLink="/garden-guide" class="flex items-center gap-3 p-4 rounded-xl bg-purple-50 hover:bg-purple-100 transition-colors group">
-              <div class="w-10 h-10 bg-purple-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+            <a routerLink="/garden-guide" class="flex items-center gap-4 p-5 rounded-2xl bg-gradient-to-br from-violet-50/80 to-purple-50/50 border border-violet-100/50 hover:shadow-lg hover:shadow-violet-100/30 hover:-translate-y-1 transition-all duration-300 group">
+              <div class="w-12 h-12 bg-gradient-to-br from-violet-200 to-purple-200 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-sm">
                 <span class="text-xl">✨</span>
               </div>
               <div>
-                <div class="font-medium text-gray-800">Ask Guide</div>
-                <div class="text-sm text-gray-500">Get AI coaching</div>
+                <div class="font-semibold text-gray-800">Ask Guide</div>
+                <div class="text-sm text-violet-600/70">Seek wisdom</div>
               </div>
             </a>
           </div>
         </div>
 
-        <!-- Empty State -->
+        <!-- Empty State - Zen Style -->
         @if (plants().length === 0) {
-          <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
-            <div class="w-20 h-20 bg-spirit-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span class="text-4xl">🌱</span>
+          <div class="bg-white/80 backdrop-blur-sm rounded-3xl border border-green-100/50 p-12 text-center shadow-lg shadow-green-100/10">
+            <div class="w-24 h-24 bg-gradient-to-br from-green-100 to-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-200/30 animate-breathe">
+              <span class="text-5xl">🌱</span>
             </div>
-            <h3 class="text-xl font-semibold text-gray-800 mb-2">Start Your Garden</h3>
-            <p class="text-gray-500 mb-6 max-w-md mx-auto">
-              Your life garden is ready to grow. Add life areas to begin nurturing different dimensions of your life.
+            <h3 class="text-2xl font-semibold text-gray-800 mb-3">Begin Your Journey</h3>
+            <p class="text-gray-500 mb-8 max-w-md mx-auto leading-relaxed">
+              Your life garden awaits. Plant the seeds of intention and watch them grow into beautiful life areas.
             </p>
-            <a routerLink="/life-areas" class="inline-flex items-center gap-2 px-6 py-3 bg-spirit-500 text-white rounded-xl hover:bg-spirit-600 transition-colors font-medium shadow-sm">
-              <span>Add Your First Life Area</span>
-              <span>&rarr;</span>
+            <a routerLink="/life-areas" class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-2xl hover:from-green-600 hover:to-emerald-600 transition-all duration-300 font-medium shadow-lg shadow-green-200/50 hover:shadow-xl hover:-translate-y-0.5">
+              <span>Plant Your First Seed</span>
+              <span>→</span>
             </a>
           </div>
         }
@@ -457,9 +473,15 @@ export class GardenComponent implements OnInit {
   }
 
   getHealthColor(score: number): string {
-    if (score >= 75) return '#3d9a50'; // spirit-500
-    if (score >= 50) return '#f2b82b'; // golden-400
-    return '#e15f87'; // bloom-500
+    if (score >= 75) return '#22c55e'; // green-500
+    if (score >= 50) return '#f59e0b'; // amber-500
+    return '#f43f5e'; // rose-500
+  }
+
+  getHealthColorLight(score: number): string {
+    if (score >= 75) return '#86efac'; // green-300
+    if (score >= 50) return '#fcd34d'; // amber-300
+    return '#fda4af'; // rose-300
   }
 
   getHealthLabel(score: number): string {
@@ -476,9 +498,9 @@ export class GardenComponent implements OnInit {
   }
 
   getHealthGradient(score: number): string {
-    if (score >= 75) return 'linear-gradient(135deg, #4CAF50, #8BC34A)';
-    if (score >= 50) return 'linear-gradient(135deg, #FF9800, #FFB74D)';
-    return 'linear-gradient(135deg, #f44336, #E57373)';
+    if (score >= 75) return 'linear-gradient(135deg, #bbf7d0, #dcfce7)'; // soft green gradient
+    if (score >= 50) return 'linear-gradient(135deg, #fde68a, #fef3c7)'; // soft amber gradient
+    return 'linear-gradient(135deg, #fecdd3, #ffe4e6)'; // soft rose gradient
   }
 
   getEmoji(icon: string): string {

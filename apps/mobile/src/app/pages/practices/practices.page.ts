@@ -16,6 +16,7 @@ import {
   IonBadge,
   IonSpinner,
   IonButton,
+  IonButtons,
   IonSegment,
   IonSegmentButton,
   IonRefresher,
@@ -30,6 +31,7 @@ import {
   IonFabButton,
   IonProgressBar,
   IonNote,
+  IonMenuButton,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -80,10 +82,15 @@ import { ApiService, Practice } from '../../services/api.service';
     IonFabButton,
     IonProgressBar,
     IonNote,
+    IonButtons,
+    IonMenuButton,
   ],
   template: `
     <ion-header>
       <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+          <ion-menu-button style="--color: white;"></ion-menu-button>
+        </ion-buttons>
         <ion-title>
           <ion-icon name="leaf-outline" style="margin-right: 8px; vertical-align: middle;"></ion-icon>
           Practices

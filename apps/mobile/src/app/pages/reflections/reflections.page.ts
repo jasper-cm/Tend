@@ -31,6 +31,7 @@ import {
   IonAvatar,
   IonBadge,
   IonNote,
+  IonMenuButton,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -80,10 +81,14 @@ import { ApiService, Reflection, LifeArea } from '../../services/api.service';
     IonAvatar,
     IonBadge,
     IonNote,
+    IonMenuButton,
   ],
   template: `
     <ion-header>
       <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+          <ion-menu-button style="--color: white;"></ion-menu-button>
+        </ion-buttons>
         <ion-title>
           <ion-icon name="book-outline" style="margin-right: 8px; vertical-align: middle;"></ion-icon>
           Reflections

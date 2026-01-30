@@ -17,6 +17,7 @@ import {
   IonBadge,
   IonSpinner,
   IonButton,
+  IonButtons,
   IonIcon,
   IonRefresher,
   IonRefresherContent,
@@ -27,6 +28,7 @@ import {
   IonNote,
   IonText,
   IonChip,
+  IonMenuButton,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -47,6 +49,7 @@ import {
   walletOutline,
   colorPaletteOutline,
   ribbonOutline,
+  menuOutline,
 } from 'ionicons/icons';
 import { ApiService, LifeArea } from '../../services/api.service';
 
@@ -81,10 +84,15 @@ import { ApiService, LifeArea } from '../../services/api.service';
     IonNote,
     IonText,
     IonChip,
+    IonButtons,
+    IonMenuButton,
   ],
   template: `
     <ion-header>
       <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+          <ion-menu-button style="--color: white;"></ion-menu-button>
+        </ion-buttons>
         <ion-title>
           <ion-icon name="leaf" style="margin-right: 8px; vertical-align: middle;"></ion-icon>
           My Garden
@@ -324,7 +332,7 @@ export class GardenPage implements OnInit {
       leafOutline, leaf, addOutline, sparklesOutline, trendingUpOutline,
       alertCircleOutline, chevronForwardOutline, sunnyOutline, waterOutline,
       heartOutline, fitnessOutline, briefcaseOutline, bookOutline,
-      peopleOutline, walletOutline, colorPaletteOutline, ribbonOutline,
+      peopleOutline, walletOutline, colorPaletteOutline, ribbonOutline, menuOutline,
     });
   }
 

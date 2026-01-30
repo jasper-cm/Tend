@@ -27,6 +27,7 @@ import {
   IonBadge,
   IonFab,
   IonFabButton,
+  IonMenuButton,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -85,10 +86,14 @@ interface ChatMessage {
     IonBadge,
     IonFab,
     IonFabButton,
+    IonMenuButton,
   ],
   template: `
     <ion-header>
       <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+          <ion-menu-button style="--color: white;"></ion-menu-button>
+        </ion-buttons>
         <ion-title>
           <ion-icon name="sparkles-outline" style="margin-right: 8px; vertical-align: middle;"></ion-icon>
           Garden Guide

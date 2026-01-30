@@ -60,4 +60,29 @@ describe('ReflectionsPage', () => {
     component.removeGratitude(0);
     expect(component.newReflection.gratitude.length).toBe(0);
   });
+
+  it('should return correct mood gradient', () => {
+    const component = fixture.componentInstance;
+    expect(component.getMoodGradient('great')).toContain('4CAF50');
+    expect(component.getMoodGradient('good')).toContain('8BC34A');
+    expect(component.getMoodGradient('okay')).toContain('FFC107');
+    expect(component.getMoodGradient('low')).toContain('FF9800');
+    expect(component.getMoodGradient('difficult')).toContain('f44336');
+    expect(component.getMoodGradient(undefined)).toContain('9E9E9E');
+  });
+
+  it('should format date correctly', () => {
+    const component = fixture.componentInstance;
+    const formatted = component.formatDate('2025-01-15T10:00:00Z');
+    expect(formatted).toContain('Jan');
+    expect(formatted).toContain('15');
+    expect(formatted).toContain('2025');
+  });
+
+  it('should have writing prompts for empty state', () => {
+    const component = fixture.componentInstance;
+    expect(component.writingPrompts.length).toBeGreaterThan(0);
+    expect(component.writingPrompts[0].title).toBeTruthy();
+    expect(component.writingPrompts[0].emoji).toBeTruthy();
+  });
 });

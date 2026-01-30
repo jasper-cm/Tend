@@ -25,22 +25,15 @@ describe('GardenPage', () => {
     expect(fixture.componentInstance.loading()).toBe(true);
   });
 
-  it('should have empty plants array initially', () => {
-    expect(fixture.componentInstance.plants()).toEqual([]);
+  it('should have empty lifeAreas array initially', () => {
+    expect(fixture.componentInstance.lifeAreas()).toEqual([]);
   });
 
   it('should return correct health color for different scores', () => {
     const component = fixture.componentInstance;
-    expect(component.getHealthColor(80)).toBe('#3d9a50');
-    expect(component.getHealthColor(60)).toBe('#f2b82b');
-    expect(component.getHealthColor(30)).toBe('#e15f87');
-  });
-
-  it('should return correct health label for different scores', () => {
-    const component = fixture.componentInstance;
-    expect(component.getHealthLabel(80)).toBe('Thriving');
-    expect(component.getHealthLabel(60)).toBe('Growing');
-    expect(component.getHealthLabel(30)).toBe('Needs care');
+    expect(component.getHealthColor(80)).toBe('success');
+    expect(component.getHealthColor(60)).toBe('warning');
+    expect(component.getHealthColor(30)).toBe('danger');
   });
 
   it('should return correct greeting based on time of day', () => {
@@ -56,9 +49,17 @@ describe('GardenPage', () => {
     expect(component.getEmoji('unknown')).toBe('🌿');
   });
 
-  it('should calculate circumference correctly', () => {
+  it('should have suggested areas for empty state', () => {
     const component = fixture.componentInstance;
-    const circumference = 2 * Math.PI * 60;
-    expect(component.getCircumference()).toBe(`${circumference}`);
+    expect(component.suggestedAreas.length).toBeGreaterThan(0);
+    expect(component.suggestedAreas[0].name).toBeTruthy();
+    expect(component.suggestedAreas[0].emoji).toBeTruthy();
+  });
+
+  it('should return correct health gradient', () => {
+    const component = fixture.componentInstance;
+    expect(component.getHealthGradient(80)).toContain('4CAF50');
+    expect(component.getHealthGradient(60)).toContain('FF9800');
+    expect(component.getHealthGradient(30)).toContain('f44336');
   });
 });

@@ -9,6 +9,7 @@ import {
   IonCard,
   IonCardHeader,
   IonCardTitle,
+  IonCardSubtitle,
   IonCardContent,
   IonList,
   IonItem,
@@ -22,9 +23,30 @@ import {
   IonSegment,
   IonSegmentButton,
   IonChip,
+  IonAvatar,
+  IonBadge,
+  IonFab,
+  IonFabButton,
+  IonMenuButton,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { sendOutline, sparklesOutline, chatbubblesOutline, ribbonOutline, bulbOutline, eyeOutline } from 'ionicons/icons';
+import {
+  sendOutline,
+  send,
+  sparklesOutline,
+  sparkles,
+  chatbubblesOutline,
+  chatbubbles,
+  ribbonOutline,
+  bulbOutline,
+  eyeOutline,
+  leafOutline,
+  refreshOutline,
+  happyOutline,
+  rocketOutline,
+  trendingUpOutline,
+  heartOutline,
+} from 'ionicons/icons';
 import { ApiService, Insight } from '../../services/api.service';
 
 interface ChatMessage {
@@ -46,6 +68,7 @@ interface ChatMessage {
     IonCard,
     IonCardHeader,
     IonCardTitle,
+    IonCardSubtitle,
     IonCardContent,
     IonList,
     IonItem,
@@ -59,11 +82,29 @@ interface ChatMessage {
     IonSegment,
     IonSegmentButton,
     IonChip,
+    IonAvatar,
+    IonBadge,
+    IonFab,
+    IonFabButton,
+    IonMenuButton,
   ],
   template: `
     <ion-header>
       <ion-toolbar color="primary">
-        <ion-title>Garden Guide</ion-title>
+        <ion-buttons slot="start">
+          <ion-menu-button style="--color: white;"></ion-menu-button>
+        </ion-buttons>
+        <ion-title>
+          <ion-icon name="sparkles-outline" style="margin-right: 8px; vertical-align: middle;"></ion-icon>
+          Garden Guide
+        </ion-title>
+        <ion-buttons slot="end">
+          @if (viewMode() === 'insights') {
+            <ion-button (click)="loadInsights()">
+              <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+            </ion-button>
+          }
+        </ion-buttons>
       </ion-toolbar>
       <ion-toolbar>
         <ion-segment [value]="viewMode()" (ionChange)="switchView($event)">
@@ -82,314 +123,185 @@ interface ChatMessage {
     <ion-content #chatContent>
       @if (viewMode() === 'insights') {
         <!-- Insights View -->
-        <div class="ion-padding">
+        <div style="padding: 16px;">
           @if (loadingInsights()) {
-            <div class="loading-container">
-              <ion-spinner name="crescent" color="primary"></ion-spinner>
-              <p>Gathering insights...</p>
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px;">
+              <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #4CAF50, #8BC34A); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; animation: pulse 2s infinite;">
+                <ion-icon name="sparkles" style="font-size: 40px; color: white;"></ion-icon>
+              </div>
+              <p style="color: var(--ion-color-medium); font-size: 16px;">Gathering insights from your garden...</p>
             </div>
           } @else {
+            <!-- Summary Card -->
             @if (insightsSummary()) {
-              <ion-card class="summary-card">
-                <ion-card-content>
-                  <p>{{ insightsSummary() }}</p>
+              <ion-card style="background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%); border-radius: 20px; margin: 0 0 16px 0;">
+                <ion-card-content style="padding: 20px;">
+                  <div style="display: flex; align-items: flex-start; gap: 16px;">
+                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #4CAF50, #2E7D32); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                      <ion-icon name="leaf-outline" style="font-size: 24px; color: white;"></ion-icon>
+                    </div>
+                    <div>
+                      <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600; color: #1B5E20;">Garden Overview</h3>
+                      <p style="margin: 0; color: #2E7D32; line-height: 1.6;">{{ insightsSummary() }}</p>
+                    </div>
+                  </div>
                 </ion-card-content>
               </ion-card>
             }
 
             @if (insights().length === 0) {
-              <ion-card>
-                <ion-card-content class="empty-state">
-                  <div class="empty-icon">🌱</div>
-                  <p>No specific insights right now. Your garden is doing well!</p>
+              <ion-card style="border-radius: 20px;">
+                <ion-card-content style="text-align: center; padding: 48px 24px;">
+                  <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #E8F5E9, #C8E6C9); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <span style="font-size: 40px;">🌿</span>
+                  </div>
+                  <h3 style="margin: 0 0 8px 0; font-size: 20px; font-weight: 600; color: var(--ion-color-dark);">All is Well!</h3>
+                  <p style="margin: 0; color: var(--ion-color-medium); line-height: 1.5;">
+                    No specific insights right now.<br>Your garden is thriving beautifully!
+                  </p>
                 </ion-card-content>
               </ion-card>
             } @else {
-              @for (insight of insights(); track $index) {
-                <ion-card class="insight-card" [class]="'insight-' + insight.type">
-                  <ion-card-content>
-                    <div class="insight-header">
-                      <span class="insight-icon">{{ getInsightIcon(insight.type) }}</span>
-                      <div class="insight-title-section">
-                        <h3>{{ insight.title }}</h3>
-                        @if (insight.lifeArea) {
-                          <ion-chip size="small" color="tertiary">{{ insight.lifeArea }}</ion-chip>
-                        }
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                @for (insight of insights(); track $index) {
+                  <ion-card [style.background]="getInsightBackground(insight.type)" style="border-radius: 16px; margin: 0; border-left: 4px solid; overflow: hidden;" [style.border-left-color]="getInsightColor(insight.type)">
+                    <ion-card-content style="padding: 16px;">
+                      <div style="display: flex; align-items: flex-start; gap: 12px;">
+                        <div [style.background]="getInsightGradient(insight.type)" style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                          <span style="font-size: 22px;">{{ getInsightIcon(insight.type) }}</span>
+                        </div>
+                        <div style="flex: 1; min-width: 0;">
+                          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px;">
+                            <h3 style="margin: 0; font-size: 15px; font-weight: 600; color: var(--ion-color-dark);">{{ insight.title }}</h3>
+                            @if (insight.lifeArea) {
+                              <ion-chip size="small" [style.--background]="getInsightChipColor(insight.type)" style="margin: 0; height: 22px; font-size: 11px;">
+                                {{ insight.lifeArea }}
+                              </ion-chip>
+                            }
+                          </div>
+                          <p style="margin: 0; color: var(--ion-color-medium-shade); font-size: 14px; line-height: 1.5;">{{ insight.message }}</p>
+                        </div>
                       </div>
-                    </div>
-                    <p class="insight-message">{{ insight.message }}</p>
-                  </ion-card-content>
-                </ion-card>
-              }
+                    </ion-card-content>
+                  </ion-card>
+                }
+              </div>
             }
           }
         </div>
       } @else {
         <!-- Chat View -->
-        <div class="chat-container" #chatContainer>
+        <div style="display: flex; flex-direction: column; min-height: 100%; padding: 16px;">
           @if (messages().length === 0) {
-            <div class="welcome-section">
-              <div class="welcome-icon">🌿</div>
-              <h3>Welcome to the Garden Guide</h3>
-              <p>I'm here to help you tend your life garden. Ask me about your progress, get suggestions for practices, or just chat about how you're doing.</p>
+            <!-- Welcome State -->
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px;">
+              <div style="width: 120px; height: 120px; background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; position: relative;">
+                <span style="font-size: 60px;">🌿</span>
+                <div style="position: absolute; bottom: 0; right: 0; width: 40px; height: 40px; background: linear-gradient(135deg, #4CAF50, #2E7D32); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid white;">
+                  <ion-icon name="sparkles" style="font-size: 18px; color: white;"></ion-icon>
+                </div>
+              </div>
+              <h2 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: var(--ion-color-dark);">Welcome, Gardener!</h2>
+              <p style="margin: 0 0 32px 0; color: var(--ion-color-medium); line-height: 1.6; max-width: 280px;">
+                I'm your personal Garden Guide. Ask me about your progress, get suggestions for practices, or just chat about how you're doing.
+              </p>
 
-              <div class="quick-prompts">
-                @for (prompt of quickPrompts; track prompt) {
-                  <ion-chip (click)="sendMessage(prompt)" color="light">
-                    {{ prompt }}
-                  </ion-chip>
-                }
+              <div style="width: 100%; max-width: 320px;">
+                <p style="font-size: 12px; font-weight: 600; color: var(--ion-color-medium); text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 12px 0;">Quick Prompts</p>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                  @for (prompt of quickPrompts; track prompt.text) {
+                    <ion-button
+                      (click)="sendMessage(prompt.text)"
+                      fill="outline"
+                      expand="block"
+                      style="--border-radius: 12px; --border-width: 1px; text-transform: none; font-weight: 500; --padding-top: 12px; --padding-bottom: 12px;"
+                    >
+                      <ion-icon [name]="prompt.icon" slot="start" style="margin-right: 8px;"></ion-icon>
+                      {{ prompt.text }}
+                    </ion-button>
+                  }
+                </div>
               </div>
             </div>
           } @else {
-            @for (message of messages(); track $index) {
-              <div class="message" [class.user]="message.role === 'user'" [class.assistant]="message.role === 'assistant'">
-                <div class="message-bubble">
-                  <p>{{ message.content }}</p>
-                  <span class="message-time">{{ formatTime(message.timestamp) }}</span>
+            <!-- Messages -->
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 16px;">
+              @for (message of messages(); track $index) {
+                <div [style.justify-content]="message.role === 'user' ? 'flex-end' : 'flex-start'" style="display: flex;">
+                  @if (message.role === 'assistant') {
+                    <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #4CAF50, #2E7D32); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-right: 8px; align-self: flex-end;">
+                      <span style="font-size: 18px;">🌿</span>
+                    </div>
+                  }
+                  <div
+                    [style.background]="message.role === 'user' ? 'linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%)' : 'white'"
+                    [style.color]="message.role === 'user' ? 'white' : 'var(--ion-color-dark)'"
+                    [style.border-bottom-right-radius]="message.role === 'user' ? '4px' : '18px'"
+                    [style.border-bottom-left-radius]="message.role === 'user' ? '18px' : '4px'"
+                    [style.box-shadow]="message.role === 'assistant' ? '0 2px 8px rgba(0,0,0,0.08)' : 'none'"
+                    style="max-width: 80%; padding: 14px 18px; border-radius: 18px;"
+                  >
+                    <p style="margin: 0 0 6px 0; white-space: pre-line; line-height: 1.5; font-size: 15px;">{{ message.content }}</p>
+                    <span [style.opacity]="0.7" style="font-size: 11px; display: block;" [style.text-align]="message.role === 'user' ? 'right' : 'left'">
+                      {{ formatTime(message.timestamp) }}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            }
+              }
 
-            @if (isTyping()) {
-              <div class="message assistant">
-                <div class="message-bubble typing">
-                  <span class="dot"></span>
-                  <span class="dot"></span>
-                  <span class="dot"></span>
+              @if (isTyping()) {
+                <div style="display: flex; justify-content: flex-start;">
+                  <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #4CAF50, #2E7D32); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-right: 8px; align-self: flex-end;">
+                    <span style="font-size: 18px;">🌿</span>
+                  </div>
+                  <div style="background: white; padding: 18px 22px; border-radius: 18px; border-bottom-left-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; gap: 6px;">
+                    <span style="width: 10px; height: 10px; background: #4CAF50; border-radius: 50%; animation: typingBounce 1.4s ease-in-out infinite; animation-delay: 0s;"></span>
+                    <span style="width: 10px; height: 10px; background: #66BB6A; border-radius: 50%; animation: typingBounce 1.4s ease-in-out infinite; animation-delay: 0.2s;"></span>
+                    <span style="width: 10px; height: 10px; background: #81C784; border-radius: 50%; animation: typingBounce 1.4s ease-in-out infinite; animation-delay: 0.4s;"></span>
+                  </div>
                 </div>
-              </div>
-            }
+              }
+            </div>
           }
         </div>
       }
     </ion-content>
 
     @if (viewMode() === 'chat') {
-      <ion-footer>
-        <ion-toolbar>
-          <div class="input-container">
+      <ion-footer style="background: transparent;">
+        <div style="background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(0,0,0,0.08); padding: 12px 16px; padding-bottom: calc(12px + env(safe-area-inset-bottom, 0));">
+          <div style="display: flex; align-items: center; gap: 12px; background: #F5F5F5; border-radius: 28px; padding: 6px 6px 6px 20px;">
             <ion-input
               [(ngModel)]="inputMessage"
               (keyup.enter)="sendMessage()"
               [disabled]="isTyping()"
               placeholder="Ask the Garden Guide..."
-              class="chat-input"
+              style="flex: 1; --padding-start: 0; --padding-end: 0; font-size: 16px;"
             ></ion-input>
             <ion-button
               (click)="sendMessage()"
               [disabled]="!inputMessage.trim() || isTyping()"
-              fill="solid"
-              color="primary"
+              shape="round"
+              style="--padding-start: 14px; --padding-end: 14px; height: 44px; width: 44px; margin: 0;"
             >
-              <ion-icon slot="icon-only" name="send-outline"></ion-icon>
+              <ion-icon slot="icon-only" name="send" style="font-size: 20px;"></ion-icon>
             </ion-button>
           </div>
-        </ion-toolbar>
+        </div>
       </ion-footer>
     }
+
+    <style>
+      @keyframes typingBounce {
+        0%, 60%, 100% { transform: translateY(0); }
+        30% { transform: translateY(-8px); }
+      }
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.05); opacity: 0.8; }
+      }
+    </style>
   `,
-  styles: [`
-    .loading-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 200px;
-      color: var(--ion-color-medium);
-    }
-
-    .summary-card {
-      --background: linear-gradient(135deg, #f8f6f1 0%, #f0ebe1 100%);
-    }
-
-    .insight-card {
-      margin-bottom: 12px;
-      border-left: 4px solid var(--ion-color-primary);
-    }
-
-    .insight-card.insight-celebration {
-      border-left-color: #3d9a50;
-    }
-
-    .insight-card.insight-encouragement {
-      border-left-color: #f2b82b;
-    }
-
-    .insight-card.insight-suggestion {
-      border-left-color: #5fb56f;
-    }
-
-    .insight-card.insight-observation {
-      border-left-color: #7a9d80;
-    }
-
-    .insight-header {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 8px;
-    }
-
-    .insight-icon {
-      font-size: 24px;
-    }
-
-    .insight-title-section h3 {
-      margin: 0 0 4px 0;
-      font-size: 16px;
-      font-weight: 600;
-    }
-
-    .insight-message {
-      margin: 0;
-      color: var(--ion-color-medium-shade);
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 40px 20px;
-    }
-
-    .empty-icon {
-      font-size: 48px;
-      margin-bottom: 16px;
-    }
-
-    .chat-container {
-      display: flex;
-      flex-direction: column;
-      padding: 16px;
-      min-height: 100%;
-    }
-
-    .welcome-section {
-      text-align: center;
-      padding: 40px 20px;
-    }
-
-    .welcome-icon {
-      font-size: 64px;
-      margin-bottom: 16px;
-    }
-
-    .welcome-section h3 {
-      margin: 0 0 8px 0;
-      color: var(--ion-color-dark);
-    }
-
-    .welcome-section p {
-      color: var(--ion-color-medium);
-      margin-bottom: 24px;
-    }
-
-    .quick-prompts {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .quick-prompts ion-chip {
-      cursor: pointer;
-    }
-
-    .message {
-      display: flex;
-      margin-bottom: 12px;
-    }
-
-    .message.user {
-      justify-content: flex-end;
-    }
-
-    .message.assistant {
-      justify-content: flex-start;
-    }
-
-    .message-bubble {
-      max-width: 80%;
-      padding: 12px 16px;
-      border-radius: 18px;
-    }
-
-    .message.user .message-bubble {
-      background: linear-gradient(135deg, #3d9a50 0%, #5fb56f 100%);
-      color: white;
-      border-bottom-right-radius: 4px;
-    }
-
-    .message.assistant .message-bubble {
-      background: var(--ion-color-light);
-      color: var(--ion-color-dark);
-      border-bottom-left-radius: 4px;
-    }
-
-    .message-bubble p {
-      margin: 0 0 4px 0;
-      white-space: pre-line;
-    }
-
-    .message-time {
-      font-size: 11px;
-      opacity: 0.7;
-    }
-
-    .message.user .message-time {
-      text-align: right;
-      display: block;
-    }
-
-    .message-bubble.typing {
-      display: flex;
-      gap: 4px;
-      padding: 16px;
-    }
-
-    .dot {
-      width: 8px;
-      height: 8px;
-      background: var(--ion-color-medium);
-      border-radius: 50%;
-      animation: bounce 1.4s infinite ease-in-out;
-    }
-
-    .dot:nth-child(1) {
-      animation-delay: 0s;
-    }
-
-    .dot:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-
-    .dot:nth-child(3) {
-      animation-delay: 0.4s;
-    }
-
-    @keyframes bounce {
-      0%, 60%, 100% {
-        transform: translateY(0);
-      }
-      30% {
-        transform: translateY(-8px);
-      }
-    }
-
-    .input-container {
-      display: flex;
-      align-items: center;
-      padding: 8px 12px;
-      gap: 8px;
-    }
-
-    .chat-input {
-      flex: 1;
-      --background: var(--ion-color-light);
-      --padding-start: 16px;
-      --padding-end: 16px;
-      border-radius: 20px;
-    }
-  `],
 })
 export class GardenGuidePage implements OnInit {
   @ViewChild('chatContent') private chatContent!: IonContent;
@@ -406,20 +318,29 @@ export class GardenGuidePage implements OnInit {
   inputMessage = '';
 
   quickPrompts = [
-    'How is my garden doing?',
-    'What should I focus on?',
-    'Show me my progress',
-    'I need some encouragement',
+    { text: 'How is my garden doing?', icon: 'leaf-outline' },
+    { text: 'What should I focus on?', icon: 'trending-up-outline' },
+    { text: 'I need some encouragement', icon: 'heart-outline' },
+    { text: 'Suggest a new practice', icon: 'rocket-outline' },
   ];
 
   constructor() {
     addIcons({
       sendOutline,
+      send,
       sparklesOutline,
+      sparkles,
       chatbubblesOutline,
+      chatbubbles,
       ribbonOutline,
       bulbOutline,
       eyeOutline,
+      leafOutline,
+      refreshOutline,
+      happyOutline,
+      rocketOutline,
+      trendingUpOutline,
+      heartOutline,
     });
   }
 
@@ -434,7 +355,7 @@ export class GardenGuidePage implements OnInit {
     }
   }
 
-  private loadInsights(): void {
+  loadInsights(): void {
     this.loadingInsights.set(true);
     this.api.getInsights().subscribe({
       next: (response) => {
@@ -505,6 +426,46 @@ export class GardenGuidePage implements OnInit {
       observation: '👀',
     };
     return icons[type] || '🌱';
+  }
+
+  getInsightColor(type: string): string {
+    const colors: Record<string, string> = {
+      celebration: '#4CAF50',
+      encouragement: '#FF9800',
+      suggestion: '#2196F3',
+      observation: '#9C27B0',
+    };
+    return colors[type] || '#4CAF50';
+  }
+
+  getInsightBackground(type: string): string {
+    const backgrounds: Record<string, string> = {
+      celebration: 'linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%)',
+      encouragement: 'linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%)',
+      suggestion: 'linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%)',
+      observation: 'linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%)',
+    };
+    return backgrounds[type] || 'linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%)';
+  }
+
+  getInsightGradient(type: string): string {
+    const gradients: Record<string, string> = {
+      celebration: 'linear-gradient(135deg, #4CAF50, #2E7D32)',
+      encouragement: 'linear-gradient(135deg, #FF9800, #F57C00)',
+      suggestion: 'linear-gradient(135deg, #2196F3, #1976D2)',
+      observation: 'linear-gradient(135deg, #9C27B0, #7B1FA2)',
+    };
+    return gradients[type] || 'linear-gradient(135deg, #4CAF50, #2E7D32)';
+  }
+
+  getInsightChipColor(type: string): string {
+    const colors: Record<string, string> = {
+      celebration: 'rgba(76, 175, 80, 0.2)',
+      encouragement: 'rgba(255, 152, 0, 0.2)',
+      suggestion: 'rgba(33, 150, 243, 0.2)',
+      observation: 'rgba(156, 39, 176, 0.2)',
+    };
+    return colors[type] || 'rgba(76, 175, 80, 0.2)';
   }
 
   formatTime(date: Date): string {

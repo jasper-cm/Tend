@@ -25,4 +25,20 @@ describe('AppComponent (mobile)', () => {
     const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelector('ion-app')).toBeTruthy();
   });
+
+  it('should have main menu items defined', () => {
+    expect(fixture.componentInstance.mainMenuItems.length).toBe(4);
+    expect(fixture.componentInstance.mainMenuItems[0].title).toBe('My Garden');
+  });
+
+  it('should have settings menu items defined', () => {
+    expect(fixture.componentInstance.settingsMenuItems.length).toBeGreaterThan(0);
+    expect(fixture.componentInstance.settingsMenuItems[0].title).toBe('Profile');
+  });
+
+  it('should render ion-menu', () => {
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('ion-menu')).toBeTruthy();
+  });
 });

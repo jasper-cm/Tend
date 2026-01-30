@@ -58,8 +58,8 @@ describe('GardenPage', () => {
 
   it('should return correct health gradient', () => {
     const component = fixture.componentInstance;
-    expect(component.getHealthGradient(80)).toContain('4CAF50');
-    expect(component.getHealthGradient(60)).toContain('FF9800');
-    expect(component.getHealthGradient(30)).toContain('f44336');
+    expect(component.getHealthGradient(80)).toContain('bbf7d0');
+    expect(component.getHealthGradient(60)).toContain('fde68a');
+    expect(component.getHealthGradient(30)).toContain('fecdd3');
   });
 });

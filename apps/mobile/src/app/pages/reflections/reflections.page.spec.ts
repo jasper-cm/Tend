@@ -63,12 +63,12 @@ describe('ReflectionsPage', () => {
 
   it('should return correct mood gradient', () => {
     const component = fixture.componentInstance;
-    expect(component.getMoodGradient('great')).toContain('4CAF50');
-    expect(component.getMoodGradient('good')).toContain('8BC34A');
-    expect(component.getMoodGradient('okay')).toContain('FFC107');
-    expect(component.getMoodGradient('low')).toContain('FF9800');
-    expect(component.getMoodGradient('difficult')).toContain('f44336');
-    expect(component.getMoodGradient(undefined)).toContain('9E9E9E');
+    expect(component.getMoodGradient('great')).toContain('bbf7d0');
+    expect(component.getMoodGradient('good')).toContain('d9f99d');
+    expect(component.getMoodGradient('okay')).toContain('fde68a');
+    expect(component.getMoodGradient('low')).toContain('fed7aa');
+    expect(component.getMoodGradient('difficult')).toContain('fecdd3');
+    expect(component.getMoodGradient(undefined)).toContain('e5e7eb');
   });
 
   it('should format date correctly', () => {

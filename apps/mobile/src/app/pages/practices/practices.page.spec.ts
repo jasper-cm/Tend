@@ -68,16 +68,16 @@ describe('PracticesPage', () => {
     const component = fixture.componentInstance;
 
     // Inactive practice - grey
-    expect(component.getPracticeGradient({ isActive: false, currentStreak: 0 } as any)).toContain('9E9E9E');
+    expect(component.getPracticeGradient({ isActive: false, currentStreak: 0 } as any)).toContain('e5e7eb');
 
-    // Active with 7+ streak - orange/fire
-    expect(component.getPracticeGradient({ isActive: true, currentStreak: 10 } as any)).toContain('FF9800');
+    // Active with 7+ streak - amber/gold
+    expect(component.getPracticeGradient({ isActive: true, currentStreak: 10 } as any)).toContain('fde68a');
 
     // Active with some streak - green
-    expect(component.getPracticeGradient({ isActive: true, currentStreak: 3 } as any)).toContain('4CAF50');
+    expect(component.getPracticeGradient({ isActive: true, currentStreak: 3 } as any)).toContain('bbf7d0');
 
     // Active with no streak - blue
-    expect(component.getPracticeGradient({ isActive: true, currentStreak: 0 } as any)).toContain('2196F3');
+    expect(component.getPracticeGradient({ isActive: true, currentStreak: 0 } as any)).toContain('bfdbfe');
   });
 
   it('should return correct category emoji', () => {
